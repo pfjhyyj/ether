@@ -8,7 +8,7 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -16,8 +16,8 @@ import { UserModule } from './user/user.module';
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true
-      })
+        synchronize: true,
+      }),
     }),
     GraphQLModule.forRootAsync({
       imports: [ConfigModule],
@@ -26,8 +26,8 @@ import { UserModule } from './user/user.module';
         autoSchemaFile: 'schema.gql',
         debug: configService.get('DEVELOPMENT') ? true : false,
         playground: configService.get('DEVELOPMENT') ? true : false,
-        installSubscriptionHandlers: true
-      })
+        installSubscriptionHandlers: true,
+      }),
     }),
     UserModule,
   ],
