@@ -8,5 +8,6 @@ export interface User {
   password?: string;
   tel?: string;
   lang?: string;
-  registerDate?: Date;
+  created?: Date;
+  updated?: Date;
 }
