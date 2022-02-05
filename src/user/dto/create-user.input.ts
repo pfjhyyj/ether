@@ -1,10 +1,7 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateUserInput {
-  // @Field(() => Int, { description: 'User ID' })
-  // id: number;
-
   @Field({ description: 'Username, unique' })
   username: string;
 
@@ -28,7 +25,4 @@ export class CreateUserInput {
 
   @Field({ nullable: true, description: 'User Language code' })
   lang?: string;
-
-  // @Field({ nullable: true, description: 'User Register date' })
-  // registerDate?: Date;
 }

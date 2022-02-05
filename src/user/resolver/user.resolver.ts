@@ -15,7 +15,7 @@ export class UserResolver {
   }
 
   @Query(() => [UserEntity], { name: 'user' })
-  findAll(@Args() usersArgs :UsersArgs) {
+  findAll(@Args() usersArgs: UsersArgs) {
     return this.userService.findAll(usersArgs);
   }
 
