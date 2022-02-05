@@ -29,7 +29,4 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
 
   @Field({ nullable: true, description: 'User Language code' })
   lang?: string;
-
-  // @Field({ nullable: true, description: 'User Register date' })
-  // registerDate?: Date;
 }

@@ -1,4 +1,5 @@
-import { Field, ArgsType } from '@nestjs/graphql';
+import { Field, ArgsType, Int } from '@nestjs/graphql';
+import { Max, Min } from 'class-validator';
 
 @ArgsType()
 export class UsersArgs {
@@ -19,4 +20,13 @@ export class UsersArgs {
 
   @Field({ nullable: true, description: 'User Tel number' })
   tel?: string;
+
+  @Field(() => Int)
+  @Min(0)
+  skip = 0;
+
+  @Field(() => Int)
+  @Min(1)
+  @Max(50)
+  take = 10;
 }
