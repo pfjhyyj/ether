@@ -28,7 +28,7 @@ export class UserEntity {
   lastName: string;
 
   @Field({ description: 'User Email address' })
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
   @Field({ nullable: true, description: 'User password, meaningless to show' })

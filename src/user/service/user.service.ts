@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserInput } from '../dto/create-user.input';
+// import { CreateUserInput } from '../dto/create-user.input';
 import { UpdateUserInput } from '../dto/update-user.input';
 import { UsersArgs } from '../dto/users.args';
 import { UserEntity } from '../entities/user.entity';
@@ -14,11 +14,8 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  create(createUserInput: CreateUserInput): Promise<User> {
-    const newUser: User = {
-      ...createUserInput,
-    };
-    return this.userRepository.save(newUser);
+  create(createUserInput: User): Promise<User> {
+    return this.userRepository.save(createUserInput);
   }
 
   findAll(usersArgs: UsersArgs): Promise<UserEntity[]> {
@@ -27,6 +24,20 @@ export class UserService {
 
   findOne(id: number): Promise<UserEntity> {
     return this.userRepository.findOne({ id });
+  }
+
+  findOnePasswordByUsername(username: string): Promise<UserEntity> {
+    return this.userRepository.findOne(
+      { username },
+      { select: ['id', 'username', 'password', 'email'] },
+    );
+  }
+
+  findOnePasswordByEmail(email: string): Promise<UserEntity> {
+    return this.userRepository.findOne(
+      { email },
+      { select: ['id', 'username', 'password', 'email'] },
+    );
   }
 
   update(id: number, updateUserInput: UpdateUserInput): Promise<UserEntity> {
