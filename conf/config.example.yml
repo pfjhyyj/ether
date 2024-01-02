@@ -1,0 +1,8 @@
+postgres:
+  host:
+  port:
+  user:
+  password:
+  auto_migrate:
+  db:
+  debug:
