@@ -1,3 +1,15 @@
+service:
+  enabled:
+    - api
+  api:
+    port: 8089
+
+redis:
+  host:
+  password:
+  database:
+    biz:
+
 postgres:
   host:
   port:

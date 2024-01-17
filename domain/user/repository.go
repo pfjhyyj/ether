@@ -1,10 +1,10 @@
 package user
 
-import "github.com/pfjhyyj/ether/app/user/model"
+import "context"
 
 type Repository interface {
-	GetUserByUsername(username string) (*model.User, error)
-	GetUserByPhone(phoneNum string) (*model.User, error)
-	GetUserByEmail(email string) (*model.User, error)
-	GetUserById(userId uint) (*model.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*User, error)
+	GetUserByEmail(ctx context.Context, email string) (*User, error)
+	GetUserByUserId(ctx context.Context, userId uint) (*User, error)
+	CreateUser(ctx context.Context, user *User) error
 }
