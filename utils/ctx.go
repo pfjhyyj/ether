@@ -1,9 +1,12 @@
 package utils
 
-import "context"
+import (
+	"context"
+	"github.com/pfjhyyj/ether/common"
+)
 
 func GetUserIdFromCtx(ctx context.Context) (uint, bool) {
-	userId, ok := ctx.Value("userId").(uint)
+	userId, ok := ctx.Value(common.CtxUserIDKey).(uint)
 	if !ok {
 		return 0, false
 	}
@@ -11,5 +14,5 @@ func GetUserIdFromCtx(ctx context.Context) (uint, bool) {
 }
 
 func SetUserIdToCtx(ctx context.Context, userId uint) context.Context {
-	return context.WithValue(ctx, "userId", userId)
+	return context.WithValue(ctx, common.CtxUserIDKey, userId)
 }
