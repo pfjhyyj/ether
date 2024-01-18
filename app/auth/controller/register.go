@@ -24,7 +24,7 @@ type RegisterUserRequest struct {
 func (r *RegisterController) RegisterByEmail(ctx *gin.Context) {
 	var req RegisterUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		_ = ctx.Error(&common.SystemError{Code: common.RequestError, Message: "invalid request", Err: err})
+		_ = ctx.Error(err)
 		return
 	}
 

@@ -3,7 +3,9 @@ package middleware
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/pfjhyyj/ether/common"
+	"github.com/pfjhyyj/ether/utils"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -20,6 +22,18 @@ func ErrorMiddleware() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusOK, &common.Response{
 					Code: systemErr.Code,
 					Msg:  systemErr.Message,
+				})
+				return
+			} else if errors.As(err.Err, &validator.ValidationErrors{}) {
+				logs.WithError(err).Error("request error")
+				validationErrs := err.Err.(validator.ValidationErrors).Translate(utils.GetValidatorTrans())
+				var errMsg string
+				for _, v := range validationErrs {
+					errMsg += v + ";"
+				}
+				c.AbortWithStatusJSON(http.StatusOK, &common.Response{
+					Code: common.RequestError,
+					Msg:  errMsg,
 				})
 				return
 			} else {
