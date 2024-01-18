@@ -50,8 +50,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Request = c.Request.WithContext(utils.SetUserIdToCtx(c, tokenPayload.UserId))
-
+		c.Set(common.CtxUserIDKey, tokenPayload.UserId)
 		c.Next()
 	}
 }
