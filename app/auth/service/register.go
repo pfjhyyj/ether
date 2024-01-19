@@ -18,7 +18,7 @@ func NewRegisterService(userRepo user.Repository) *RegisterService {
 func (s *RegisterService) RegisterUserByEmail(ctx context.Context, username string, email string, password string) error {
 	hashPassword, err := utils.HashPassword(password)
 	if err != nil {
-		return &common.SystemError{Code: common.UnknownError, Message: "hash password fail", Err: err}
+		return &common.SystemError{Code: common.UnknownError, Msg: "hash password fail", Err: err}
 	}
 
 	newUser := &user.User{
@@ -28,7 +28,7 @@ func (s *RegisterService) RegisterUserByEmail(ctx context.Context, username stri
 	}
 
 	if err := s.userRepo.CreateUser(ctx, newUser); err != nil {
-		return &common.SystemError{Code: common.DbError, Message: "create newUser fail", Err: err}
+		return &common.SystemError{Code: common.DbError, Msg: "create newUser fail", Err: err}
 	}
 
 	return nil

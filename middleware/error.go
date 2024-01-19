@@ -18,10 +18,10 @@ func ErrorMiddleware() gin.HandlerFunc {
 		for _, err := range c.Errors {
 			var systemErr *common.SystemError
 			if errors.As(err.Err, &systemErr) {
-				logs.WithError(systemErr.Err).Error(systemErr.Message)
+				logs.WithError(systemErr.Err).Error(systemErr.Msg)
 				c.AbortWithStatusJSON(http.StatusOK, &common.Response{
 					Code: systemErr.Code,
-					Msg:  systemErr.Message,
+					Msg:  systemErr.Msg,
 				})
 				return
 			} else if errors.As(err.Err, &validator.ValidationErrors{}) {

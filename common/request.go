@@ -1,6 +1,6 @@
 package common
 
 type PageRequest struct {
-	Current  int `json:"current"`
-	PageSize int `json:"pageSize"`
+	Current  int `json:"current" form:"current"`
+	PageSize int `json:"pageSize" form:"pageSize"`
 }

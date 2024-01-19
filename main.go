@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth"
+	"github.com/pfjhyyj/ether/app/permission"
 	"github.com/pfjhyyj/ether/app/user"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/clients/redis"
@@ -37,8 +38,11 @@ func runApiServer() {
 	r := gin.New()
 	r.Use(gin.Logger(), middleware.ErrorMiddleware())
 	apiRouter := r.Group("/api")
-	auth.SetRouter(apiRouter)
-	user.SetRouter(apiRouter)
+	{
+		auth.SetRouter(apiRouter)
+		user.SetRouter(apiRouter)
+		permission.SetRouter(apiRouter)
+	}
 
 	port := viper.GetString("service.api.port")
 	_ = r.Run(":" + port)

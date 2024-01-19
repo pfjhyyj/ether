@@ -20,7 +20,7 @@ func (s TenantService) ListTenants(ctx *gin.Context, param *model.QueryTenantPar
 	tenants, total, err := model.ListTenants(db, param)
 	if err != nil {
 		logs.WithError(err).Error("list tenants failed")
-		return nil, 0, &common.SystemError{Code: common.DbError, Message: "list tenants failed", Err: err}
+		return nil, 0, &common.SystemError{Code: common.DbError, Msg: "list tenants failed", Err: err}
 	}
 
 	return tenants, total, nil
@@ -34,7 +34,7 @@ func (s TenantService) CreateTenant(ctx *gin.Context, d *define.CreateTenantRequ
 
 	if err := model.CreateTenant(db, tenant); err != nil {
 		logs.WithError(err).Error("create tenant failed")
-		return &common.SystemError{Code: common.DbError, Message: "create tenant failed", Err: err}
+		return &common.SystemError{Code: common.DbError, Msg: "create tenant failed", Err: err}
 	}
 
 	return nil
@@ -48,7 +48,7 @@ func (s TenantService) UpdateTenant(ctx *gin.Context, d *define.UpdateTenantRequ
 
 	if err := model.UpdateTenant(db, d.TenantId, tenant); err != nil {
 		logs.WithError(err).Error("update tenant failed")
-		return &common.SystemError{Code: common.DbError, Message: "update tenant failed", Err: err}
+		return &common.SystemError{Code: common.DbError, Msg: "update tenant failed", Err: err}
 	}
 
 	return nil
@@ -60,7 +60,7 @@ func (s TenantService) DeleteTenant(ctx *gin.Context, d *define.DeleteTenantRequ
 
 	if err := model.DeleteTenant(db, d.TenantId); err != nil {
 		logs.WithError(err).Error("delete tenant failed")
-		return &common.SystemError{Code: common.DbError, Message: "delete tenant failed", Err: err}
+		return &common.SystemError{Code: common.DbError, Msg: "delete tenant failed", Err: err}
 	}
 
 	return nil

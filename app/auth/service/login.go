@@ -34,14 +34,14 @@ func (s *LoginService) LoginByUsername(ctx context.Context, username string, pas
 	// compare password
 	err = utils.CompareHashAndPassword(u.Password, password)
 	if err != nil {
-		return nil, &common.SystemError{Code: common.RequestError, Message: "invalid username or password", Err: err}
+		return nil, &common.SystemError{Code: common.RequestError, Msg: "invalid username or password", Err: err}
 	}
 
 	// generate authToken and set to redis
 	redisClient := redis.GetRedisClient()
 	token, expiredAt, err := utils2.GenerateAccessToken(u.UserId)
 	if err != nil {
-		return nil, &common.SystemError{Code: common.UnknownError, Message: "generate access authToken fail", Err: err}
+		return nil, &common.SystemError{Code: common.UnknownError, Msg: "generate access authToken fail", Err: err}
 	}
 	key := common.TokenPrefix + strconv.FormatUint(uint64(u.UserId), 10)
 	redisClient.Set(ctx, key, token, common.TokenExpireTime*time.Minute)

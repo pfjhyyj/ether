@@ -22,7 +22,7 @@ func (s UserService) ListUsers(ctx *gin.Context, param *model.QueryUserParams) (
 	users, total, err := model.ListUsers(db, param)
 	if err != nil {
 		logs.WithError(err).Error("list users failed")
-		return nil, 0, &common.SystemError{Code: common.DbError, Message: "list users failed", Err: err}
+		return nil, 0, &common.SystemError{Code: common.DbError, Msg: "list users failed", Err: err}
 	}
 
 	return users, total, nil
