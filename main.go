@@ -37,8 +37,8 @@ func runApiServer() {
 	r := gin.New()
 	r.Use(gin.Logger(), middleware.ErrorMiddleware())
 	apiRouter := r.Group("/api")
-	auth.SetAuthRouter(apiRouter)
-	user.SetUserRouter(apiRouter)
+	auth.SetRouter(apiRouter)
+	user.SetRouter(apiRouter)
 
 	port := viper.GetString("service.api.port")
 	_ = r.Run(":" + port)

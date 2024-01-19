@@ -17,3 +17,36 @@ func SetUserRouter(r *gin.RouterGroup) {
 		router.GET("", userController.ListUsers)
 	}
 }
+
+func SetTenantRouter(r *gin.RouterGroup) {
+	tenantService := service.NewTenantService()
+	tenantController := controller.NewTenantController(tenantService)
+
+	router := r.Group("/tenants")
+	router.Use(middleware.AuthMiddleware())
+	{
+		router.POST("", tenantController.CreateTenant)
+		router.PUT("/:tenantId", tenantController.UpdateTenant)
+		router.DELETE("/:tenantId", tenantController.DeleteTenant)
+		router.GET("", tenantController.ListTenants)
+	}
+}
+
+func SetMyRouter(r *gin.RouterGroup) {
+	myService := service.NewMyService()
+	myController := controller.NewMyController(myService)
+
+	router := r.Group("/my")
+	router.Use(middleware.AuthMiddleware())
+	{
+		router.GET("", myController.MyInfo)
+		router.PUT("", myController.UpdateMyInfo)
+		router.PUT("/password", myController.UpdateMyPassword)
+	}
+}
+
+func SetRouter(r *gin.RouterGroup) {
+	SetUserRouter(r)
+	SetTenantRouter(r)
+	SetMyRouter(r)
+}

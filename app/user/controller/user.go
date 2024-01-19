@@ -6,6 +6,7 @@ import (
 	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/app/user/utils"
 	"github.com/pfjhyyj/ether/common"
+	"net/http"
 )
 
 type UserController struct {
@@ -33,7 +34,7 @@ func (r *UserController) ListUsers(ctx *gin.Context) {
 
 	userInfo := utils.ConvertUserListToPageResponse(users)
 
-	ctx.JSON(200, &common.Response{
+	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
 		Data: &common.Page{
 			Total:    total,

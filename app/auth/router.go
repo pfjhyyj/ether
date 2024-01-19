@@ -31,7 +31,7 @@ func setRegisterRouter(r *gin.RouterGroup) {
 	r.POST("/registerByEmail", registerController.RegisterByEmail)
 }
 
-func SetAuthRouter(r *gin.RouterGroup) {
+func SetRouter(r *gin.RouterGroup) {
 	authRouter := r.Group("/auth")
 	setLoginRouter(authRouter)
 	setRegisterRouter(authRouter)

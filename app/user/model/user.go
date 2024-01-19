@@ -14,6 +14,7 @@ type User struct {
 	Password string `gorm:"column:password"`
 	Email    string `gorm:"column:email;unique"`
 	Mobile   string `gorm:"column:mobile;unique"`
+	Avatar   string `gorm:"column:avatar"`
 }
 
 func (User) TableName() string {
