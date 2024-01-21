@@ -21,6 +21,19 @@ func SetRoleRouter(r *gin.RouterGroup) {
 	}
 }
 
+func SetUserRoleRouter(r *gin.RouterGroup) {
+	userRoleService := service.NewUserRoleService()
+	userRoleController := controller.NewUserRoleController(userRoleService)
+
+	userRoleRouter := r.Group("/userRoles")
+	userRoleRouter.Use(middleware.AuthMiddleware())
+	{
+		userRoleRouter.POST("", userRoleController.AddUserRole)
+		userRoleRouter.DELETE("", userRoleController.DeleteUserRole)
+		userRoleRouter.GET("", userRoleController.ListUserRole)
+	}
+}
+
 func SetRouter(r *gin.RouterGroup) {
 	SetRoleRouter(r)
 }
