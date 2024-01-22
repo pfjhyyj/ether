@@ -9,7 +9,7 @@ import (
 )
 
 func setLoginRouter(r *gin.RouterGroup) {
-	userRepo := domain.NewUserRepository()
+	userRepo := domain.GetUserRepository()
 	loginService := service.NewLoginService(userRepo)
 	loginController := controller.NewLoginController(loginService)
 
@@ -24,7 +24,7 @@ func setLogoutRouter(r *gin.RouterGroup) {
 }
 
 func setRegisterRouter(r *gin.RouterGroup) {
-	userRepo := domain.NewUserRepository()
+	userRepo := domain.GetUserRepository()
 	registerService := service.NewRegisterService(userRepo)
 	registerController := controller.NewRegisterController(registerService)
 

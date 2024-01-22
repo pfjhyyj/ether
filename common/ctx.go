@@ -1,5 +1,6 @@
 package common
 
 const (
-	CtxUserIDKey = "userID"
+	CtxUserIDKey   = "userID"
+	CtxTenantIDKey = "tenantID"
 )

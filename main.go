@@ -36,7 +36,7 @@ func Init() {
 
 func runApiServer() {
 	r := gin.New()
-	r.Use(gin.Logger(), middleware.ErrorMiddleware())
+	r.Use(gin.Logger(), middleware.ErrorMiddleware(), middleware.TenantMiddleware(false))
 	apiRouter := r.Group("/api")
 	{
 		auth.SetRouter(apiRouter)

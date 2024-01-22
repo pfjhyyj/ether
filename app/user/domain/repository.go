@@ -7,14 +7,28 @@ import (
 	"github.com/pfjhyyj/ether/app/user/model"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/domain/user"
+	"sync"
 )
 
 type UserRepository struct {
 	user.Repository
 }
 
-func NewUserRepository() *UserRepository {
-	return &UserRepository{}
+var (
+	userRepository *UserRepository
+
+	once sync.Once
+)
+
+func Init() {
+	once.Do(func() {
+		userRepository = &UserRepository{}
+	})
+}
+
+func GetUserRepository() *UserRepository {
+	Init()
+	return userRepository
 }
 
 func (r *UserRepository) CreateUser(ctx context.Context, user *user.User) error {
