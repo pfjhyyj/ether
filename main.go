@@ -5,6 +5,7 @@ import (
 	"github.com/pfjhyyj/ether/app/auth"
 	"github.com/pfjhyyj/ether/app/permission"
 	"github.com/pfjhyyj/ether/app/user"
+	"github.com/pfjhyyj/ether/clients/casbin"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/clients/redis"
 	"github.com/pfjhyyj/ether/middleware"
@@ -28,6 +29,7 @@ func Init() {
 	{
 		gorm.Init()
 		redis.Init()
+		casbin.Init()
 	}
 	{
 		user.AutoMigrate()
