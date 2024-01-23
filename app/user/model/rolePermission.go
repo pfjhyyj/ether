@@ -15,16 +15,8 @@ func (RolePermission) TableName() string {
 	return "role_permission"
 }
 
-func CreateRolePermission(tx *gorm.DB, rolePermission *RolePermission) error {
-	return tx.Create(rolePermission).Error
-}
-
 func CreateRolePermissionBatch(tx *gorm.DB, rolePermissions []*RolePermission) error {
 	return tx.Create(rolePermissions).Error
-}
-
-func DeleteRolePermission(tx *gorm.DB, roleId uint, permissionId uint) error {
-	return tx.Delete(&RolePermission{}, "role_id = ? AND permission_id = ?", roleId, permissionId).Error
 }
 
 func DeleteRolePermissionBatch(tx *gorm.DB, roleId uint, permissionIds []uint) error {

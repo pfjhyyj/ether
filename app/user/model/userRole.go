@@ -17,16 +17,8 @@ func (UserRole) TableName() string {
 	return "user_role"
 }
 
-func CreateUserRole(tx *gorm.DB, userRole *UserRole) error {
-	return tx.Create(userRole).Error
-}
-
 func CreateUserRoleBatch(tx *gorm.DB, userRoles []*UserRole) error {
 	return tx.Create(userRoles).Error
-}
-
-func DeleteUserRole(tx *gorm.DB, userId uint, roleId uint) error {
-	return tx.Delete(&UserRole{}, "user_id = ? AND role_id = ?", userId, roleId).Error
 }
 
 func DeleteUserRoleBatch(tx *gorm.DB, userId uint, roleIds []uint) error {

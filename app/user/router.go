@@ -74,4 +74,6 @@ func SetPermissionRouter(r *gin.RouterGroup) {
 func SetRouter(r *gin.RouterGroup) {
 	SetUserRouter(r)
 	SetMyRouter(r)
+	SetRoleRouter(r)
+	SetPermissionRouter(r)
 }

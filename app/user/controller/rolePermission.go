@@ -20,6 +20,12 @@ func NewRolePermissionController(service *service.RolePermissionService) *RolePe
 
 func (c *RolePermissionController) AddRolePermission(ctx *gin.Context) {
 	var req define.AddRolePermissionRequest
+
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return

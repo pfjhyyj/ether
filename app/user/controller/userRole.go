@@ -20,6 +20,11 @@ func NewUserRoleController(service *service.UserRoleService) *UserRoleController
 
 func (c *UserRoleController) AddUserRole(ctx *gin.Context) {
 	var req define.AddUserRoleRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
@@ -37,6 +42,11 @@ func (c *UserRoleController) AddUserRole(ctx *gin.Context) {
 
 func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 	var req define.DeleteUserRoleRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
@@ -54,6 +64,11 @@ func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 
 func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
 	var req define.ListUserRoleRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		_ = ctx.Error(err)
 		return

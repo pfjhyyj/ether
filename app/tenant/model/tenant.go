@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"github.com/pfjhyyj/ether/common"
 	"gorm.io/gorm"
 )
@@ -37,9 +36,6 @@ func DeleteTenant(tx *gorm.DB, tenantId uint) error {
 func GetTenantByTenantId(tx *gorm.DB, tenantId uint) (*Tenant, error) {
 	var tenant Tenant
 	if err := tx.Where("tenant_id = ?", tenantId).First(&tenant).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	return &tenant, nil

@@ -14,7 +14,9 @@ type PermissionController struct {
 }
 
 func NewPermissionController(service *service.PermissionService) *PermissionController {
-	return &PermissionController{}
+	return &PermissionController{
+		service: service,
+	}
 }
 
 func (c *PermissionController) CreatePermission(ctx *gin.Context) {
