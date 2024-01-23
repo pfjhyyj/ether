@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pfjhyyj/ether/app/permission/model"
+	"github.com/pfjhyyj/ether/app/user/model"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/sirupsen/logrus"

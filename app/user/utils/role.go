@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"github.com/pfjhyyj/ether/app/permission/define"
-	"github.com/pfjhyyj/ether/app/permission/model"
+	"github.com/pfjhyyj/ether/app/user/define"
+	"github.com/pfjhyyj/ether/app/user/model"
 	"github.com/pfjhyyj/ether/common"
 )
 

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pfjhyyj/ether/app/permission/define"
-	"github.com/pfjhyyj/ether/app/permission/service"
+	"github.com/pfjhyyj/ether/app/user/define"
+	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/common"
 	"net/http"
 )

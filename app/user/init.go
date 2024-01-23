@@ -11,6 +11,10 @@ func AutoMigrate() {
 		db := gorm.GetDB()
 		if err := db.AutoMigrate(
 			&model.User{},
+			&model.Role{},
+			&model.UserRole{},
+			&model.Permission{},
+			&model.RolePermission{},
 		); err != nil {
 			panic(err)
 		}
