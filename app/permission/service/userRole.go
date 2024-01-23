@@ -1,19 +1,27 @@
 package service
 
 import (
-	"context"
+	"fmt"
+	casbin2 "github.com/casbin/casbin/v2"
+	gormadapter "github.com/casbin/gorm-adapter/v3"
+	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/permission/define"
 	"github.com/pfjhyyj/ether/app/permission/model"
+	"github.com/pfjhyyj/ether/clients/casbin"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/sirupsen/logrus"
+	gorm2 "gorm.io/gorm"
 )
 
 type UserRoleService struct{}
 
-func (s *UserRoleService) AddUserRole(ctx context.Context, d *define.AddUserRoleRequest) error {
+func (s *UserRoleService) AddUserRole(ctx *gin.Context, d *define.AddUserRoleRequest) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
+	e := casbin.GetEnforcer()
+
+	tenantId := ctx.GetUint(common.CtxTenantIDKey)
 
 	var userRoles []*model.UserRole
 	for i := 0; i < len(d.RoleIds); i++ {
@@ -22,7 +30,33 @@ func (s *UserRoleService) AddUserRole(ctx context.Context, d *define.AddUserRole
 			RoleId: d.RoleIds[i],
 		})
 	}
-	if err := model.CreateUserRoleBatch(db, userRoles); err != nil {
+
+	err := db.Transaction(func(tx *gorm2.DB) error {
+		if err := model.CreateUserRoleBatch(tx, userRoles); err != nil {
+			logs.WithError(err).Error("add user role failed")
+			return err
+		}
+		err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin2.IEnforcer) error {
+			userIdStr := fmt.Sprintf("%d", d.UserId)
+			tenantIdStr := fmt.Sprintf("%d", tenantId)
+			for i := 0; i < len(d.RoleIds); i++ {
+				roleIdStr := fmt.Sprintf("%d", d.RoleIds[i])
+				_, err := e.AddRoleForUserInDomain(userIdStr, roleIdStr, tenantIdStr)
+				if err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
 		logs.WithError(err).Error("add user role failed")
 		return &common.SystemError{Code: common.DbError, Msg: "add user role failed", Err: err}
 	}
@@ -30,11 +64,37 @@ func (s *UserRoleService) AddUserRole(ctx context.Context, d *define.AddUserRole
 	return nil
 }
 
-func (s *UserRoleService) DeleteUserRole(ctx context.Context, d *define.DeleteUserRoleRequest) error {
+func (s *UserRoleService) DeleteUserRole(ctx *gin.Context, d *define.DeleteUserRoleRequest) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
+	tenantId := ctx.GetUint(common.CtxTenantIDKey)
 
-	if err := model.DeleteUserRoleBatch(db, d.UserId, d.RoleIds); err != nil {
+	err := db.Transaction(func(tx *gorm2.DB) error {
+		if err := model.DeleteUserRoleBatch(tx, d.UserId, d.RoleIds); err != nil {
+			logs.WithError(err).Error("delete user role failed")
+			return err
+		}
+		e := casbin.GetEnforcer()
+		err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin2.IEnforcer) error {
+			userIdStr := fmt.Sprintf("%d", d.UserId)
+			tenantIdStr := fmt.Sprintf("%d", tenantId)
+			for i := 0; i < len(d.RoleIds); i++ {
+				roleIdStr := fmt.Sprintf("%d", d.RoleIds[i])
+				_, err := e.DeleteRoleForUserInDomain(userIdStr, roleIdStr, tenantIdStr)
+				if err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
 		logs.WithError(err).Error("delete user role failed")
 		return &common.SystemError{Code: common.DbError, Msg: "delete user role failed", Err: err}
 	}
@@ -42,7 +102,7 @@ func (s *UserRoleService) DeleteUserRole(ctx context.Context, d *define.DeleteUs
 	return nil
 }
 
-func (s *UserRoleService) ListUserRoleByUserId(ctx context.Context, userId uint) ([]*model.UserRole, error) {
+func (s *UserRoleService) ListUserRoleByUserId(ctx *gin.Context, userId uint) ([]*model.UserRole, error) {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 

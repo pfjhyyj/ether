@@ -1,7 +1,7 @@
 package service
 
 import (
-	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth/utils"
 	"github.com/pfjhyyj/ether/clients/redis"
 	"github.com/pfjhyyj/ether/common"
@@ -24,7 +24,7 @@ type LoginToken struct {
 	ExpireTime int64
 }
 
-func (s *LoginService) LoginByUsername(ctx context.Context, username string, password string) (*LoginToken, error) {
+func (s *LoginService) LoginByUsername(ctx *gin.Context, username string, password string) (*LoginToken, error) {
 	// get user by username
 	u, err := s.userRepo.GetUserByUsername(ctx, username)
 	if err != nil {

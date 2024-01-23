@@ -2,9 +2,9 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pfjhyyj/ether/app/user/define"
-	"github.com/pfjhyyj/ether/app/user/service"
-	"github.com/pfjhyyj/ether/app/user/utils"
+	"github.com/pfjhyyj/ether/app/tenant/define"
+	"github.com/pfjhyyj/ether/app/tenant/service"
+	"github.com/pfjhyyj/ether/app/tenant/utils"
 	"github.com/pfjhyyj/ether/common"
 	"net/http"
 )

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth"
 	"github.com/pfjhyyj/ether/app/permission"
+	"github.com/pfjhyyj/ether/app/tenant"
 	"github.com/pfjhyyj/ether/app/user"
 	"github.com/pfjhyyj/ether/clients/casbin"
 	"github.com/pfjhyyj/ether/clients/gorm"
@@ -33,6 +34,8 @@ func Init() {
 	}
 	{
 		user.AutoMigrate()
+		tenant.AutoMigrate()
+		permission.AutoMigrate()
 	}
 }
 
@@ -43,6 +46,7 @@ func runApiServer() {
 	{
 		auth.SetRouter(apiRouter)
 		user.SetRouter(apiRouter)
+		tenant.SetRouter(apiRouter)
 		permission.SetRouter(apiRouter)
 	}
 

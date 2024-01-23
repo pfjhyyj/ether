@@ -1,7 +1,7 @@
 package service
 
 import (
-	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth/utils"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/pfjhyyj/ether/domain/user"
@@ -15,7 +15,7 @@ func NewRegisterService(userRepo user.Repository) *RegisterService {
 	return &RegisterService{userRepo: userRepo}
 }
 
-func (s *RegisterService) RegisterUserByEmail(ctx context.Context, username string, email string, password string) error {
+func (s *RegisterService) RegisterUserByEmail(ctx *gin.Context, username string, email string, password string) error {
 	hashPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return &common.SystemError{Code: common.UnknownError, Msg: "hash password fail", Err: err}

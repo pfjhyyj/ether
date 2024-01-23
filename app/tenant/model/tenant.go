@@ -67,5 +67,6 @@ func ListTenants(tx *gorm.DB, params *QueryTenantParams) ([]*Tenant, int64, erro
 	if err := query.Find(&tenants).Error; err != nil {
 		return nil, 0, err
 	}
+
 	return tenants, total, nil
 }

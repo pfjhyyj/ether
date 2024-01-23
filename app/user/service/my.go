@@ -1,7 +1,7 @@
 package service
 
 import (
-	"context"
+	"github.com/gin-gonic/gin"
 	utils2 "github.com/pfjhyyj/ether/app/auth/utils"
 	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/app/user/model"
@@ -18,7 +18,7 @@ func NewMyService() *MyService {
 	return &MyService{}
 }
 
-func (s *MyService) GetUserById(ctx context.Context, userId uint) (*model.User, error) {
+func (s *MyService) GetUserById(ctx *gin.Context, userId uint) (*model.User, error) {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
@@ -30,7 +30,7 @@ func (s *MyService) GetUserById(ctx context.Context, userId uint) (*model.User, 
 	return user, nil
 }
 
-func (s *MyService) UpdateMyInfo(ctx context.Context, userId uint, d *define.UpdateMyInfoRequest) error {
+func (s *MyService) UpdateMyInfo(ctx *gin.Context, userId uint, d *define.UpdateMyInfoRequest) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
@@ -54,7 +54,7 @@ func (s *MyService) UpdateMyInfo(ctx context.Context, userId uint, d *define.Upd
 	return nil
 }
 
-func (s *MyService) UpdateMyPassword(ctx context.Context, userId uint, d *define.UpdateMyPasswordRequest) error {
+func (s *MyService) UpdateMyPassword(ctx *gin.Context, userId uint, d *define.UpdateMyPasswordRequest) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 

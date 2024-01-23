@@ -1,7 +1,7 @@
 package service
 
 import (
-	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/permission/model"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/common"
@@ -14,7 +14,7 @@ func NewRoleService() *RoleService {
 	return &RoleService{}
 }
 
-func (s *RoleService) CreateRole(ctx context.Context, role *model.Role) error {
+func (s *RoleService) CreateRole(ctx *gin.Context, role *model.Role) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
@@ -26,7 +26,7 @@ func (s *RoleService) CreateRole(ctx context.Context, role *model.Role) error {
 	return nil
 }
 
-func (s *RoleService) UpdateRole(ctx context.Context, role *model.Role) error {
+func (s *RoleService) UpdateRole(ctx *gin.Context, role *model.Role) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
@@ -38,7 +38,7 @@ func (s *RoleService) UpdateRole(ctx context.Context, role *model.Role) error {
 	return nil
 }
 
-func (s *RoleService) DeleteRole(ctx context.Context, roleId uint) error {
+func (s *RoleService) DeleteRole(ctx *gin.Context, roleId uint) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
@@ -50,7 +50,7 @@ func (s *RoleService) DeleteRole(ctx context.Context, roleId uint) error {
 	return nil
 }
 
-func (s *RoleService) GetRoleByRoleId(ctx context.Context, roleId uint) (*model.Role, error) {
+func (s *RoleService) GetRoleByRoleId(ctx *gin.Context, roleId uint) (*model.Role, error) {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
@@ -63,7 +63,7 @@ func (s *RoleService) GetRoleByRoleId(ctx context.Context, roleId uint) (*model.
 	return role, nil
 }
 
-func (s *RoleService) ListRoles(ctx context.Context, params *model.QueryRoleParams) ([]*model.Role, int64, error) {
+func (s *RoleService) ListRoles(ctx *gin.Context, params *model.QueryRoleParams) ([]*model.Role, int64, error) {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 

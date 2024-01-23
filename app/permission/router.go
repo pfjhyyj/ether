@@ -34,6 +34,36 @@ func SetUserRoleRouter(r *gin.RouterGroup) {
 	}
 }
 
+func SetPermissionRouter(r *gin.RouterGroup) {
+	permissionService := service.NewPermissionService()
+	permissionController := controller.NewPermissionController(permissionService)
+
+	permissionRouter := r.Group("/permissions")
+	permissionRouter.Use(middleware.AuthMiddleware())
+	{
+		permissionRouter.POST("", permissionController.CreatePermission)
+		permissionRouter.PUT("/:permissionId", permissionController.UpdatePermission)
+		permissionRouter.DELETE("/:permissionId", permissionController.DeletePermission)
+		permissionRouter.GET("", permissionController.ListPermissions)
+	}
+}
+
+func SetRolePermissionRouter(r *gin.RouterGroup) {
+	rolePermissionService := service.NewRolePermissionService()
+	rolePermissionController := controller.NewRolePermissionController(rolePermissionService)
+
+	rolePermissionRouter := r.Group("/rolePermissions")
+	rolePermissionRouter.Use(middleware.AuthMiddleware())
+	{
+		rolePermissionRouter.POST("", rolePermissionController.AddRolePermission)
+		rolePermissionRouter.DELETE("", rolePermissionController.DeleteRolePermission)
+		rolePermissionRouter.GET("", rolePermissionController.ListRolePermission)
+	}
+}
+
 func SetRouter(r *gin.RouterGroup) {
 	SetRoleRouter(r)
+	SetUserRoleRouter(r)
+	SetPermissionRouter(r)
+	SetRolePermissionRouter(r)
 }

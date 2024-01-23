@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"github.com/pfjhyyj/ether/app/user/define"
-	"github.com/pfjhyyj/ether/app/user/model"
+	"github.com/pfjhyyj/ether/app/tenant/define"
+	"github.com/pfjhyyj/ether/app/tenant/model"
 )
 
 func ConvertTenantListPageRequestToParam(req *define.ListTenantRequest) *model.QueryTenantParams {
@@ -16,10 +16,10 @@ func ConvertTenantListToPageResponse(tenants []*model.Tenant) []*define.ListTena
 	tenantInfo := make([]*define.ListTenantPageResponse, 0, len(tenants))
 	for _, tenant := range tenants {
 		tenantInfo = append(tenantInfo, &define.ListTenantPageResponse{
-			TenantId:   tenant.TenantId,
-			TenantName: tenant.TenantName,
-			CreatedAt:  tenant.CreatedAt,
-			UpdatedAt:  tenant.UpdatedAt,
+			TenantId:  tenant.TenantId,
+			Name:      tenant.Name,
+			CreatedAt: tenant.CreatedAt,
+			UpdatedAt: tenant.UpdatedAt,
 		})
 	}
 	return tenantInfo
@@ -27,16 +27,14 @@ func ConvertTenantListToPageResponse(tenants []*model.Tenant) []*define.ListTena
 
 func ConvertCreateTenantRequestToModel(req *define.CreateTenantRequest) *model.Tenant {
 	return &model.Tenant{
-		TenantName: req.TenantName,
-		TenantCode: req.TenantCode,
-		Domain:     req.Domain,
+		Name:   req.Name,
+		Domain: req.Domain,
 	}
 }
 
 func ConvertUpdateTenantRequestToModel(req *define.UpdateTenantRequest) *model.Tenant {
 	return &model.Tenant{
-		TenantName: req.TenantName,
-		TenantCode: req.TenantCode,
-		Domain:     req.Domain,
+		Name:   req.Name,
+		Domain: req.Domain,
 	}
 }

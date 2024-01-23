@@ -18,20 +18,6 @@ func SetUserRouter(r *gin.RouterGroup) {
 	}
 }
 
-func SetTenantRouter(r *gin.RouterGroup) {
-	tenantService := service.NewTenantService()
-	tenantController := controller.NewTenantController(tenantService)
-
-	router := r.Group("/tenants")
-	router.Use(middleware.AuthMiddleware())
-	{
-		router.POST("", tenantController.CreateTenant)
-		router.PUT("/:tenantId", tenantController.UpdateTenant)
-		router.DELETE("/:tenantId", tenantController.DeleteTenant)
-		router.GET("", tenantController.ListTenants)
-	}
-}
-
 func SetMyRouter(r *gin.RouterGroup) {
 	myService := service.NewMyService()
 	myController := controller.NewMyController(myService)
@@ -47,6 +33,5 @@ func SetMyRouter(r *gin.RouterGroup) {
 
 func SetRouter(r *gin.RouterGroup) {
 	SetUserRouter(r)
-	SetTenantRouter(r)
 	SetMyRouter(r)
 }
