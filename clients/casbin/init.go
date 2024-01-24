@@ -29,7 +29,7 @@ func GetModel() string {
 		e = some(where (p.eft == allow))
 		
 		[matchers]
-		m = g(r.sub, p.sub, r.dom) && r.dom == p.dom && r.obj == p.obj && r.act == p.act || r.sub == "root"
+		m = g(r.sub, p.sub, r.dom) && r.dom == p.dom && r.obj == p.obj && r.act == p.act || r.sub == "1"
 	`
 }
 
