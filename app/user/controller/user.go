@@ -6,6 +6,7 @@ import (
 	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/app/user/utils"
 	"github.com/pfjhyyj/ether/common"
+	utils2 "github.com/pfjhyyj/ether/utils"
 	"net/http"
 )
 
@@ -18,6 +19,14 @@ func NewUserController(service *service.UserService) *UserController {
 }
 
 func (r *UserController) ListUsers(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "user", "list"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.ListUserRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		_ = ctx.Error(err)

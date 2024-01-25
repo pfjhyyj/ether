@@ -9,6 +9,7 @@ import (
 func ConvertCreatePermissionRequestToPermission(req *define.CreatePermissionRequest) *model.Permission {
 	return &model.Permission{
 		Name:        req.Name,
+		Target:      req.Target,
 		Action:      req.Action,
 		Description: req.Description,
 	}
@@ -18,6 +19,7 @@ func ConvertUpdatePermissionRequestToPermission(req *define.UpdatePermissionRequ
 	return &model.Permission{
 		PermissionId: req.PermissionId,
 		Name:         req.Name,
+		Target:       req.Target,
 		Action:       req.Action,
 		Description:  req.Description,
 	}
@@ -29,6 +31,7 @@ func ConvertListPermissionRequestToParam(req *define.ListPermissionsRequest) *mo
 			Current:  req.Current,
 			PageSize: req.PageSize,
 		},
+		Target: req.Target,
 	}
 }
 
@@ -37,6 +40,7 @@ func ConvertPermissionListToPageResponse(permissions []*model.Permission) []*def
 	for _, permission := range permissions {
 		permissionInfos = append(permissionInfos, &define.PermissionPageResponse{
 			PermissionId: permission.PermissionId,
+			Target:       permission.Target,
 			Name:         permission.Name,
 			Action:       permission.Action,
 			Description:  permission.Description,

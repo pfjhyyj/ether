@@ -6,6 +6,7 @@ import (
 	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/app/user/utils"
 	"github.com/pfjhyyj/ether/common"
+	utils2 "github.com/pfjhyyj/ether/utils"
 	"net/http"
 )
 
@@ -20,6 +21,14 @@ func NewPermissionController(service *service.PermissionService) *PermissionCont
 }
 
 func (c *PermissionController) CreatePermission(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "permission", "create"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.CreatePermissionRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
@@ -38,6 +47,14 @@ func (c *PermissionController) CreatePermission(ctx *gin.Context) {
 }
 
 func (c *PermissionController) UpdatePermission(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "permission", "update"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.UpdatePermissionRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		_ = ctx.Error(err)
@@ -61,6 +78,14 @@ func (c *PermissionController) UpdatePermission(ctx *gin.Context) {
 }
 
 func (c *PermissionController) DeletePermission(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "permission", "delete"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.DeletePermissionRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		_ = ctx.Error(err)
@@ -78,6 +103,14 @@ func (c *PermissionController) DeletePermission(ctx *gin.Context) {
 }
 
 func (c *PermissionController) ListPermissions(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "permission", "list"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.ListPermissionsRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		_ = ctx.Error(err)

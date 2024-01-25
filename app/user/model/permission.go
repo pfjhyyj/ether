@@ -9,6 +9,7 @@ type Permission struct {
 	common.Model
 	PermissionId uint   `gorm:"primaryKey;column:permission_id"`
 	Name         string `gorm:"column:name"`
+	Target       string `gorm:"column:target"`
 	Action       string `gorm:"column:action"`
 	Description  string `gorm:"column:description"`
 }
@@ -19,7 +20,7 @@ func (p Permission) TableName() string {
 
 type QueryPermissionParams struct {
 	common.PageRequest
-	TenantId uint
+	Target string
 }
 
 func CreatePermission(tx *gorm.DB, perm *Permission) error {
@@ -62,8 +63,8 @@ func ListPermissions(tx *gorm.DB, params *QueryPermissionParams) ([]*Permission,
 		query = query.Offset((params.Current - 1) * params.PageSize).Limit(params.PageSize)
 	}
 
-	if params.TenantId > 0 {
-		query = query.Where("tenant_id = ?", params.TenantId)
+	if params.Target != "" {
+		query = query.Where("target = ?", params.Target)
 	}
 
 	if err := query.Find(&perms).Error; err != nil {

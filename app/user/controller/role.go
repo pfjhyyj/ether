@@ -6,6 +6,7 @@ import (
 	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/app/user/utils"
 	"github.com/pfjhyyj/ether/common"
+	utils2 "github.com/pfjhyyj/ether/utils"
 	"net/http"
 )
 
@@ -20,6 +21,14 @@ func NewRoleController(service *service.RoleService) *RoleController {
 }
 
 func (c *RoleController) CreateRole(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "role", "create"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.CreateRoleRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
@@ -38,6 +47,14 @@ func (c *RoleController) CreateRole(ctx *gin.Context) {
 }
 
 func (c *RoleController) UpdateRole(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "role", "update"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.UpdateRoleRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		_ = ctx.Error(err)
@@ -61,6 +78,14 @@ func (c *RoleController) UpdateRole(ctx *gin.Context) {
 }
 
 func (c *RoleController) DeleteRole(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "role", "delete"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.DeleteRoleRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		_ = ctx.Error(err)
@@ -78,6 +103,14 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 }
 
 func (c *RoleController) ListRoles(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "role", "list"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.ListRoleRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		_ = ctx.Error(err)

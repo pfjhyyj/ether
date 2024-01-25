@@ -54,7 +54,7 @@ func (s *RolePermissionService) AddRolePermission(ctx *gin.Context, d *define.Ad
 		err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin2.IEnforcer) error {
 			for i := 0; i < len(permissions); i++ {
 				permission := permissions[i]
-				_, err := e.AddPermissionForUser(role.RoleCode, permission.Action)
+				_, err := e.AddPermissionForUser(role.RoleCode, permission.Target, permission.Action)
 				if err != nil {
 					return err
 				}
