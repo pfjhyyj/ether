@@ -6,6 +6,7 @@ import (
 	"github.com/pfjhyyj/ether/app/tenant/service"
 	"github.com/pfjhyyj/ether/app/tenant/utils"
 	"github.com/pfjhyyj/ether/common"
+	utils2 "github.com/pfjhyyj/ether/utils"
 	"net/http"
 )
 
@@ -18,6 +19,14 @@ func NewTenantController(service *service.TenantService) *TenantController {
 }
 
 func (r *TenantController) CreateTenant(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "tenant", "create"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.CreateTenantRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
@@ -36,6 +45,14 @@ func (r *TenantController) CreateTenant(ctx *gin.Context) {
 }
 
 func (r *TenantController) UpdateTenant(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "tenant", "update"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.UpdateTenantRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		_ = ctx.Error(err)
@@ -59,6 +76,14 @@ func (r *TenantController) UpdateTenant(ctx *gin.Context) {
 }
 
 func (r *TenantController) DeleteTenant(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "tenant", "delete"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.DeleteTenantRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		_ = ctx.Error(err)
@@ -77,6 +102,14 @@ func (r *TenantController) DeleteTenant(ctx *gin.Context) {
 }
 
 func (r *TenantController) ListTenants(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "tenant", "list"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
 	var req define.ListTenantRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		_ = ctx.Error(err)
