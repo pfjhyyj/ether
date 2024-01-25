@@ -3,7 +3,6 @@ package define
 import "github.com/pfjhyyj/ether/common"
 
 type CreatePermissionRequest struct {
-	TenantId    uint   `json:"tenantId" binding:"required"`
 	Action      string `json:"action" binding:"required"`
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
@@ -26,7 +25,6 @@ type ListPermissionsRequest struct {
 
 type PermissionPageResponse struct {
 	PermissionId uint   `json:"permissionId"`
-	TenantId     uint   `json:"tenantId"`
 	Action       string `json:"action"`
 	Name         string `json:"name"`
 	Description  string `json:"description"`

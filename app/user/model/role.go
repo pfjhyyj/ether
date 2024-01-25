@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"github.com/pfjhyyj/ether/common"
 	"gorm.io/gorm"
 )
@@ -9,7 +8,7 @@ import (
 type Role struct {
 	common.Model
 	RoleId      uint   `gorm:"primaryKey"`
-	TenantId    uint   `gorm:"column:tenant_id"`
+	RoleCode    string `gorm:"column:role_code"`
 	RoleName    string `gorm:"column:role_name"`
 	Description string `gorm:"column:description"`
 }
@@ -20,7 +19,6 @@ func (Role) TableName() string {
 
 type QueryRoleParams struct {
 	common.PageRequest
-	TenantId uint
 }
 
 func CreateRole(tx *gorm.DB, role *Role) error {
@@ -38,12 +36,18 @@ func DeleteRole(tx *gorm.DB, roleId uint) error {
 func GetRoleByRoleId(tx *gorm.DB, roleId uint) (*Role, error) {
 	var role Role
 	if err := tx.Where("role_id = ?", roleId).First(&role).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	return &role, nil
+}
+
+func GetRoleByRoleIds(tx *gorm.DB, roleIds []uint) ([]*Role, error) {
+	if (len(roleIds)) == 0 {
+		return nil, &common.SystemError{Code: common.DbError, Msg: "role ids is empty"}
+	}
+	var roles []*Role
+	tx.Where("role_id IN ?", roleIds).Find(&roles)
+	return roles, nil
 }
 
 func ListRoles(tx *gorm.DB, params *QueryRoleParams) ([]*Role, int64, error) {
@@ -55,10 +59,6 @@ func ListRoles(tx *gorm.DB, params *QueryRoleParams) ([]*Role, int64, error) {
 
 	if params.Current > 0 && params.PageSize > 0 {
 		query = query.Offset((params.Current - 1) * params.PageSize).Limit(params.PageSize)
-	}
-
-	if params.TenantId > 0 {
-		query = query.Where("tenant_id = ?", params.TenantId)
 	}
 
 	if err := query.Find(&roles).Error; err != nil {

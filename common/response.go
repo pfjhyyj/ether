@@ -5,8 +5,9 @@ const (
 	UnknownError = 10001
 	DbError      = 10002
 
-	RequestError = 20001
-	AuthError    = 20002
+	RequestError      = 20001
+	AuthError         = 20002
+	NoPermissionError = 20003
 )
 
 type Response struct {

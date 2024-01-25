@@ -8,16 +8,17 @@ import (
 
 func ConvertCreateRoleRequestToRole(req *define.CreateRoleRequest) *model.Role {
 	return &model.Role{
-		TenantId: req.TenantId,
-		RoleName: req.RoleName,
+		RoleName:    req.RoleName,
+		RoleCode:    req.RoleCode,
+		Description: req.Description,
 	}
 }
 
 func ConvertUpdateRoleRequestToRole(req *define.UpdateRoleRequest) *model.Role {
 	return &model.Role{
 		RoleId:      req.RoleId,
-		TenantId:    req.TenantId,
 		RoleName:    req.RoleName,
+		RoleCode:    req.RoleCode,
 		Description: req.Description,
 	}
 }
@@ -28,7 +29,6 @@ func ConvertRoleListPageRequestToParam(req *define.ListRoleRequest) *model.Query
 			Current:  req.Current,
 			PageSize: req.PageSize,
 		},
-		TenantId: req.TenantId,
 	}
 }
 
@@ -37,8 +37,8 @@ func ConvertRoleListToPageResponse(roles []*model.Role) []*define.RolePageRespon
 	for _, role := range roles {
 		roleInfos = append(roleInfos, &define.RolePageResponse{
 			RoleId:      role.RoleId,
-			TenantId:    role.TenantId,
 			RoleName:    role.RoleName,
+			RoleCode:    role.RoleCode,
 			Description: role.Description,
 		})
 	}

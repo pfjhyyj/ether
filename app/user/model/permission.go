@@ -8,7 +8,6 @@ import (
 type Permission struct {
 	common.Model
 	PermissionId uint   `gorm:"primaryKey;column:permission_id"`
-	TenantId     uint   `gorm:"column:tenant_id"`
 	Name         string `gorm:"column:name"`
 	Action       string `gorm:"column:action"`
 	Description  string `gorm:"column:description"`
@@ -41,6 +40,15 @@ func GetPermissionByPermissionId(tx *gorm.DB, permId uint) (*Permission, error) 
 		return nil, err
 	}
 	return &perm, nil
+}
+
+func GetPermissionByPermissionIds(tx *gorm.DB, permIds []uint) ([]*Permission, error) {
+	if (len(permIds)) == 0 {
+		return nil, &common.SystemError{Code: common.DbError, Msg: "permission ids is empty"}
+	}
+	var perms []*Permission
+	tx.Where("permission_id IN ?", permIds).Find(&perms)
+	return perms, nil
 }
 
 func ListPermissions(tx *gorm.DB, params *QueryPermissionParams) ([]*Permission, int64, error) {

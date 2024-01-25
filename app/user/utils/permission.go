@@ -8,7 +8,6 @@ import (
 
 func ConvertCreatePermissionRequestToPermission(req *define.CreatePermissionRequest) *model.Permission {
 	return &model.Permission{
-		TenantId:    req.TenantId,
 		Name:        req.Name,
 		Action:      req.Action,
 		Description: req.Description,
@@ -38,7 +37,6 @@ func ConvertPermissionListToPageResponse(permissions []*model.Permission) []*def
 	for _, permission := range permissions {
 		permissionInfos = append(permissionInfos, &define.PermissionPageResponse{
 			PermissionId: permission.PermissionId,
-			TenantId:     permission.TenantId,
 			Name:         permission.Name,
 			Action:       permission.Action,
 			Description:  permission.Description,

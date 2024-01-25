@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	casbin2 "github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/gin-gonic/gin"
@@ -34,17 +33,28 @@ func (s *RolePermissionService) AddRolePermission(ctx *gin.Context, d *define.Ad
 		})
 	}
 
-	err := db.Transaction(func(tx *gorm2.DB) error {
+	role, err := model.GetRoleByRoleId(db, d.RoleId)
+	if err != nil {
+		logs.WithError(err).Error("get role by role id failed")
+		return &common.SystemError{Code: common.DbError, Msg: "get role by role id failed", Err: err}
+	}
+
+	permissions, err := model.GetPermissionByPermissionIds(db, d.PermissionIds)
+	if err != nil {
+		logs.WithError(err).Error("get permission by permission ids failed")
+		return &common.SystemError{Code: common.DbError, Msg: "get permission by permission ids failed", Err: err}
+	}
+
+	err = db.Transaction(func(tx *gorm2.DB) error {
 		if err := model.CreateRolePermissionBatch(tx, rolePermissions); err != nil {
 			return err
 		}
 
 		// add role permission to casbin
 		err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin2.IEnforcer) error {
-			roleIdStr := fmt.Sprintf("%d", d.RoleId)
-			for i := 0; i < len(d.PermissionIds); i++ {
-				permissionIdStr := fmt.Sprintf("%d", d.PermissionIds[i])
-				_, err := e.AddPermissionForUser(roleIdStr, permissionIdStr)
+			for i := 0; i < len(permissions); i++ {
+				permission := permissions[i]
+				_, err := e.AddPermissionForUser(role.RoleCode, permission.Action)
 				if err != nil {
 					return err
 				}
@@ -72,17 +82,28 @@ func (s *RolePermissionService) DeleteRolePermission(ctx *gin.Context, d *define
 	db := gorm.GetDB().WithContext(ctx)
 	e := casbin.GetEnforcer()
 
-	err := db.Transaction(func(tx *gorm2.DB) error {
+	role, err := model.GetRoleByRoleId(db, d.RoleId)
+	if err != nil {
+		logs.WithError(err).Error("get role by role id failed")
+		return &common.SystemError{Code: common.DbError, Msg: "get role by role id failed", Err: err}
+	}
+
+	permissions, err := model.GetPermissionByPermissionIds(db, d.PermissionIds)
+	if err != nil {
+		logs.WithError(err).Error("get permission by permission ids failed")
+		return &common.SystemError{Code: common.DbError, Msg: "get permission by permission ids failed", Err: err}
+	}
+
+	err = db.Transaction(func(tx *gorm2.DB) error {
 		if err := model.DeleteRolePermissionBatch(tx, d.RoleId, d.PermissionIds); err != nil {
 			return err
 		}
 
 		// delete role permission from casbin
 		err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin2.IEnforcer) error {
-			roleIdStr := fmt.Sprintf("%d", d.RoleId)
-			for i := 0; i < len(d.PermissionIds); i++ {
-				permissionIdStr := fmt.Sprintf("%d", d.PermissionIds[i])
-				_, err := e.DeletePermissionForUser(roleIdStr, permissionIdStr)
+			for i := 0; i < len(permissions); i++ {
+				permission := permissions[i]
+				_, err := e.DeletePermissionForUser(role.RoleCode, permission.Action)
 				if err != nil {
 					return err
 				}
