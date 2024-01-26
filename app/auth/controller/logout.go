@@ -14,6 +14,15 @@ func NewLogoutController(service *service.LogoutService) *LogoutController {
 	return &LogoutController{service: service}
 }
 
+// Logout godoc
+// @Summary Logout
+// @Description Logout
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} string
+// @Router /auth/logout [post]
 func (r *LogoutController) Logout(ctx *gin.Context) {
 	err := r.service.Logout(ctx)
 	if err != nil {

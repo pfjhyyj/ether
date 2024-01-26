@@ -1,0 +1,759 @@
+basePath: /api
+definitions:
+  define.AddRolePermissionRequest:
+    properties:
+      permissionIds:
+        items:
+          type: integer
+        type: array
+      roleId:
+        type: integer
+    required:
+    - permissionIds
+    - roleId
+    type: object
+  define.AddUserRoleRequest:
+    properties:
+      roleIds:
+        items:
+          type: integer
+        type: array
+      userId:
+        type: integer
+    required:
+    - roleIds
+    - userId
+    type: object
+  define.CreatePermissionRequest:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      target:
+        type: string
+    required:
+    - action
+    - name
+    - target
+    type: object
+  define.CreateRoleRequest:
+    properties:
+      description:
+        type: string
+      roleCode:
+        type: string
+      roleName:
+        type: string
+    required:
+    - roleCode
+    - roleName
+    type: object
+  define.CreateTenantRequest:
+    properties:
+      domain:
+        type: string
+      name:
+        type: string
+    required:
+    - domain
+    - name
+    type: object
+  define.DeleteUserRoleRequest:
+    properties:
+      roleIds:
+        items:
+          type: integer
+        type: array
+      userId:
+        type: integer
+    required:
+    - roleIds
+    - userId
+    type: object
+  define.ListUserRoleRequest:
+    properties:
+      userId:
+        type: integer
+    required:
+    - userId
+    type: object
+  define.LoginByUsernameRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  define.MyInfoResponse:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      mobile:
+        type: string
+      userId:
+        type: integer
+      username:
+        type: string
+    type: object
+  define.RegisterUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      username:
+        maxLength: 20
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  define.TokenResponse:
+    properties:
+      accessToken:
+        type: string
+      expireTime:
+        type: integer
+    type: object
+  define.UpdateMyInfoRequest:
+    properties:
+      avatar:
+        type: string
+    type: object
+  define.UpdateMyPasswordRequest:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+      repeatPassword:
+        type: string
+    required:
+    - newPassword
+    - oldPassword
+    - repeatPassword
+    type: object
+  define.UpdatePermissionRequest:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      permissionId:
+        type: integer
+      target:
+        type: string
+    required:
+    - permissionId
+    type: object
+  define.UpdateRoleRequest:
+    properties:
+      description:
+        type: string
+      roleCode:
+        type: string
+      roleId:
+        type: integer
+      roleName:
+        type: string
+    required:
+    - roleId
+    type: object
+  define.UpdateTenantRequest:
+    properties:
+      domain:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    required:
+    - tenantId
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a ether api server.
+  title: Ether API
+  version: "1"
+paths:
+  /auth/loginByUsername:
+    post:
+      consumes:
+      - application/json
+      description: Login by username
+      parameters:
+      - description: LoginByUsernameRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.LoginByUsernameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/define.TokenResponse'
+      summary: Login by username
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Logout
+      tags:
+      - auth
+  /auth/registerByEmail:
+    post:
+      consumes:
+      - application/json
+      description: Register by email
+      parameters:
+      - description: RegisterUserRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Register by email
+      tags:
+      - auth
+  /my:
+    get:
+      consumes:
+      - application/json
+      description: Get my info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/define.MyInfoResponse'
+      security:
+      - Bearer: []
+      summary: Get my info
+      tags:
+      - my
+    put:
+      consumes:
+      - application/json
+      description: Update my info
+      parameters:
+      - description: UpdateMyInfoRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.UpdateMyInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update my info
+      tags:
+      - my
+  /my/password:
+    put:
+      consumes:
+      - application/json
+      description: Update my password
+      parameters:
+      - description: UpdateMyPasswordRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.UpdateMyPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update my password
+      tags:
+      - my
+  /permission:
+    get:
+      consumes:
+      - application/json
+      description: List permissions
+      parameters:
+      - description: current
+        in: query
+        name: current
+        type: integer
+      - description: page_size
+        in: query
+        name: page_size
+        type: integer
+      - description: name
+        in: query
+        name: target
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: List permissions
+      tags:
+      - permission
+    post:
+      consumes:
+      - application/json
+      description: Create permission
+      parameters:
+      - description: CreatePermissionRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.CreatePermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create permission
+      tags:
+      - permission
+  /permission/{permission_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete permission
+      parameters:
+      - description: permission_id
+        in: path
+        name: permission_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete permission
+      tags:
+      - permission
+    put:
+      consumes:
+      - application/json
+      description: Update permission
+      parameters:
+      - description: permission_id
+        in: path
+        name: permission_id
+        required: true
+        type: integer
+      - description: UpdatePermissionRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.UpdatePermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update permission
+      tags:
+      - permission
+  /role:
+    get:
+      consumes:
+      - application/json
+      description: List roles
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: page_size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: List roles
+      tags:
+      - role
+    post:
+      consumes:
+      - application/json
+      description: Create role
+      parameters:
+      - description: CreateRoleRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.CreateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create role
+      tags:
+      - role
+  /role/{role_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete role
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete role
+      tags:
+      - role
+  /roles/{roleId}/permissions:
+    get:
+      consumes:
+      - application/json
+      description: List role permission
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: List role permission
+      tags:
+      - role
+  /roles/{roleId}/permissions/add:
+    post:
+      consumes:
+      - application/json
+      description: Add role permission
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      - description: AddRolePermissionRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.AddRolePermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Add role permission
+      tags:
+      - role
+  /roles/{roleId}/permissions/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete role permission
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete role permission
+      tags:
+      - role
+  /tenants:
+    post:
+      consumes:
+      - application/json
+      description: Create tenant
+      parameters:
+      - description: CreateTenantRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.CreateTenantRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create tenant
+      tags:
+      - tenant
+  /tenants/{tenantId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete tenant
+      parameters:
+      - description: tenant_id
+        in: path
+        name: tenant_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete tenant
+      tags:
+      - tenant
+    put:
+      consumes:
+      - application/json
+      description: Update tenant
+      parameters:
+      - description: tenant_id
+        in: path
+        name: tenant_id
+        required: true
+        type: integer
+      - description: UpdateTenantRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.UpdateTenantRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update tenant
+      tags:
+      - tenant
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: List users
+      parameters:
+      - in: query
+        name: current
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: List users
+      tags:
+      - user
+  /users/{userId}/roles:
+    get:
+      consumes:
+      - application/json
+      description: List user role
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: ListUserRoleRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.ListUserRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: List user role
+      tags:
+      - user
+  /users/{userId}/roles/add:
+    post:
+      consumes:
+      - application/json
+      description: Add user role
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: AddUserRoleRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.AddUserRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Add user role
+      tags:
+      - user
+  /users/{userId}/roles/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete user role
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: DeleteUserRoleRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.DeleteUserRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete user role
+      tags:
+      - user
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

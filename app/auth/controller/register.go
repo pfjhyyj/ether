@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pfjhyyj/ether/app/auth/define"
 	"github.com/pfjhyyj/ether/app/auth/service"
 	"github.com/pfjhyyj/ether/common"
 	"net/http"
@@ -15,14 +16,17 @@ func NewRegisterController(service *service.RegisterService) *RegisterController
 	return &RegisterController{service: service}
 }
 
-type RegisterUserRequest struct {
-	Username string `json:"username" binding:"required,min=6,max=20"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8,max=20"`
-}
-
+// RegisterByEmail godoc
+// @Summary Register by email
+// @Description Register by email
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body define.RegisterUserRequest true "RegisterUserRequest"
+// @Success 200 {object} string
+// @Router /auth/registerByEmail [post]
 func (r *RegisterController) RegisterByEmail(ctx *gin.Context) {
-	var req RegisterUserRequest
+	var req define.RegisterUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return

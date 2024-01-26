@@ -20,6 +20,16 @@ func NewRoleController(service *service.RoleService) *RoleController {
 	}
 }
 
+// CreateRole godoc
+// @Summary Create role
+// @Description Create role
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body define.CreateRoleRequest true "CreateRoleRequest"
+// @Success 200 {object} string
+// @Router /role [post]
 func (c *RoleController) CreateRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "create"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -46,6 +56,16 @@ func (c *RoleController) CreateRole(ctx *gin.Context) {
 	})
 }
 
+// UpdateRole godoc
+// @Summary Update role
+// @Description Update role
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body define.UpdateRoleRequest true "UpdateRoleRequest"
+// @Param role_id path int true "role_id"
+// @Success 200 {object} string
 func (c *RoleController) UpdateRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "update"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -77,6 +97,16 @@ func (c *RoleController) UpdateRole(ctx *gin.Context) {
 	})
 }
 
+// DeleteRole godoc
+// @Summary Delete role
+// @Description Delete role
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param role_id path int true "role_id"
+// @Success 200 {object} string
+// @Router /role/{role_id} [delete]
 func (c *RoleController) DeleteRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "delete"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -102,6 +132,17 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 	})
 }
 
+// ListRoles godoc
+// @Summary List roles
+// @Description List roles
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param page query int false "page"
+// @Param page_size query int false "page_size"
+// @Success 200 {object} string
+// @Router /role [get]
 func (c *RoleController) ListRoles(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "list"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pfjhyyj/ether/app/auth/define"
 	"github.com/pfjhyyj/ether/app/auth/service"
 	"github.com/pfjhyyj/ether/common"
 )
@@ -14,18 +15,17 @@ func NewLoginController(service *service.LoginService) *LoginController {
 	return &LoginController{service: service}
 }
 
-type LoginByUsernameRequest struct {
-	Username string `json:"username,min=6,max=20"`
-	Password string `json:"password,min=8,max=20"`
-}
-
-type TokenResponse struct {
-	AccessToken string `json:"accessToken"`
-	ExpireTime  int64  `json:"expireTime"`
-}
-
+// LoginByUsername godoc
+// @Summary Login by username
+// @Description Login by username
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body define.LoginByUsernameRequest true "LoginByUsernameRequest"
+// @Success 200 {object} define.TokenResponse
+// @Router /auth/loginByUsername [post]
 func (r *LoginController) LoginByUsername(ctx *gin.Context) {
-	var req LoginByUsernameRequest
+	var req define.LoginByUsernameRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
@@ -37,7 +37,7 @@ func (r *LoginController) LoginByUsername(ctx *gin.Context) {
 		return
 	}
 
-	resp := TokenResponse{
+	resp := &define.TokenResponse{
 		AccessToken: loginToken.Token,
 		ExpireTime:  loginToken.ExpireTime,
 	}

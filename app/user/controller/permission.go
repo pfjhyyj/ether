@@ -20,6 +20,16 @@ func NewPermissionController(service *service.PermissionService) *PermissionCont
 	}
 }
 
+// CreatePermission godoc
+// @Summary Create permission
+// @Description Create permission
+// @Tags permission
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body define.CreatePermissionRequest true "CreatePermissionRequest"
+// @Success 200 {object} string
+// @Router /permission [post]
 func (c *PermissionController) CreatePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "create"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -46,6 +56,17 @@ func (c *PermissionController) CreatePermission(ctx *gin.Context) {
 	})
 }
 
+// UpdatePermission godoc
+// @Summary Update permission
+// @Description Update permission
+// @Tags permission
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param permission_id path int true "permission_id"
+// @Param request body define.UpdatePermissionRequest true "UpdatePermissionRequest"
+// @Success 200 {object} string
+// @Router /permission/{permission_id} [put]
 func (c *PermissionController) UpdatePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "update"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -77,6 +98,16 @@ func (c *PermissionController) UpdatePermission(ctx *gin.Context) {
 	})
 }
 
+// DeletePermission godoc
+// @Summary Delete permission
+// @Description Delete permission
+// @Tags permission
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param permission_id path int true "permission_id"
+// @Success 200 {object} string
+// @Router /permission/{permission_id} [delete]
 func (c *PermissionController) DeletePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "delete"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -102,6 +133,18 @@ func (c *PermissionController) DeletePermission(ctx *gin.Context) {
 	})
 }
 
+// ListPermissions godoc
+// @Summary List permissions
+// @Description List permissions
+// @Tags permission
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param current query int false "current"
+// @Param page_size query int false "page_size"
+// @Param target query string false "name"
+// @Success 200 {object} string
+// @Router /permission [get]
 func (c *PermissionController) ListPermissions(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "list"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{

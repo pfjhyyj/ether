@@ -19,6 +19,17 @@ func NewRolePermissionController(service *service.RolePermissionService) *RolePe
 	}
 }
 
+// AddRolePermission godoc
+// @Summary Add role permission
+// @Description Add role permission
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param role_id path int true "role_id"
+// @Param request body define.AddRolePermissionRequest true "AddRolePermissionRequest"
+// @Success 200 {object} string
+// @Router /roles/{roleId}/permissions/add [post]
 func (c *RolePermissionController) AddRolePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_permission", "create"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -50,6 +61,16 @@ func (c *RolePermissionController) AddRolePermission(ctx *gin.Context) {
 	})
 }
 
+// DeleteRolePermission godoc
+// @Summary Delete role permission
+// @Description Delete role permission
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param role_id path int true "role_id"
+// @Success 200 {object} string
+// @Router /roles/{roleId}/permissions/delete [post]
 func (c *RolePermissionController) DeleteRolePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_permission", "delete"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -75,6 +96,16 @@ func (c *RolePermissionController) DeleteRolePermission(ctx *gin.Context) {
 	})
 }
 
+// ListRolePermission godoc
+// @Summary List role permission
+// @Description List role permission
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param role_id path int true "role_id"
+// @Success 200 {object} string
+// @Router /roles/{roleId}/permissions [get]
 func (c *RolePermissionController) ListRolePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_permission", "list"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{

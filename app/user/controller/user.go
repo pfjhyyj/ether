@@ -18,6 +18,16 @@ func NewUserController(service *service.UserService) *UserController {
 	return &UserController{service: service}
 }
 
+// ListUsers godoc
+// @Summary List users
+// @Description List users
+// @Tags user
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request query define.ListUserRequest true "ListUserRequest"
+// @Success 200 {object} string
+// @Router /users [get]
 func (r *UserController) ListUsers(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user", "list"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{

@@ -37,6 +37,15 @@ func Init() {
 	}
 }
 
+// @title Ether API
+// @description This is a ether api server.
+// @version 1
+// @host localhost:8080
+// @BasePath /api
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func runApiServer() {
 	r := gin.New()
 	r.Use(gin.Logger(), middleware.ErrorMiddleware(), middleware.TenantMiddleware(false))

@@ -17,6 +17,15 @@ func NewMyController(service *service.MyService) *MyController {
 	return &MyController{service: service}
 }
 
+// MyInfo godoc
+// @Summary Get my info
+// @Description Get my info
+// @Tags my
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} define.MyInfoResponse
+// @Router /my [get]
 func (c *MyController) MyInfo(ctx *gin.Context) {
 	userId := ctx.GetUint(common.CtxUserIDKey)
 
@@ -33,6 +42,16 @@ func (c *MyController) MyInfo(ctx *gin.Context) {
 	})
 }
 
+// UpdateMyInfo godoc
+// @Summary Update my info
+// @Description Update my info
+// @Tags my
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body define.UpdateMyInfoRequest true "UpdateMyInfoRequest"
+// @Success 200 {object} string
+// @Router /my [put]
 func (c *MyController) UpdateMyInfo(ctx *gin.Context) {
 	userId := ctx.GetUint(common.CtxUserIDKey)
 
@@ -53,6 +72,16 @@ func (c *MyController) UpdateMyInfo(ctx *gin.Context) {
 	})
 }
 
+// UpdateMyPassword godoc
+// @Summary Update my password
+// @Description Update my password
+// @Tags my
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body define.UpdateMyPasswordRequest true "UpdateMyPasswordRequest"
+// @Success 200 {object} string
+// @Router /my/password [put]
 func (c *MyController) UpdateMyPassword(ctx *gin.Context) {
 	userId := ctx.GetUint(common.CtxUserIDKey)
 
