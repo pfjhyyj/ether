@@ -239,7 +239,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/permission": {
+        "/permissions": {
             "get": {
                 "security": [
                     {
@@ -351,7 +351,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/permission/{permission_id}": {
+        "/permissions/{permission_id}": {
             "put": {
                 "security": [
                     {
@@ -432,7 +432,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/role": {
+        "/roles": {
             "get": {
                 "security": [
                     {
@@ -526,87 +526,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/define.CreateRoleRequest"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/common.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/role/{role_id}": {
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Update role",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "role"
-                ],
-                "summary": "Update role",
-                "parameters": [
-                    {
-                        "description": "UpdateRoleRequest",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/define.UpdateRoleRequest"
-                        }
-                    },
-                    {
-                        "type": "integer",
-                        "description": "role_id",
-                        "name": "role_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/common.Response"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Delete role",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "role"
-                ],
-                "summary": "Delete role",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "role_id",
-                        "name": "role_id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -720,6 +639,87 @@ const docTemplate = `{
                     "role"
                 ],
                 "summary": "Delete role permission",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "role_id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{role_id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Update role",
+                "parameters": [
+                    {
+                        "description": "UpdateRoleRequest",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/define.UpdateRoleRequest"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "role_id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Delete role",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1478,7 +1478,9 @@ const docTemplate = `{
             ],
             "properties": {
                 "newPassword": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 8
                 },
                 "oldPassword": {
                     "type": "string"

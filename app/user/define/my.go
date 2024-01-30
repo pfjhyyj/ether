@@ -14,6 +14,6 @@ type UpdateMyInfoRequest struct {
 
 type UpdateMyPasswordRequest struct {
 	OldPassword    string `json:"oldPassword" binding:"required"`
-	NewPassword    string `json:"newPassword" binding:"required"`
+	NewPassword    string `json:"newPassword" binding:"required,min=8,max=20"`
 	RepeatPassword string `json:"repeatPassword" binding:"required"`
 }

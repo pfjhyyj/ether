@@ -74,6 +74,11 @@ func (s *MyService) UpdateMyPassword(ctx *gin.Context, userId uint, d *define.Up
 		return &common.SystemError{Code: common.RequestError, Msg: "old password not match"}
 	}
 
+	if d.NewPassword != d.RepeatPassword {
+		logs.Error("new password not match")
+		return &common.SystemError{Code: common.RequestError, Msg: "new password not match"}
+	}
+
 	newUser := utils.ConvertUpdateMyPasswordRequestToModel(d)
 
 	if err := model.UpdateUser(db, userId, newUser); err != nil {

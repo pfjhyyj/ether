@@ -51,9 +51,6 @@ func GetUserByUsername(tx *gorm.DB, username string) (*User, error) {
 func GetUserByEmail(tx *gorm.DB, email string) (*User, error) {
 	var user User
 	if err := tx.Where("email = ?", email).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	return &user, nil
@@ -62,9 +59,6 @@ func GetUserByEmail(tx *gorm.DB, email string) (*User, error) {
 func GetUserByUserId(tx *gorm.DB, userId uint) (*User, error) {
 	var user User
 	if err := tx.First(&user, "user_id = ?", userId).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	return &user, nil

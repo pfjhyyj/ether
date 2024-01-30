@@ -209,6 +209,8 @@ definitions:
   define.UpdateMyPasswordRequest:
     properties:
       newPassword:
+        maxLength: 20
+        minLength: 8
         type: string
       oldPassword:
         type: string
@@ -400,7 +402,7 @@ paths:
       summary: Update my password
       tags:
       - my
-  /permission:
+  /permissions:
     get:
       consumes:
       - application/json
@@ -465,7 +467,7 @@ paths:
       summary: Create permission
       tags:
       - permission
-  /permission/{permission_id}:
+  /permissions/{permission_id}:
     delete:
       consumes:
       - application/json
@@ -516,7 +518,7 @@ paths:
       summary: Update permission
       tags:
       - permission
-  /role:
+  /roles:
     get:
       consumes:
       - application/json
@@ -577,7 +579,7 @@ paths:
       summary: Create role
       tags:
       - role
-  /role/{role_id}:
+  /roles/{role_id}:
     delete:
       consumes:
       - application/json
