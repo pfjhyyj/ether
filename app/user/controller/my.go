@@ -24,7 +24,7 @@ func NewMyController(service *service.MyService) *MyController {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} define.MyInfoResponse
+// @Success 200 {object} common.Response{data=define.MyInfoResponse}
 // @Router /my [get]
 func (c *MyController) MyInfo(ctx *gin.Context) {
 	userId := ctx.GetUint(common.CtxUserIDKey)
@@ -50,7 +50,7 @@ func (c *MyController) MyInfo(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param request body define.UpdateMyInfoRequest true "UpdateMyInfoRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /my [put]
 func (c *MyController) UpdateMyInfo(ctx *gin.Context) {
 	userId := ctx.GetUint(common.CtxUserIDKey)
@@ -80,7 +80,7 @@ func (c *MyController) UpdateMyInfo(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param request body define.UpdateMyPasswordRequest true "UpdateMyPasswordRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /my/password [put]
 func (c *MyController) UpdateMyPassword(ctx *gin.Context) {
 	userId := ctx.GetUint(common.CtxUserIDKey)

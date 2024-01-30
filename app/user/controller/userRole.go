@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/app/user/service"
+	"github.com/pfjhyyj/ether/app/user/utils"
 	"github.com/pfjhyyj/ether/common"
 	utils2 "github.com/pfjhyyj/ether/utils"
 	"net/http"
@@ -110,7 +111,7 @@ func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 // @Security Bearer
 // @Param user_id path int true "user_id"
 // @Param request body define.ListUserRoleRequest true "ListUserRoleRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response{data=common.Page{list=[]define.ListUserRoleResponse}}
 // @Router /users/{userId}/roles [get]
 func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user_role", "list"); !ok {
@@ -138,8 +139,10 @@ func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
 		return
 	}
 
+	list := utils.ConvertUserRoleListToResponse(userRoles)
+
 	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
-		Data: userRoles,
+		Data: list,
 	})
 }

@@ -22,7 +22,7 @@ func NewLoginController(service *service.LoginService) *LoginController {
 // @Accept json
 // @Produce json
 // @Param request body define.LoginByUsernameRequest true "LoginByUsernameRequest"
-// @Success 200 {object} define.TokenResponse
+// @Success 200 {object} common.Response{data=define.TokenResponse}
 // @Router /auth/loginByUsername [post]
 func (r *LoginController) LoginByUsername(ctx *gin.Context) {
 	var req define.LoginByUsernameRequest

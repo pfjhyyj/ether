@@ -1,5 +1,23 @@
 basePath: /api
 definitions:
+  common.Page:
+    properties:
+      current:
+        type: integer
+      list: {}
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  common.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
   define.AddRolePermissionRequest:
     properties:
       permissionIds:
@@ -73,12 +91,47 @@ definitions:
     - roleIds
     - userId
     type: object
+  define.ListTenantPageResponse:
+    properties:
+      createdAt:
+        type: string
+      domain:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  define.ListUserPageResponse:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      mobile:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+      username:
+        type: string
+    type: object
   define.ListUserRoleRequest:
     properties:
       userId:
         type: integer
     required:
     - userId
+    type: object
+  define.ListUserRoleResponse:
+    properties:
+      roleId:
+        type: integer
+      roleName:
+        type: string
     type: object
   define.LoginByUsernameRequest:
     properties:
@@ -100,6 +153,19 @@ definitions:
       username:
         type: string
     type: object
+  define.PermissionPageResponse:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      permissionId:
+        type: integer
+      target:
+        type: string
+    type: object
   define.RegisterUserRequest:
     properties:
       email:
@@ -116,6 +182,17 @@ definitions:
     - email
     - password
     - username
+    type: object
+  define.RolePageResponse:
+    properties:
+      description:
+        type: string
+      roleCode:
+        type: string
+      roleId:
+        type: integer
+      roleName:
+        type: string
     type: object
   define.TokenResponse:
     properties:
@@ -206,7 +283,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/define.TokenResponse'
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/define.TokenResponse'
+              type: object
       summary: Login by username
       tags:
       - auth
@@ -221,7 +303,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Logout
@@ -245,7 +327,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       summary: Register by email
       tags:
       - auth
@@ -260,7 +342,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/define.MyInfoResponse'
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/define.MyInfoResponse'
+              type: object
       security:
       - Bearer: []
       summary: Get my info
@@ -283,7 +370,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Update my info
@@ -307,7 +394,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Update my password
@@ -337,7 +424,19 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.PermissionPageResponse'
+                        type: array
+                    type: object
+              type: object
       security:
       - Bearer: []
       summary: List permissions
@@ -360,7 +459,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Create permission
@@ -383,7 +482,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Delete permission
@@ -411,7 +510,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Update permission
@@ -437,7 +536,19 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.RolePageResponse'
+                        type: array
+                    type: object
+              type: object
       security:
       - Bearer: []
       summary: List roles
@@ -460,7 +571,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Create role
@@ -483,10 +594,38 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Delete role
+      tags:
+      - role
+    put:
+      consumes:
+      - application/json
+      description: Update role
+      parameters:
+      - description: UpdateRoleRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.UpdateRoleRequest'
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Update role
       tags:
       - role
   /roles/{roleId}/permissions:
@@ -535,7 +674,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Add role permission
@@ -558,13 +697,48 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Delete role permission
       tags:
       - role
   /tenants:
+    get:
+      consumes:
+      - application/json
+      description: List tenants
+      parameters:
+      - in: query
+        name: current
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.ListTenantPageResponse'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: List tenants
+      tags:
+      - tenant
     post:
       consumes:
       - application/json
@@ -582,7 +756,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Create tenant
@@ -605,7 +779,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Delete tenant
@@ -633,7 +807,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: Update tenant
@@ -657,7 +831,19 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.ListUserPageResponse'
+                        type: array
+                    type: object
+              type: object
       security:
       - Bearer: []
       summary: List users
@@ -686,7 +872,19 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.ListUserRoleResponse'
+                        type: array
+                    type: object
+              type: object
       security:
       - Bearer: []
       summary: List user role

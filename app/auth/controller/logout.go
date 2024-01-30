@@ -21,7 +21,7 @@ func NewLogoutController(service *service.LogoutService) *LogoutController {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /auth/logout [post]
 func (r *LogoutController) Logout(ctx *gin.Context) {
 	err := r.service.Logout(ctx)

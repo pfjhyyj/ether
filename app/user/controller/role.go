@@ -28,7 +28,7 @@ func NewRoleController(service *service.RoleService) *RoleController {
 // @Produce json
 // @Security Bearer
 // @Param request body define.CreateRoleRequest true "CreateRoleRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /role [post]
 func (c *RoleController) CreateRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "create"); !ok {
@@ -65,7 +65,8 @@ func (c *RoleController) CreateRole(ctx *gin.Context) {
 // @Security Bearer
 // @Param request body define.UpdateRoleRequest true "UpdateRoleRequest"
 // @Param role_id path int true "role_id"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
+// @Router /role/{role_id} [put]
 func (c *RoleController) UpdateRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "update"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{
@@ -105,7 +106,7 @@ func (c *RoleController) UpdateRole(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param role_id path int true "role_id"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /role/{role_id} [delete]
 func (c *RoleController) DeleteRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "delete"); !ok {
@@ -141,7 +142,7 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 // @Security Bearer
 // @Param page query int false "page"
 // @Param page_size query int false "page_size"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response{data=common.Page{list=[]define.RolePageResponse}}
 // @Router /role [get]
 func (c *RoleController) ListRoles(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "list"); !ok {

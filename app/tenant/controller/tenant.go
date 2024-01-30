@@ -26,7 +26,7 @@ func NewTenantController(service *service.TenantService) *TenantController {
 // @Produce json
 // @Security Bearer
 // @Param request body define.CreateTenantRequest true "CreateTenantRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /tenants [post]
 func (r *TenantController) CreateTenant(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "create"); !ok {
@@ -63,7 +63,7 @@ func (r *TenantController) CreateTenant(ctx *gin.Context) {
 // @Security Bearer
 // @Param tenant_id path int true "tenant_id"
 // @Param request body define.UpdateTenantRequest true "UpdateTenantRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /tenants/{tenantId} [put]
 func (r *TenantController) UpdateTenant(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "update"); !ok {
@@ -104,7 +104,7 @@ func (r *TenantController) UpdateTenant(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param tenant_id path int true "tenant_id"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /tenants/{tenantId} [delete]
 func (r *TenantController) DeleteTenant(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "delete"); !ok {
@@ -132,6 +132,16 @@ func (r *TenantController) DeleteTenant(ctx *gin.Context) {
 	})
 }
 
+// ListTenants godoc
+// @Summary List tenants
+// @Description List tenants
+// @Tags tenant
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request query define.ListTenantRequest true "ListTenantRequest"
+// @Success 200 {object} common.Response{data=common.Page{list=[]define.ListTenantPageResponse}}
+// @Router /tenants [get]
 func (r *TenantController) ListTenants(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "list"); !ok {
 		ctx.JSON(http.StatusForbidden, &common.Response{

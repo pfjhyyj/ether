@@ -13,3 +13,8 @@ type DeleteUserRoleRequest struct {
 type ListUserRoleRequest struct {
 	UserId uint `uri:"userId" binding:"required"`
 }
+
+type ListUserRoleResponse struct {
+	RoleId   uint   `json:"roleId"`
+	RoleName string `json:"roleName"`
+}

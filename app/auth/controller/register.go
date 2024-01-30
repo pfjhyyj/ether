@@ -23,7 +23,7 @@ func NewRegisterController(service *service.RegisterService) *RegisterController
 // @Accept json
 // @Produce json
 // @Param request body define.RegisterUserRequest true "RegisterUserRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response
 // @Router /auth/registerByEmail [post]
 func (r *RegisterController) RegisterByEmail(ctx *gin.Context) {
 	var req define.RegisterUserRequest

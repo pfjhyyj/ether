@@ -26,7 +26,7 @@ func NewUserController(service *service.UserService) *UserController {
 // @Produce json
 // @Security Bearer
 // @Param request query define.ListUserRequest true "ListUserRequest"
-// @Success 200 {object} string
+// @Success 200 {object} common.Response{data=common.Page{list=[]define.ListUserPageResponse}}
 // @Router /users [get]
 func (r *UserController) ListUsers(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user", "list"); !ok {
