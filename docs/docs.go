@@ -266,8 +266,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "page_size",
-                        "name": "page_size",
+                        "description": "pageSize",
+                        "name": "pageSize",
                         "in": "query"
                     },
                     {
@@ -459,8 +459,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "page_size",
-                        "name": "page_size",
+                        "description": "pageSize",
+                        "name": "pageSize",
                         "in": "query"
                     }
                 ],

@@ -141,7 +141,7 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page query int false "page"
-// @Param page_size query int false "page_size"
+// @Param pageSize query int false "pageSize"
 // @Success 200 {object} common.Response{data=common.Page{list=[]define.RolePageResponse}}
 // @Router /roles [get]
 func (c *RoleController) ListRoles(ctx *gin.Context) {

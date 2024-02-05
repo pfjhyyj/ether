@@ -1,8 +1,6 @@
 package model
 
 import (
-	"errors"
-
 	"github.com/pfjhyyj/ether/common"
 	"gorm.io/gorm"
 )
@@ -40,9 +38,6 @@ func DeleteUser(tx *gorm.DB, userId uint) error {
 func GetUserByUsername(tx *gorm.DB, username string) (*User, error) {
 	var user User
 	if err := tx.Where("username = ?", username).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	return &user, nil

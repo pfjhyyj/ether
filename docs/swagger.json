@@ -260,8 +260,8 @@
                     },
                     {
                         "type": "integer",
-                        "description": "page_size",
-                        "name": "page_size",
+                        "description": "pageSize",
+                        "name": "pageSize",
                         "in": "query"
                     },
                     {
@@ -453,8 +453,8 @@
                     },
                     {
                         "type": "integer",
-                        "description": "page_size",
-                        "name": "page_size",
+                        "description": "pageSize",
+                        "name": "pageSize",
                         "in": "query"
                     }
                 ],

@@ -412,9 +412,9 @@ paths:
         in: query
         name: current
         type: integer
-      - description: page_size
+      - description: pageSize
         in: query
-        name: page_size
+        name: pageSize
         type: integer
       - description: name
         in: query
@@ -528,9 +528,9 @@ paths:
         in: query
         name: page
         type: integer
-      - description: page_size
+      - description: pageSize
         in: query
-        name: page_size
+        name: pageSize
         type: integer
       produces:
       - application/json

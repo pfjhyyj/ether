@@ -28,7 +28,7 @@ func (s *LoginService) LoginByUsername(ctx *gin.Context, username string, passwo
 	// get user by username
 	u, err := s.userRepo.GetUserByUsername(ctx, username)
 	if err != nil {
-		return nil, err
+		return nil, &common.SystemError{Code: common.RequestError, Msg: "invalid username or password", Err: err}
 	}
 
 	// compare password

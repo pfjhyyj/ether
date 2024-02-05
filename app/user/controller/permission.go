@@ -141,7 +141,7 @@ func (c *PermissionController) DeletePermission(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param current query int false "current"
-// @Param page_size query int false "page_size"
+// @Param pageSize query int false "pageSize"
 // @Param target query string false "name"
 // @Success 200 {object} common.Response{data=common.Page{list=[]define.PermissionPageResponse}}
 // @Router /permissions [get]
