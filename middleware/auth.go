@@ -20,7 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			logs.Errorf("no authorization header")
 			c.AbortWithStatusJSON(http.StatusOK, &common.Response{
 				Code: common.AuthError,
-				Msg:  "unauthorized request",
+				Msg:  "Please login first.",
 			})
 			return
 		}

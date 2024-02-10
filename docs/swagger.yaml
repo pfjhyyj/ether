@@ -42,6 +42,13 @@ definitions:
     - roleIds
     - userId
     type: object
+  define.BatchReadMessageRequest:
+    properties:
+      messageIds:
+        items:
+          type: integer
+        type: array
+    type: object
   define.CreatePermissionRequest:
     properties:
       action:
@@ -90,6 +97,21 @@ definitions:
     required:
     - roleIds
     - userId
+    type: object
+  define.ListMyMessagesResponse:
+    properties:
+      category:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      isRead:
+        type: integer
+      messageId:
+        type: integer
+      title:
+        type: string
     type: object
   define.ListTenantPageResponse:
     properties:
@@ -333,6 +355,95 @@ paths:
       summary: Register by email
       tags:
       - auth
+  /messages:
+    get:
+      consumes:
+      - application/json
+      description: List my messages
+      parameters:
+      - in: query
+        name: category
+        type: integer
+      - in: query
+        name: current
+        type: integer
+      - in: query
+        name: isRead
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.ListMyMessagesResponse'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: List my messages
+      tags:
+      - message
+  /messages/{messageId}/read:
+    put:
+      consumes:
+      - application/json
+      description: Read message
+      parameters:
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Read message
+      tags:
+      - message
+  /messages/batchRead:
+    put:
+      consumes:
+      - application/json
+      description: Batch read message
+      parameters:
+      - description: BatchReadMessageRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.BatchReadMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Batch read message
+      tags:
+      - message
   /my:
     get:
       consumes:

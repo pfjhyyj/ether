@@ -28,7 +28,7 @@ func NewMessageController(service *service.MessageService) *MessageController {
 // @Produce json
 // @Security Bearer
 // @Param request query define.ListMyMessagesRequest true "ListMyMessagesRequest"
-// @Success 200 {object} common.Response{data=common.Page={List=[]define.ListMyMessageResponse}}
+// @Success 200 {object} common.Response{data=common.Page{list=[]define.ListMyMessagesResponse}}
 // @Router /messages [get]
 func (c *MessageController) ListMyMessages(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "message", "list"); !ok {

@@ -7,9 +7,10 @@ import (
 )
 
 type Message struct {
-	MessageId uint `gorm:"primaryKey"`
-	UserId    uint `gorm:"column:user_id"`
-	IsRead    uint `gorm:"column:is_read"`
+	MessageId     uint `gorm:"primaryKey"`
+	UserId        uint `gorm:"column:user_id"`
+	IsRead        uint `gorm:"column:is_read"`
+	MessageTextId uint `gorm:"column:message_text_id"`
 	common.Model
 
 	MessageText MessageText `gorm:"foreignKey:message_text_id"`
@@ -30,6 +31,10 @@ type QueryMessageParams struct {
 
 func CreateMessage(tx *gorm.DB, message *Message) error {
 	return tx.Create(message).Error
+}
+
+func CreateMessages(tx *gorm.DB, messages []*Message) error {
+	return tx.Create(messages).Error
 }
 
 func UpdateMessage(tx *gorm.DB, messageId uint, message *Message) error {
@@ -81,7 +86,7 @@ func ListMessages(tx *gorm.DB, params *QueryMessageParams) ([]*Message, int64, e
 	}
 
 	if params.WithText {
-		query = query.Preload("message_text")
+		query = query.Preload("MessageText")
 	}
 
 	if err := query.Find(&messages).Error; err != nil {
