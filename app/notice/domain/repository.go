@@ -13,6 +13,11 @@ type NoticeRepository struct {
 	notice.Repository
 }
 
+func GetNoticeRepository() *NoticeRepository {
+	Init()
+	return noticeRepository
+}
+
 func (r *NoticeRepository) NotifyUsers(ctx context.Context, message *notice.Message, userIds []uint) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
