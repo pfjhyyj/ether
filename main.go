@@ -2,9 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pfjhyyj/ether/app/auth"
-	"github.com/pfjhyyj/ether/app/tenant"
-	"github.com/pfjhyyj/ether/app/user"
+	"github.com/pfjhyyj/ether/app"
 	"github.com/pfjhyyj/ether/clients/casbin"
 	"github.com/pfjhyyj/ether/clients/gorm"
 	"github.com/pfjhyyj/ether/clients/redis"
@@ -32,8 +30,7 @@ func Init() {
 		casbin.Init()
 	}
 	{
-		user.AutoMigrate()
-		tenant.AutoMigrate()
+		app.Init()
 	}
 }
 
@@ -51,9 +48,7 @@ func runApiServer() {
 	r.Use(gin.Logger(), middleware.ErrorMiddleware(), middleware.TenantMiddleware(false))
 	apiRouter := r.Group("/api")
 	{
-		auth.SetRouter(apiRouter)
-		user.SetRouter(apiRouter)
-		tenant.SetRouter(apiRouter)
+		app.SetRouter(apiRouter)
 	}
 
 	port := viper.GetString("service.api.port")
