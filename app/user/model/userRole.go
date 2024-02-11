@@ -6,9 +6,9 @@ import (
 )
 
 type UserRole struct {
-	common.Model
 	UserId uint `gorm:"primaryKey;autoIncrement:false"`
 	RoleId uint `gorm:"primaryKey;autoIncrement:false"`
+	common.Model
 
 	RoleName string
 }

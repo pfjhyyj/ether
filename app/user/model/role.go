@@ -6,11 +6,11 @@ import (
 )
 
 type Role struct {
-	common.Model
 	RoleId      uint   `gorm:"primaryKey"`
 	RoleCode    string `gorm:"column:role_code"`
 	RoleName    string `gorm:"column:role_name"`
 	Description string `gorm:"column:description"`
+	common.Model
 }
 
 func (Role) TableName() string {

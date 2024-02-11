@@ -6,13 +6,13 @@ import (
 )
 
 type User struct {
-	common.Model
 	UserId   uint   `gorm:"primaryKey"`
 	Username string `gorm:"column:username;unique"`
 	Password string `gorm:"column:password"`
 	Email    string `gorm:"column:email;unique"`
 	Mobile   string `gorm:"column:mobile;unique"`
 	Avatar   string `gorm:"column:avatar"`
+	common.Model
 }
 
 func (User) TableName() string {

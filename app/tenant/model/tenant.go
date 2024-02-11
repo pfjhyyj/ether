@@ -6,11 +6,11 @@ import (
 )
 
 type Tenant struct {
-	common.Model
 	TenantId    uint   `gorm:"primaryKey"`
 	Domain      string `gorm:"column:domain"`
 	Name        string `gorm:"column:name"`
 	Description string `gorm:"column:description"`
+	common.Model
 }
 
 func (Tenant) TableName() string {

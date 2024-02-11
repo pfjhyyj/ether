@@ -6,9 +6,9 @@ import (
 )
 
 type RolePermission struct {
-	common.Model
 	RoleId       uint `gorm:"primaryKey;autoIncrement:false"`
 	PermissionId uint `gorm:"primaryKey;autoIncrement:false"`
+	common.Model
 }
 
 func (RolePermission) TableName() string {

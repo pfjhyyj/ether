@@ -6,12 +6,12 @@ import (
 )
 
 type Permission struct {
-	common.Model
 	PermissionId uint   `gorm:"primaryKey;column:permission_id"`
 	Name         string `gorm:"column:name"`
 	Target       string `gorm:"column:target"`
 	Action       string `gorm:"column:action"`
 	Description  string `gorm:"column:description"`
+	common.Model
 }
 
 func (p Permission) TableName() string {
