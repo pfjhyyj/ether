@@ -15,6 +15,8 @@ func AutoMigrate() {
 			&model.UserRole{},
 			&model.Permission{},
 			&model.RolePermission{},
+			&model.Menu{},
+			&model.RoleMenu{},
 		); err != nil {
 			panic(err)
 		}

@@ -71,9 +71,24 @@ func SetPermissionRouter(r *gin.RouterGroup) {
 	}
 }
 
+func SetMenuRouter(r *gin.RouterGroup) {
+	menuService := service.NewMenuService()
+	menuController := controller.NewMenuController(menuService)
+
+	router := r.Group("/menus")
+	router.Use(middleware.AuthMiddleware())
+	{
+		router.POST("", menuController.CreateMenu)
+		router.PUT("/:menuId", menuController.UpdateMenu)
+		router.DELETE("/:menuId", menuController.DeleteMenu)
+		router.GET("/:menuId/tree", menuController.GetMenuTree)
+	}
+}
+
 func SetRouter(r *gin.RouterGroup) {
 	SetUserRouter(r)
 	SetMyRouter(r)
 	SetRoleRouter(r)
 	SetPermissionRouter(r)
+	SetMenuRouter(r)
 }
