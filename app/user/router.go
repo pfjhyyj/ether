@@ -44,6 +44,9 @@ func SetRoleRouter(r *gin.RouterGroup) {
 	rolePermissionService := service.NewRolePermissionService()
 	rolePermissionController := controller.NewRolePermissionController(rolePermissionService)
 
+	roleMenuService := service.NewRoleMenuService()
+	roleMenuController := controller.NewRoleMenuController(roleMenuService)
+
 	roleRouter := r.Group("/roles")
 	roleRouter.Use(middleware.AuthMiddleware())
 	{
@@ -54,6 +57,9 @@ func SetRoleRouter(r *gin.RouterGroup) {
 		roleRouter.GET("/:roleId/permissions", rolePermissionController.ListRolePermission)
 		roleRouter.POST("/:roleId/permissions/add", rolePermissionController.AddRolePermission)
 		roleRouter.POST("/:roleId/permissions/delete", rolePermissionController.DeleteRolePermission)
+		roleRouter.GET("/:roleId/menus", roleMenuController.ListRoleMenu)
+		roleRouter.POST("/:roleId/menus/add", roleMenuController.AddRoleMenu)
+		roleRouter.POST("/:roleId/menus/delete", roleMenuController.DeleteRoleMenu)
 	}
 }
 

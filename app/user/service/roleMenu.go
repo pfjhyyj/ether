@@ -35,11 +35,11 @@ func (s *RoleMenuService) AddRoleMenu(ctx *gin.Context, d *define.AddRoleMenuReq
 	return nil
 }
 
-func (s *RoleMenuService) DeleteRoleMenu(ctx *gin.Context, roleId uint, menuIds []uint) error {
+func (s *RoleMenuService) DeleteRoleMenu(ctx *gin.Context, d *define.DeleteRoleMenuRequest) error {
 	logs := logrus.WithContext(ctx)
 	db := gorm.GetDB().WithContext(ctx)
 
-	if err := model.DeleteRoleMenu(db, roleId, menuIds); err != nil {
+	if err := model.DeleteRoleMenu(db, d.RoleId, d.MenuIds); err != nil {
 		logs.WithError(err).Error("delete role menu failed")
 		return &common.SystemError{Code: common.DbError, Msg: "delete role menu failed", Err: err}
 	}
