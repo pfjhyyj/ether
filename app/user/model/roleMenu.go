@@ -19,6 +19,10 @@ func CreateRoleMenu(tx *gorm.DB, roleMenu *RoleMenu) error {
 	return tx.Create(roleMenu).Error
 }
 
+func CreateRoleMenuBatch(tx *gorm.DB, roleMenus []*RoleMenu) error {
+	return tx.Create(roleMenus).Error
+}
+
 func DeleteRoleMenu(tx *gorm.DB, roleId uint, menuIds []uint) error {
 	return tx.Delete(&RoleMenu{}, "role_id = ? AND menu_id IN ?", roleId, menuIds).Error
 }
