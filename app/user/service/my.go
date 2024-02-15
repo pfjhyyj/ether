@@ -88,3 +88,40 @@ func (s *MyService) UpdateMyPassword(ctx *gin.Context, userId uint, d *define.Up
 
 	return nil
 }
+
+func (s *MyService) GetUserMenu(ctx *gin.Context, userId uint) ([]*model.Menu, error) {
+	logs := logrus.WithContext(ctx)
+	db := gorm.GetDB().WithContext(ctx)
+
+	roleIds, err := model.ListUserRoleIdsByUserId(db, userId)
+	if err != nil {
+		logs.WithError(err).Error("get user roles failed")
+		return nil, &common.SystemError{
+			Code: common.DbError,
+			Msg:  "get user roles failed",
+			Err:  err,
+		}
+	}
+
+	menuIds, err := model.ListMenuIdsByRoleIds(db, roleIds)
+	if err != nil {
+		logs.WithError(err).Error("get role's menus failed")
+		return nil, &common.SystemError{
+			Code: common.DbError,
+			Msg:  "get role's menus failed",
+			Err:  err,
+		}
+	}
+
+	menus, err := model.ListMenuTreeByMenuIds(db, menuIds)
+	if err != nil {
+		logs.WithError(err).Error("get menus failed")
+		return nil, &common.SystemError{
+			Code: common.DbError,
+			Msg:  "get menus failed",
+			Err:  err,
+		}
+	}
+
+	return menus, nil
+}

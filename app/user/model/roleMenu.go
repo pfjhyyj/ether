@@ -39,3 +39,17 @@ func ListMenuIdsByRoleId(tx *gorm.DB, roleId uint) ([]uint, error) {
 	}
 	return menuIds, nil
 }
+
+func ListMenuIdsByRoleIds(tx *gorm.DB, roleIds []uint) ([]uint, error) {
+	if len(roleIds) == 0 {
+		return nil, &common.SystemError{Code: common.DbError, Msg: "role ids is empty"}
+	}
+	var roleMenus []*RoleMenu
+	tx.Where("role_id IN ?", roleIds).Distinct("menu_id").Find(&roleMenus)
+
+	var menuIds []uint
+	for _, roleMenu := range roleMenus {
+		menuIds = append(menuIds, roleMenu.MenuId)
+	}
+	return menuIds, nil
+}

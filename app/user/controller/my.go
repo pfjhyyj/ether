@@ -101,3 +101,28 @@ func (c *MyController) UpdateMyPassword(ctx *gin.Context) {
 		Code: common.Ok,
 	})
 }
+
+// GetMyMenu godoc
+// @Summary Get my menu
+// @Description Get my menu
+// @Tags my
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} common.Response{data=define.GetMenuResponse}
+// @Router /my/menus [get]
+func (c *MyController) GetMyMenu(ctx *gin.Context) {
+	userId := ctx.GetUint(common.CtxUserIDKey)
+
+	menus, err := c.service.GetUserMenu(ctx, userId)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	menusInfo := utils.ConvertMenuToResponse(menus)
+	ctx.JSON(http.StatusOK, &common.Response{
+		Code: common.Ok,
+		Data: menusInfo,
+	})
+}

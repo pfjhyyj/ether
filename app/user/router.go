@@ -34,6 +34,7 @@ func SetMyRouter(r *gin.RouterGroup) {
 		router.GET("", myController.MyInfo)
 		router.PUT("", myController.UpdateMyInfo)
 		router.PUT("/password", myController.UpdateMyPassword)
+		router.GET("/menus", myController.GetMyMenu)
 	}
 }
 

@@ -48,12 +48,13 @@ func ListUserRoleIdsByUserId(tx *gorm.DB, userId uint) ([]uint, error) {
 
 func ListUserRolesByUserId(tx *gorm.DB, userId uint) ([]*UserRole, error) {
 	var userRoles []*UserRole
-	if err := tx.Raw(""+
-		"SELECT ur.role_id, r.role_name "+
-		"FROM user_role ur "+
-		"LEFT JOIN role r ON ur.role_id = r.role_id "+
-		"WHERE ur.user_id = ?", userId,
-	).Scan(&userRoles).Error; err != nil {
+
+	if err := tx.Raw(`
+		SELECT ur.role_id, r.role_name
+		FROM user_role ur
+		LEFT JOIN role r ON ur.role_id = r.role_id
+		WHERE ur.user_id = ?
+	`, userId).Scan(&userRoles).Error; err != nil {
 		return nil, err
 	}
 	return userRoles, nil

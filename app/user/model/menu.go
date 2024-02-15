@@ -104,3 +104,61 @@ func ListMenuTreeByMenuId(tx *gorm.DB, menuId uint) ([]*Menu, error) {
 
 	return menus, nil
 }
+
+// ListMenuTreeByMenuIds godoc
+// Get all related menus from the top to the bottom
+func ListMenuTreeByMenuIds(tx *gorm.DB, menuIds []uint) ([]*Menu, error) {
+	var menus []*Menu
+	query := tx.Model(&Menu{})
+
+	query.Raw(`
+		WITH RECURSIVE res AS (
+			SELECT m1.menu_id, m1.menu_type, m1.parent_id, m1.name, m1.path, m1.locale, m1.icon, m1.order
+			FROM menu m1
+			WHERE menu_id IN ?
+			UNION
+			SELECT m2.menu_id, m2.menu_type, m2.parent_id, m2.name, m2.path, m2.locale, m2.icon, m2.order
+			FROM res m
+				INNER JOIN menu m2 ON m2.parent_id = m.menu_id
+		)
+		SELECT *
+		FROM res
+		`,
+		menuIds,
+	)
+
+	if err := query.Find(&menus).Error; err != nil {
+		return nil, err
+	}
+
+	return menus, nil
+}
+
+// ListMenuTreeFromBottomByMenuIds godoc
+// Get all related menus from the bottom to the top
+func ListMenuTreeFromBottomByMenuIds(tx *gorm.DB, menuIds []uint) ([]*Menu, error) {
+	var menus []*Menu
+	query := tx.Model(&Menu{})
+
+	query.Raw(`
+		WITH RECURSIVE res AS (
+			SELECT m1.menu_id, m1.menu_type, m1.parent_id, m1.name, m1.path, m1.locale, m1.icon, m1.order
+			FROM menu m1
+			WHERE menu_id IN ?
+			UNION
+			SELECT m2.menu_id, m2.menu_type, m2.parent_id, m2.name, m2.path, m2.locale, m2.icon, m2.order
+			FROM res m
+				INNER JOIN menu m2 ON m2.menu_id = m.parent_id
+		)
+		SELECT *
+		FROM res
+		`,
+		menuIds,
+	)
+
+	if err := query.Find(&menus).Error; err != nil {
+		return nil, err
+	}
+
+	return menus, nil
+}
