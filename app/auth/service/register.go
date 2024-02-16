@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth/utils"
+	"github.com/pfjhyyj/ether/app/user/constants"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/pfjhyyj/ether/domain/user"
 )
@@ -25,6 +26,7 @@ func (s *RegisterService) RegisterUserByEmail(ctx *gin.Context, username string,
 		Username: username,
 		Email:    email,
 		Password: hashPassword,
+		Status:   constants.UserStatusEnabled,
 	}
 
 	if err := s.userRepo.CreateUser(ctx, newUser); err != nil {

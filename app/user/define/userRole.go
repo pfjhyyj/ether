@@ -1,17 +1,18 @@
 package define
 
+import "github.com/pfjhyyj/ether/common"
+
 type AddUserRoleRequest struct {
-	UserId  uint   `uri:"userId" binding:"required"`
-	RoleIds []uint `json:"roleIds" binding:"required,len>0"`
+	RoleIds []uint `json:"roleIds" binding:"required,gt=0"`
 }
 
 type DeleteUserRoleRequest struct {
-	UserId  uint   `uri:"userId" binding:"required"`
-	RoleIds []uint `json:"roleIds" binding:"required,len>0"`
+	RoleIds []uint `json:"roleIds" binding:"required,gt=0"`
 }
 
 type ListUserRoleRequest struct {
-	UserId uint `uri:"userId" binding:"required"`
+	common.PageRequest
+	UserId uint
 }
 
 type ListUserRoleResponse struct {

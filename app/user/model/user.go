@@ -12,6 +12,7 @@ type User struct {
 	Email    string `gorm:"column:email;unique"`
 	Mobile   string `gorm:"column:mobile;unique"`
 	Avatar   string `gorm:"column:avatar"`
+	Status   uint   `gorm:"column:status"`
 	common.Model
 }
 

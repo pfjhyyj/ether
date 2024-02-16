@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/common"
 	"gorm.io/gorm"
 )
@@ -58,4 +59,21 @@ func ListUserRolesByUserId(tx *gorm.DB, userId uint) ([]*UserRole, error) {
 		return nil, err
 	}
 	return userRoles, nil
+}
+
+func ListUserRoles(tx *gorm.DB, d *define.ListUserRoleRequest) ([]*UserRole, int64, error) {
+	var userRoles []*UserRole
+	query := tx.Model(&UserRole{}).Select("user_role.role_id, role.role_name").Joins("LEFT JOIN role ON user_role.role_id = role.role_id").Where("user_id = ?", d.UserId)
+
+	var total int64
+	query.Count(&total)
+
+	if d.Current > 0 && d.PageSize > 0 {
+		query = query.Offset((d.Current - 1) * d.PageSize).Limit(d.PageSize)
+	}
+
+	if err := query.Scan(&userRoles).Error; err != nil {
+		return nil, 0, err
+	}
+	return userRoles, total, nil
 }

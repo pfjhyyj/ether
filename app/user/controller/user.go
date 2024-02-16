@@ -63,3 +63,42 @@ func (r *UserController) ListUsers(ctx *gin.Context) {
 		},
 	})
 }
+
+// GetUser godoc
+// @Summary Get user
+// @Description Get user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request query define.GetUserRequest true "GetUserRequest"
+// @Success 200 {object} common.Response{data=define.GetUserResponse}
+// @Router /users/{userId} [get]
+func (r *UserController) GetUser(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "user", "get"); !ok {
+		ctx.JSON(http.StatusForbidden, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
+	var req define.GetUserRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		_ = ctx.Error
+		return
+	}
+
+	user, err := r.service.GetUserById(ctx, req.UserId)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	userInfo := utils.ConvertUserToGetUserResponse(user)
+
+	ctx.JSON(http.StatusOK, &common.Response{
+		Code: common.Ok,
+		Data: userInfo,
+	})
+}

@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth/utils"
+	"github.com/pfjhyyj/ether/app/user/constants"
 	"github.com/pfjhyyj/ether/clients/redis"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/pfjhyyj/ether/domain/user"
@@ -29,6 +30,10 @@ func (s *LoginService) LoginByUsername(ctx *gin.Context, username string, passwo
 	u, err := s.userRepo.GetUserByUsername(ctx, username)
 	if err != nil {
 		return nil, &common.SystemError{Code: common.RequestError, Msg: "invalid username or password", Err: err}
+	}
+
+	if u.Status != constants.UserStatusEnabled {
+		return nil, &common.SystemError{Code: common.RequestError, Msg: "user is disabled", Err: nil}
 	}
 
 	// compare password

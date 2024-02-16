@@ -21,6 +21,7 @@ type DeleteRoleRequest struct {
 
 type ListRoleRequest struct {
 	common.PageRequest
+	RoleName string `form:"roleName"`
 }
 
 type RolePageResponse struct {

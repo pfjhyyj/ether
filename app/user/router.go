@@ -18,6 +18,7 @@ func SetUserRouter(r *gin.RouterGroup) {
 	router.Use(middleware.AuthMiddleware())
 	{
 		router.GET("", userController.ListUsers)
+		router.GET("/:userId", userController.GetUser)
 		router.GET("/:userId/roles", userRoleController.ListUserRole)
 		router.POST("/:userId/roles/add", userRoleController.AddUserRole)
 		router.POST("/:userId/roles/delete", userRoleController.DeleteUserRole)

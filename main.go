@@ -45,7 +45,7 @@ func Init() {
 // @description Type "Bearer" followed by a space and JWT token.
 func runApiServer() {
 	r := gin.New()
-	r.Use(gin.Logger(), middleware.ErrorMiddleware(), middleware.TenantMiddleware(false))
+	r.Use(gin.Logger(), middleware.ErrorMiddleware())
 	apiRouter := r.Group("/api")
 	{
 		app.SetRouter(apiRouter)

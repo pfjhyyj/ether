@@ -40,18 +40,19 @@ func (c *UserRoleController) AddUserRole(ctx *gin.Context) {
 		return
 	}
 
-	var req define.AddUserRoleRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
+	var req2 define.UserIdUri
+	if err := ctx.ShouldBindUri(&req2); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
+	var req define.AddUserRoleRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	if err := c.service.AddUserRole(ctx, &req); err != nil {
+	if err := c.service.AddUserRole(ctx, req2.UserId, req.RoleIds); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
@@ -81,18 +82,20 @@ func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 		return
 	}
 
-	var req define.DeleteUserRoleRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
+	var req2 define.UserIdUri
+	if err := ctx.ShouldBindUri(&req2); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
+
+	var req define.DeleteUserRoleRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	if err := c.service.DeleteUserRole(ctx, &req); err != nil {
+	if err := c.service.DeleteUserRole(ctx, req2.UserId, req.RoleIds); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
@@ -109,8 +112,7 @@ func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param user_id path int true "user_id"
-// @Param request body define.ListUserRoleRequest true "ListUserRoleRequest"
+// @Param userId path int true "userId"
 // @Success 200 {object} common.Response{data=common.Page{list=[]define.ListUserRoleResponse}}
 // @Router /users/{userId}/roles [get]
 func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
@@ -122,18 +124,20 @@ func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
 		return
 	}
 
-	var req define.ListUserRoleRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
+	var req2 define.UserIdUri
+	if err := ctx.ShouldBindUri(&req2); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
+	var req define.ListUserRoleRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
+	req.UserId = req2.UserId
 
-	userRoles, err := c.service.ListUserRoleByUserId(ctx, req.UserId)
+	userRoles, total, err := c.service.ListUserRoleByUserId(ctx, &req)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
@@ -143,6 +147,11 @@ func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
-		Data: list,
+		Data: &common.Page{
+			Current:  req.Current,
+			PageSize: req.PageSize,
+			Total:    total,
+			List:     list,
+		},
 	})
 }

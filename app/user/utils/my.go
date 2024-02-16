@@ -9,8 +9,6 @@ func ConvertUserToMyInfoResponse(user *model.User) *define.MyInfoResponse {
 	return &define.MyInfoResponse{
 		UserId:   user.UserId,
 		Username: user.Username,
-		Email:    user.Email,
-		Mobile:   user.Mobile,
 		Avatar:   user.Avatar,
 	}
 }

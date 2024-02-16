@@ -29,6 +29,7 @@ func ConvertRoleListPageRequestToParam(req *define.ListRoleRequest) *model.Query
 			Current:  req.Current,
 			PageSize: req.PageSize,
 		},
+		RoleName: req.RoleName,
 	}
 }
 

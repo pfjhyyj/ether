@@ -19,6 +19,7 @@ func (Role) TableName() string {
 
 type QueryRoleParams struct {
 	common.PageRequest
+	RoleName string
 }
 
 func CreateRole(tx *gorm.DB, role *Role) error {
@@ -59,6 +60,10 @@ func ListRoles(tx *gorm.DB, params *QueryRoleParams) ([]*Role, int64, error) {
 
 	if params.Current > 0 && params.PageSize > 0 {
 		query = query.Offset((params.Current - 1) * params.PageSize).Limit(params.PageSize)
+	}
+
+	if params.RoleName != "" {
+		query = query.Where("role_name like ?", "%"+params.RoleName+"%")
 	}
 
 	if err := query.Find(&roles).Error; err != nil {

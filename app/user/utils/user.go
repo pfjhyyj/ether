@@ -25,17 +25,46 @@ func ConvertUserListPageRequestToParam(req *define.ListUserRequest) *model.Query
 	return params
 }
 
+func hideMobile(mobile string) string {
+	if len(mobile) != 11 {
+		return mobile
+	}
+	return mobile[:3] + "****" + mobile[7:]
+}
+
+func hideEmail(email string) string {
+	if len(email) < 3 {
+		return email
+	}
+	index := len(email) / 2
+	return email[:index] + "****" + email[index:]
+
+}
+
 func ConvertUserListToPageResponse(users []*model.User) []*define.ListUserPageResponse {
 	userInfo := make([]*define.ListUserPageResponse, 0, len(users))
 	for _, user := range users {
 		userInfo = append(userInfo, &define.ListUserPageResponse{
 			UserId:    user.UserId,
 			Username:  user.Username,
-			Email:     user.Email,
-			Mobile:    user.Mobile,
+			Email:     hideEmail(user.Email),
+			Mobile:    hideMobile(user.Mobile),
 			CreatedAt: user.CreatedAt,
 			UpdatedAt: user.UpdatedAt,
+			Status:    user.Status,
 		})
 	}
 	return userInfo
+}
+
+func ConvertUserToGetUserResponse(user *model.User) *define.GetUserResponse {
+	return &define.GetUserResponse{
+		UserId:    user.UserId,
+		Username:  user.Username,
+		Email:     hideEmail(user.Email),
+		Mobile:    hideMobile(user.Mobile),
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		Status:    user.Status,
+	}
 }
