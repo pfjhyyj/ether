@@ -32,7 +32,7 @@ func NewMessageController(service *service.MessageService) *MessageController {
 // @Router /messages [get]
 func (c *MessageController) ListMyMessages(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "message", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -79,7 +79,7 @@ func (c *MessageController) ListMyMessages(ctx *gin.Context) {
 // @Router /messages/{messageId}/read [put]
 func (c *MessageController) ReadMessage(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "message", "read"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -114,7 +114,7 @@ func (c *MessageController) ReadMessage(ctx *gin.Context) {
 // @Router /messages/batchRead [put]
 func (c *MessageController) BatchReadMessage(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "message", "read"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

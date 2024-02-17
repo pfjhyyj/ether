@@ -32,7 +32,7 @@ func NewRoleController(service *service.RoleService) *RoleController {
 // @Router /roles [post]
 func (c *RoleController) CreateRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "create"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -69,7 +69,7 @@ func (c *RoleController) CreateRole(ctx *gin.Context) {
 // @Router /roles/{role_id} [put]
 func (c *RoleController) UpdateRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "update"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -110,7 +110,7 @@ func (c *RoleController) UpdateRole(ctx *gin.Context) {
 // @Router /roles/{role_id} [delete]
 func (c *RoleController) DeleteRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "delete"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -133,6 +133,33 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 	})
 }
 
+func (c *RoleController) GetRole(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "role", "get"); !ok {
+		ctx.JSON(http.StatusOK, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
+	var req define.RoleIdUri
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	role, err := c.service.GetRoleByRoleId(ctx, req.RoleId)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &common.Response{
+		Code: common.Ok,
+		Data: utils.ConvertRoleToResponse(role),
+	})
+}
+
 // ListRoles godoc
 // @Summary List roles
 // @Description List roles
@@ -146,7 +173,7 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 // @Router /roles [get]
 func (c *RoleController) ListRoles(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

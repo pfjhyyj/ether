@@ -1,15 +1,24 @@
 package define
 
+import "github.com/pfjhyyj/ether/common"
+
 type AddRolePermissionRequest struct {
-	RoleId        uint   `uri:"roleId" binding:"required"`
-	PermissionIds []uint `json:"permissionIds" binding:"required,len>0"`
+	RoleId        uint
+	PermissionIds []uint `json:"permissionIds" binding:"required,gt=0"`
 }
 
 type DeleteRolePermissionRequest struct {
-	RoleId        uint   `uri:"roleId" binding:"required"`
-	PermissionIds []uint `json:"permissionIds" binding:"required,len>0"`
+	RoleId        uint
+	PermissionIds []uint `json:"permissionIds" binding:"required,gt=0"`
 }
 
 type ListRolePermissionRequest struct {
-	RoleId uint `uri:"roleId" binding:"required"`
+	common.PageRequest
+
+	RoleId uint
+}
+
+type RolePermissionResponse struct {
+	PermissionId   uint   `json:"permissionId"`
+	PermissionName string `json:"permissionName"`
 }

@@ -32,7 +32,7 @@ func NewMenuController(service *service.MenuService) *MenuController {
 // @Router /menus [post]
 func (c *MenuController) CreateMenu(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "menu", "create"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -68,7 +68,7 @@ func (c *MenuController) CreateMenu(ctx *gin.Context) {
 // @Router /menus/{menuId} [put]
 func (c *MenuController) UpdateMenu(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "menu", "update"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -104,7 +104,7 @@ func (c *MenuController) UpdateMenu(ctx *gin.Context) {
 // @Router /menus/{menuId} [delete]
 func (c *MenuController) DeleteMenu(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "menu", "delete"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -139,7 +139,7 @@ func (c *MenuController) DeleteMenu(ctx *gin.Context) {
 // @Router /menus/{menuId}/tree [get]
 func (c *MenuController) GetMenuTree(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "menu", "get"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -177,7 +177,7 @@ func (c *MenuController) GetMenuTree(ctx *gin.Context) {
 // @Router /menus [get]
 func (c *MenuController) ListMenus(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "menu", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

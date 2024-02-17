@@ -24,7 +24,7 @@ func CreateRoleMenuBatch(tx *gorm.DB, roleMenus []*RoleMenu) error {
 }
 
 func DeleteRoleMenu(tx *gorm.DB, roleId uint, menuIds []uint) error {
-	return tx.Delete(&RoleMenu{}, "role_id = ? AND menu_id IN ?", roleId, menuIds).Error
+	return tx.Unscoped().Delete(&RoleMenu{}, "role_id = ? AND menu_id IN ?", roleId, menuIds).Error
 }
 
 func ListMenuIdsByRoleId(tx *gorm.DB, roleId uint) ([]uint, error) {

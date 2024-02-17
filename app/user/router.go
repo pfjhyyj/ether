@@ -54,6 +54,7 @@ func SetRoleRouter(r *gin.RouterGroup) {
 	{
 		roleRouter.POST("", roleController.CreateRole)
 		roleRouter.GET("", roleController.ListRoles)
+		roleRouter.GET("/:roleId", roleController.GetRole)
 		roleRouter.PUT("/:roleId", roleController.UpdateRole)
 		roleRouter.DELETE("/:roleId", roleController.DeleteRole)
 		roleRouter.GET("/:roleId/permissions", rolePermissionController.ListRolePermission)

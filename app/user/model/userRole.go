@@ -23,15 +23,7 @@ func CreateUserRoleBatch(tx *gorm.DB, userRoles []*UserRole) error {
 }
 
 func DeleteUserRoleBatch(tx *gorm.DB, userId uint, roleIds []uint) error {
-	return tx.Delete(&UserRole{}, "user_id = ? AND role_id IN ?", userId, roleIds).Error
-}
-
-func DeleteUserRolesByUserId(tx *gorm.DB, userId uint) error {
-	return tx.Delete(&UserRole{}, "user_id = ?", userId).Error
-}
-
-func DeleteUserRolesByRoleId(tx *gorm.DB, roleId uint) error {
-	return tx.Delete(&UserRole{}, "role_id = ?", roleId).Error
+	return tx.Unscoped().Delete(&UserRole{}, "user_id = ? AND role_id IN ?", userId, roleIds).Error
 }
 
 func ListUserRoleIdsByUserId(tx *gorm.DB, userId uint) ([]uint, error) {
@@ -45,20 +37,6 @@ func ListUserRoleIdsByUserId(tx *gorm.DB, userId uint) ([]uint, error) {
 		roleIds = append(roleIds, userRole.RoleId)
 	}
 	return roleIds, nil
-}
-
-func ListUserRolesByUserId(tx *gorm.DB, userId uint) ([]*UserRole, error) {
-	var userRoles []*UserRole
-
-	if err := tx.Raw(`
-		SELECT ur.role_id, r.role_name
-		FROM user_role ur
-		LEFT JOIN role r ON ur.role_id = r.role_id
-		WHERE ur.user_id = ?
-	`, userId).Scan(&userRoles).Error; err != nil {
-		return nil, err
-	}
-	return userRoles, nil
 }
 
 func ListUserRoles(tx *gorm.DB, d *define.ListUserRoleRequest) ([]*UserRole, int64, error) {

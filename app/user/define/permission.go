@@ -23,6 +23,7 @@ type DeletePermissionRequest struct {
 
 type ListPermissionsRequest struct {
 	common.PageRequest
+	Name   string `form:"name"`
 	Target string `form:"target"`
 }
 

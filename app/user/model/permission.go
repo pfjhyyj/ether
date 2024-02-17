@@ -21,6 +21,7 @@ func (p Permission) TableName() string {
 type QueryPermissionParams struct {
 	common.PageRequest
 	Target string
+	Name   string
 }
 
 func CreatePermission(tx *gorm.DB, perm *Permission) error {
@@ -65,6 +66,10 @@ func ListPermissions(tx *gorm.DB, params *QueryPermissionParams) ([]*Permission,
 
 	if params.Target != "" {
 		query = query.Where("target = ?", params.Target)
+	}
+
+	if params.Name != "" {
+		query = query.Where("name = ?", params.Name)
 	}
 
 	if err := query.Find(&perms).Error; err != nil {

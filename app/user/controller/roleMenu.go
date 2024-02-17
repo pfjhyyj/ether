@@ -32,7 +32,7 @@ func NewRoleMenuController(service *service.RoleMenuService) *RoleMenuController
 // @Router /roles/{roleId}/menus/add [post]
 func (c *RoleMenuController) AddRoleMenu(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_menu", "create"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -74,7 +74,7 @@ func (c *RoleMenuController) AddRoleMenu(ctx *gin.Context) {
 // @Router /roles/{roleId}/menus/delete [post]
 func (c *RoleMenuController) DeleteRoleMenu(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_menu", "delete"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -115,7 +115,7 @@ func (c *RoleMenuController) DeleteRoleMenu(ctx *gin.Context) {
 // @Router /roles/{roleId}/menus [get]
 func (c *RoleMenuController) ListRoleMenu(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_menu", "read"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

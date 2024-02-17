@@ -30,7 +30,7 @@ func NewTenantController(service *service.TenantService) *TenantController {
 // @Router /tenants [post]
 func (r *TenantController) CreateTenant(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "create"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -67,7 +67,7 @@ func (r *TenantController) CreateTenant(ctx *gin.Context) {
 // @Router /tenants/{tenantId} [put]
 func (r *TenantController) UpdateTenant(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "update"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -108,7 +108,7 @@ func (r *TenantController) UpdateTenant(ctx *gin.Context) {
 // @Router /tenants/{tenantId} [delete]
 func (r *TenantController) DeleteTenant(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "delete"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -144,7 +144,7 @@ func (r *TenantController) DeleteTenant(ctx *gin.Context) {
 // @Router /tenants [get]
 func (r *TenantController) ListTenants(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "tenant", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

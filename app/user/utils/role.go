@@ -45,3 +45,12 @@ func ConvertRoleListToPageResponse(roles []*model.Role) []*define.RolePageRespon
 	}
 	return roleInfos
 }
+
+func ConvertRoleToResponse(role *model.Role) *define.RoleResponse {
+	return &define.RoleResponse{
+		RoleId:      role.RoleId,
+		RoleName:    role.RoleName,
+		RoleCode:    role.RoleCode,
+		Description: role.Description,
+	}
+}

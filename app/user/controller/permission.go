@@ -32,7 +32,7 @@ func NewPermissionController(service *service.PermissionService) *PermissionCont
 // @Router /permissions [post]
 func (c *PermissionController) CreatePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "create"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -69,7 +69,7 @@ func (c *PermissionController) CreatePermission(ctx *gin.Context) {
 // @Router /permissions/{permission_id} [put]
 func (c *PermissionController) UpdatePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "update"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -110,7 +110,7 @@ func (c *PermissionController) UpdatePermission(ctx *gin.Context) {
 // @Router /permissions/{permission_id} [delete]
 func (c *PermissionController) DeletePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "delete"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -147,7 +147,7 @@ func (c *PermissionController) DeletePermission(ctx *gin.Context) {
 // @Router /permissions [get]
 func (c *PermissionController) ListPermissions(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "permission", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

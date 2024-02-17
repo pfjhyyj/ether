@@ -32,6 +32,7 @@ func ConvertListPermissionRequestToParam(req *define.ListPermissionsRequest) *mo
 			PageSize: req.PageSize,
 		},
 		Target: req.Target,
+		Name:   req.Name,
 	}
 }
 

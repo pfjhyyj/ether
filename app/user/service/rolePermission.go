@@ -138,3 +138,16 @@ func (s *RolePermissionService) ListPermissionIdsByRoleId(ctx *gin.Context, role
 
 	return permissionIds, nil
 }
+
+func (s *RolePermissionService) ListRolePermissions(ctx *gin.Context, d *define.ListRolePermissionRequest) ([]*model.RolePermission, int64, error) {
+	logs := logrus.WithContext(ctx)
+	db := gorm.GetDB().WithContext(ctx)
+
+	permissions, total, err := model.ListRolePermissions(db, d)
+	if err != nil {
+		logs.WithError(err).Error("list permissions by role id failed")
+		return nil, 0, &common.SystemError{Code: common.DbError, Msg: "list permissions by role id failed", Err: err}
+	}
+
+	return permissions, total, nil
+}

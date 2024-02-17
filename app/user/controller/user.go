@@ -30,7 +30,7 @@ func NewUserController(service *service.UserService) *UserController {
 // @Router /users [get]
 func (r *UserController) ListUsers(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -76,7 +76,7 @@ func (r *UserController) ListUsers(ctx *gin.Context) {
 // @Router /users/{userId} [get]
 func (r *UserController) GetUser(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user", "get"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})

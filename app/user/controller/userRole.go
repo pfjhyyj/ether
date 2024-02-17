@@ -33,7 +33,7 @@ func NewUserRoleController(service *service.UserRoleService) *UserRoleController
 // @Router /users/{userId}/roles/add [post]
 func (c *UserRoleController) AddUserRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user_role", "create"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -75,7 +75,7 @@ func (c *UserRoleController) AddUserRole(ctx *gin.Context) {
 // @Router /users/{userId}/roles/delete [post]
 func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user_role", "delete"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
@@ -117,7 +117,7 @@ func (c *UserRoleController) DeleteUserRole(ctx *gin.Context) {
 // @Router /users/{userId}/roles [get]
 func (c *UserRoleController) ListUserRole(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "user_role", "list"); !ok {
-		ctx.JSON(http.StatusForbidden, &common.Response{
+		ctx.JSON(http.StatusOK, &common.Response{
 			Code: common.NoPermissionError,
 			Msg:  "no permission",
 		})
