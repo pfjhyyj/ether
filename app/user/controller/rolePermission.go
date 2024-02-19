@@ -113,7 +113,7 @@ func (c *RolePermissionController) DeleteRolePermission(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param role_id path int true "role_id"
-// @Success 200 {object}
+// @Success 200 {object} common.Response
 // @Router /roles/{roleId}/permissions [get]
 func (c *RolePermissionController) ListRolePermission(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "role_permission", "list"); !ok {

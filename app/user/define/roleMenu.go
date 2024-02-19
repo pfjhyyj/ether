@@ -13,3 +13,7 @@ type DeleteRoleMenuRequest struct {
 type ListRoleMenuRequest struct {
 	RoleId uint `uri:"roleId" binding:"required"`
 }
+
+type ListRoleMenuResponse struct {
+	MenuIds []uint `json:"menuIds"`
+}

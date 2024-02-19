@@ -75,11 +75,18 @@ func (c *MenuController) UpdateMenu(ctx *gin.Context) {
 		return
 	}
 
+	var menuIdReq define.MenuIdUri
+	if err := ctx.ShouldBindUri(&menuIdReq); err != nil {
+		_ = ctx.Error
+		return
+	}
+
 	var req define.UpdateMenuRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
+	req.MenuId = menuIdReq.MenuId
 
 	menu := utils.ConvertUpdateMenuRequestToMenu(&req)
 	if err := c.service.UpdateMenu(ctx, req.MenuId, menu); err != nil {

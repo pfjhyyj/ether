@@ -18,6 +18,18 @@ definitions:
       msg:
         type: string
     type: object
+  define.AddRoleMenuRequest:
+    properties:
+      menuIds:
+        items:
+          type: integer
+        type: array
+      roleId:
+        type: integer
+    required:
+    - menuIds
+    - roleId
+    type: object
   define.AddRolePermissionRequest:
     properties:
       permissionIds:
@@ -28,7 +40,6 @@ definitions:
         type: integer
     required:
     - permissionIds
-    - roleId
     type: object
   define.AddUserRoleRequest:
     properties:
@@ -36,11 +47,8 @@ definitions:
         items:
           type: integer
         type: array
-      userId:
-        type: integer
     required:
     - roleIds
-    - userId
     type: object
   define.BatchReadMessageRequest:
     properties:
@@ -48,6 +56,23 @@ definitions:
         items:
           type: integer
         type: array
+    type: object
+  define.CreateMenuRequest:
+    properties:
+      icon:
+        type: string
+      locale:
+        type: string
+      menuType:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+      parentId:
+        type: integer
+      path:
+        type: string
     type: object
   define.CreatePermissionRequest:
     properties:
@@ -86,17 +111,57 @@ definitions:
     - domain
     - name
     type: object
+  define.DeleteMenuRequest:
+    properties:
+      menuId:
+        type: integer
+    required:
+    - menuId
+    type: object
+  define.DeleteRoleMenuRequest:
+    properties:
+      menuIds:
+        items:
+          type: integer
+        type: array
+      roleId:
+        type: integer
+    required:
+    - menuIds
+    - roleId
+    type: object
   define.DeleteUserRoleRequest:
     properties:
       roleIds:
         items:
           type: integer
         type: array
-      userId:
-        type: integer
     required:
     - roleIds
-    - userId
+    type: object
+  define.GetMenuResponse:
+    properties:
+      menu:
+        items:
+          $ref: '#/definitions/define.Menu'
+        type: array
+    type: object
+  define.GetUserResponse:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      mobile:
+        type: string
+      status:
+        type: integer
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+      username:
+        type: string
     type: object
   define.ListMyMessagesResponse:
     properties:
@@ -112,6 +177,13 @@ definitions:
         type: integer
       title:
         type: string
+    type: object
+  define.ListRoleMenuResponse:
+    properties:
+      menuIds:
+        items:
+          type: integer
+        type: array
     type: object
   define.ListTenantPageResponse:
     properties:
@@ -134,19 +206,14 @@ definitions:
         type: string
       mobile:
         type: string
+      status:
+        type: integer
       updatedAt:
         type: string
       userId:
         type: integer
       username:
         type: string
-    type: object
-  define.ListUserRoleRequest:
-    properties:
-      userId:
-        type: integer
-    required:
-    - userId
     type: object
   define.ListUserRoleResponse:
     properties:
@@ -160,6 +227,36 @@ definitions:
       password:
         type: string
       username:
+        type: string
+    type: object
+  define.Menu:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/define.Menu'
+        type: array
+      icon:
+        type: string
+      locale:
+        type: string
+      menuId:
+        type: integer
+      menuType:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+      parentId:
+        type: integer
+      path:
+        type: string
+    type: object
+  define.MenuPageResponse:
+    properties:
+      menuId:
+        type: integer
+      name:
         type: string
     type: object
   define.MyInfoResponse:
@@ -222,6 +319,27 @@ definitions:
         type: string
       expireTime:
         type: integer
+    type: object
+  define.UpdateMenuRequest:
+    properties:
+      icon:
+        type: string
+      locale:
+        type: string
+      menuId:
+        type: integer
+      menuType:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+      parentId:
+        type: integer
+      path:
+        type: string
+    required:
+    - menuId
     type: object
   define.UpdateMyInfoRequest:
     properties:
@@ -355,6 +473,140 @@ paths:
       summary: Register by email
       tags:
       - auth
+  /menus:
+    get:
+      consumes:
+      - application/json
+      description: List menus
+      parameters:
+      - in: query
+        name: current
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/common.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/define.MenuPageResponse'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: List menus
+      tags:
+      - menu
+    post:
+      consumes:
+      - application/json
+      description: Create menu
+      parameters:
+      - description: CreateMenuRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.CreateMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Create menu
+      tags:
+      - menu
+  /menus/{menuId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete menu
+      parameters:
+      - description: DeleteMenuRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.DeleteMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Delete menu
+      tags:
+      - menu
+    put:
+      consumes:
+      - application/json
+      description: Update menu
+      parameters:
+      - description: UpdateMenuRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.UpdateMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Update menu
+      tags:
+      - menu
+  /menus/{menuId}/tree:
+    get:
+      consumes:
+      - application/json
+      description: Get menu tree
+      parameters:
+      - description: menu_id
+        in: query
+        name: menu_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/define.GetMenuResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Get menu tree
+      tags:
+      - menu
   /messages:
     get:
       consumes:
@@ -487,6 +739,28 @@ paths:
       security:
       - Bearer: []
       summary: Update my info
+      tags:
+      - my
+  /my/menus:
+    get:
+      consumes:
+      - application/json
+      description: Get my menu
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/define.GetMenuResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Get my menu
       tags:
       - my
   /my/password:
@@ -741,6 +1015,92 @@ paths:
       summary: Update role
       tags:
       - role
+  /roles/{roleId}/menus:
+    get:
+      consumes:
+      - application/json
+      description: List role menu
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/define.ListRoleMenuResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: List role menu
+      tags:
+      - role
+  /roles/{roleId}/menus/add:
+    post:
+      consumes:
+      - application/json
+      description: Add role menu
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      - description: AddRoleMenuRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.AddRoleMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Add role menu
+      tags:
+      - role
+  /roles/{roleId}/menus/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete role menu
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      - description: DeleteRoleMenuRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/define.DeleteRoleMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - Bearer: []
+      summary: Delete role menu
+      tags:
+      - role
   /roles/{roleId}/permissions:
     get:
       consumes:
@@ -758,7 +1118,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       security:
       - Bearer: []
       summary: List role permission
@@ -962,23 +1322,44 @@ paths:
       summary: List users
       tags:
       - user
+  /users/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get user
+      parameters:
+      - in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/define.GetUserResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Get user
+      tags:
+      - user
   /users/{userId}/roles:
     get:
       consumes:
       - application/json
       description: List user role
       parameters:
-      - description: user_id
+      - description: userId
         in: path
-        name: user_id
+        name: userId
         required: true
         type: integer
-      - description: ListUserRoleRequest
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/define.ListUserRoleRequest'
       produces:
       - application/json
       responses:

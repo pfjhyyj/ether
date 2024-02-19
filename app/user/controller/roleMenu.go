@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/app/user/service"
+	"github.com/pfjhyyj/ether/app/user/utils"
 	"github.com/pfjhyyj/ether/common"
 	utils2 "github.com/pfjhyyj/ether/utils"
 	"net/http"
@@ -134,8 +135,10 @@ func (c *RoleMenuController) ListRoleMenu(ctx *gin.Context) {
 		return
 	}
 
+	list := utils.ConvertRoleMenuListToResponse(roleMenus)
+
 	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
-		Data: roleMenus,
+		Data: list,
 	})
 }

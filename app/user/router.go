@@ -88,6 +88,7 @@ func SetMenuRouter(r *gin.RouterGroup) {
 	router.Use(middleware.AuthMiddleware())
 	{
 		router.POST("", menuController.CreateMenu)
+		router.GET("", menuController.ListMenus)
 		router.PUT("/:menuId", menuController.UpdateMenu)
 		router.DELETE("/:menuId", menuController.DeleteMenu)
 		router.GET("/:menuId/tree", menuController.GetMenuTree)

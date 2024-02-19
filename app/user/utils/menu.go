@@ -53,27 +53,20 @@ func ConvertMenuListToPageResponse(menu []*model.Menu) []*define.MenuPageRespons
 }
 
 func ConvertMenuToResponse(menus []*model.Menu) *define.GetMenuResponse {
-	return &define.GetMenuResponse{
-		Menus: parseMenuListToForest(menus, 0),
-	}
-}
-
-func parseMenuListToForest(menus []*model.Menu, parentId uint) []*define.Menu {
 	var menuInfos []*define.Menu
 	for _, menu := range menus {
-		if menu.ParentId == parentId {
-			menuInfos = append(menuInfos, &define.Menu{
-				MenuId:   menu.MenuId,
-				MenuType: menu.MenuType,
-				ParentId: menu.ParentId,
-				Name:     menu.Name,
-				Path:     menu.Path,
-				Locale:   menu.Locale,
-				Icon:     menu.Icon,
-				Order:    menu.Order,
-				Children: parseMenuListToForest(menus, menu.MenuId),
-			})
-		}
+		menuInfos = append(menuInfos, &define.Menu{
+			MenuId:   menu.MenuId,
+			MenuType: menu.MenuType,
+			ParentId: menu.ParentId,
+			Name:     menu.Name,
+			Path:     menu.Path,
+			Locale:   menu.Locale,
+			Icon:     menu.Icon,
+			Order:    menu.Order,
+		})
 	}
-	return menuInfos
+	return &define.GetMenuResponse{
+		Menus: menuInfos,
+	}
 }

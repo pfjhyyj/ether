@@ -123,6 +123,235 @@ const docTemplate = `{
                 }
             }
         },
+        "/menus": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "List menus",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "List menus",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "current",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/common.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/define.MenuPageResponse"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Create menu",
+                "parameters": [
+                    {
+                        "description": "CreateMenuRequest",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/define.CreateMenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/{menuId}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Update menu",
+                "parameters": [
+                    {
+                        "description": "UpdateMenuRequest",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/define.UpdateMenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Delete menu",
+                "parameters": [
+                    {
+                        "description": "DeleteMenuRequest",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/define.DeleteMenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/{menuId}/tree": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get menu tree",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Get menu tree",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "menu_id",
+                        "name": "menu_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/define.GetMenuResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/messages": {
             "get": {
                 "security": [
@@ -348,6 +577,46 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/my/menus": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get my menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "my"
+                ],
+                "summary": "Get my menu",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/define.GetMenuResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -691,6 +960,147 @@ const docTemplate = `{
                 }
             }
         },
+        "/roles/{roleId}/menus": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "List role menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "List role menu",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "role_id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/define.ListRoleMenuResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{roleId}/menus/add": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Add role menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Add role menu",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "role_id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AddRoleMenuRequest",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/define.AddRoleMenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{roleId}/menus/delete": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete role menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Delete role menu",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "role_id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "DeleteRoleMenuRequest",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/define.DeleteRoleMenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/roles/{roleId}/permissions": {
             "get": {
                 "security": [
@@ -722,7 +1132,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -1144,6 +1554,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/{userId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/define.GetUserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/users/{userId}/roles": {
             "get": {
                 "security": [
@@ -1165,19 +1623,10 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "user_id",
-                        "name": "user_id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "ListUserRoleRequest",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/define.ListUserRoleRequest"
-                        }
                     }
                 ],
                 "responses": {
@@ -1338,11 +1787,28 @@ const docTemplate = `{
                 }
             }
         },
+        "define.AddRoleMenuRequest": {
+            "type": "object",
+            "required": [
+                "menuIds",
+                "roleId"
+            ],
+            "properties": {
+                "menuIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "roleId": {
+                    "type": "integer"
+                }
+            }
+        },
         "define.AddRolePermissionRequest": {
             "type": "object",
             "required": [
-                "permissionIds",
-                "roleId"
+                "permissionIds"
             ],
             "properties": {
                 "permissionIds": {
@@ -1359,8 +1825,7 @@ const docTemplate = `{
         "define.AddUserRoleRequest": {
             "type": "object",
             "required": [
-                "roleIds",
-                "userId"
+                "roleIds"
             ],
             "properties": {
                 "roleIds": {
@@ -1368,9 +1833,6 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
-                },
-                "userId": {
-                    "type": "integer"
                 }
             }
         },
@@ -1382,6 +1844,32 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "define.CreateMenuRequest": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "menuType": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
                 }
             }
         },
@@ -1440,11 +1928,39 @@ const docTemplate = `{
                 }
             }
         },
+        "define.DeleteMenuRequest": {
+            "type": "object",
+            "required": [
+                "menuId"
+            ],
+            "properties": {
+                "menuId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "define.DeleteRoleMenuRequest": {
+            "type": "object",
+            "required": [
+                "menuIds",
+                "roleId"
+            ],
+            "properties": {
+                "menuIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "roleId": {
+                    "type": "integer"
+                }
+            }
+        },
         "define.DeleteUserRoleRequest": {
             "type": "object",
             "required": [
-                "roleIds",
-                "userId"
+                "roleIds"
             ],
             "properties": {
                 "roleIds": {
@@ -1452,9 +1968,43 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "define.GetMenuResponse": {
+            "type": "object",
+            "properties": {
+                "menu": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/define.Menu"
+                    }
+                }
+            }
+        },
+        "define.GetUserResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 },
                 "userId": {
                     "type": "integer"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -1478,6 +2028,17 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "define.ListRoleMenuResponse": {
+            "type": "object",
+            "properties": {
+                "menuIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -1513,6 +2074,9 @@ const docTemplate = `{
                 "mobile": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "integer"
+                },
                 "updatedAt": {
                     "type": "string"
                 },
@@ -1521,17 +2085,6 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
-                }
-            }
-        },
-        "define.ListUserRoleRequest": {
-            "type": "object",
-            "required": [
-                "userId"
-            ],
-            "properties": {
-                "userId": {
-                    "type": "integer"
                 }
             }
         },
@@ -1553,6 +2106,52 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "define.Menu": {
+            "type": "object",
+            "properties": {
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/define.Menu"
+                    }
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "menuId": {
+                    "type": "integer"
+                },
+                "menuType": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "define.MenuPageResponse": {
+            "type": "object",
+            "properties": {
+                "menuId": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -1645,6 +2244,38 @@ const docTemplate = `{
                 },
                 "expireTime": {
                     "type": "integer"
+                }
+            }
+        },
+        "define.UpdateMenuRequest": {
+            "type": "object",
+            "required": [
+                "menuId"
+            ],
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "menuId": {
+                    "type": "integer"
+                },
+                "menuType": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
                 }
             }
         },

@@ -69,7 +69,7 @@ func ListMenus(tx *gorm.DB, params *QueryMenuParams) ([]*Menu, int64, error) {
 		query = query.Offset((params.Current - 1) * params.PageSize).Limit(params.PageSize)
 	}
 
-	query.Where("parent_menu_id = 0 AND menu_type = ?", constants.MenuTypeCategory)
+	query.Where("parent_id = 0 AND menu_type = ?", constants.MenuTypeCategory)
 
 	if err := query.Find(&menus).Error; err != nil {
 		return nil, 0, err
