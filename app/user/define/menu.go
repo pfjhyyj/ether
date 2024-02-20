@@ -13,7 +13,7 @@ type CreateMenuRequest struct {
 	Path     string `json:"path"`
 	Locale   string `json:"locale"`
 	Icon     string `json:"icon"`
-	Order    int    `json:"order"`
+	Weight   int    `json:"weight"`
 }
 
 type UpdateMenuRequest struct {
@@ -24,7 +24,7 @@ type UpdateMenuRequest struct {
 	Path     string `json:"path"`
 	Locale   string `json:"locale"`
 	Icon     string `json:"icon"`
-	Order    int    `json:"order"`
+	Weight   int    `json:"weight"`
 }
 
 type DeleteMenuRequest struct {
@@ -36,8 +36,15 @@ type ListMenusRequest struct {
 }
 
 type MenuPageResponse struct {
-	MenuId uint   `json:"menuId"`
-	Name   string `json:"name"`
+	MenuId   uint    `json:"menuId"`
+	MenuType uint    `json:"menuType"`
+	ParentId uint    `json:"parentId"`
+	Name     string  `json:"name"`
+	Path     string  `json:"path"`
+	Locale   string  `json:"locale"`
+	Icon     string  `json:"icon"`
+	Weight   int     `json:"weight"`
+	Children []*Menu `json:"children"`
 }
 
 type GetMenuRequest struct {
@@ -45,7 +52,15 @@ type GetMenuRequest struct {
 }
 
 type GetMenuResponse struct {
-	Menus []*Menu `json:"menus"`
+	MenuId   uint    `json:"menuId"`
+	MenuType uint    `json:"menuType"`
+	ParentId uint    `json:"parentId"`
+	Name     string  `json:"name"`
+	Path     string  `json:"path"`
+	Locale   string  `json:"locale"`
+	Icon     string  `json:"icon"`
+	Weight   int     `json:"weight"`
+	Menus    []*Menu `json:"menus"`
 }
 
 type Menu struct {
@@ -56,5 +71,5 @@ type Menu struct {
 	Path     string `json:"path"`
 	Locale   string `json:"locale"`
 	Icon     string `json:"icon"`
-	Order    int    `json:"order"`
+	Weight   int    `json:"weight"`
 }

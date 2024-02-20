@@ -17,3 +17,7 @@ type UpdateMyPasswordRequest struct {
 	NewPassword    string `json:"newPassword" binding:"required,min=8,max=20"`
 	RepeatPassword string `json:"repeatPassword" binding:"required"`
 }
+
+type GetMyMenuResponse struct {
+	Menus []*Menu `json:"menus"`
+}

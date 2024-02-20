@@ -118,13 +118,13 @@ func (c *MenuController) DeleteMenu(ctx *gin.Context) {
 		return
 	}
 
-	var req define.DeleteMenuRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	var menuIdReq define.MenuIdUri
+	if err := ctx.ShouldBindUri(&menuIdReq); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	if err := c.service.DeleteMenu(ctx, req.MenuId); err != nil {
+	if err := c.service.DeleteMenu(ctx, menuIdReq.MenuId); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
@@ -134,43 +134,49 @@ func (c *MenuController) DeleteMenu(ctx *gin.Context) {
 	})
 }
 
-// GetMenuTree godoc
-// @Summary Get menu tree
-// @Description Get menu tree
-// @Tags menu
-// @Accept json
-// @Produce json
-// @Security Bearer
-// @Param menu_id query int true "menu_id"
-// @Success 200 {object} common.Response{data=define.GetMenuResponse}
-// @Router /menus/{menuId}/tree [get]
-func (c *MenuController) GetMenuTree(ctx *gin.Context) {
-	if ok := utils2.CheckPermission(ctx, "menu", "get"); !ok {
-		ctx.JSON(http.StatusOK, &common.Response{
-			Code: common.NoPermissionError,
-			Msg:  "no permission",
-		})
-		return
-	}
-
-	var req define.GetMenuRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		_ = ctx.Error(err)
-		return
-	}
-
-	menus, err := c.service.GetMenuTreeByMenuId(ctx, req.MenuId)
-	if err != nil {
-		_ = ctx.Error(err)
-		return
-	}
-
-	menuInfo := utils.ConvertMenuToResponse(menus)
-	ctx.JSON(http.StatusOK, &common.Response{
-		Code: common.Ok,
-		Data: menuInfo,
-	})
-}
+//// GetMenuTree godoc
+//// @Summary Get menu tree
+//// @Description Get menu tree
+//// @Tags menu
+//// @Accept json
+//// @Produce json
+//// @Security Bearer
+//// @Param menu_id query int true "menu_id"
+//// @Success 200 {object} common.Response{data=define.GetMenuResponse}
+//// @Router /menus/{menuId}/tree [get]
+//func (c *MenuController) GetMenuTree(ctx *gin.Context) {
+//	if ok := utils2.CheckPermission(ctx, "menu", "get"); !ok {
+//		ctx.JSON(http.StatusOK, &common.Response{
+//			Code: common.NoPermissionError,
+//			Msg:  "no permission",
+//		})
+//		return
+//	}
+//
+//	var req define.GetMenuRequest
+//	if err := ctx.ShouldBindUri(&req); err != nil {
+//		_ = ctx.Error(err)
+//		return
+//	}
+//
+//	menu, err := c.service.GetMenuByMenuId(ctx, req.MenuId)
+//	if err != nil {
+//		_ = ctx.Error(err)
+//		return
+//	}
+//
+//	menus, err := c.service.GetMenuTreeByMenuId(ctx, req.MenuId)
+//	if err != nil {
+//		_ = ctx.Error(err)
+//		return
+//	}
+//
+//	menuInfo := utils.ConvertMenuToResponse(menu, menus)
+//	ctx.JSON(http.StatusOK, &common.Response{
+//		Code: common.Ok,
+//		Data: menuInfo,
+//	})
+//}
 
 // ListMenus godoc
 // @Summary List menus
@@ -180,7 +186,7 @@ func (c *MenuController) GetMenuTree(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param request query define.ListMenusRequest true "ListMenusRequest"
-// @Success 200 {object} common.Response{data=common.Page{list=[]define.MenuPageResponse}}
+// @Success 200 {object} common.Response{data=[]define.MenuPageResponse}
 // @Router /menus [get]
 func (c *MenuController) ListMenus(ctx *gin.Context) {
 	if ok := utils2.CheckPermission(ctx, "menu", "list"); !ok {
@@ -191,14 +197,7 @@ func (c *MenuController) ListMenus(ctx *gin.Context) {
 		return
 	}
 
-	var req define.ListMenusRequest
-	if err := ctx.ShouldBindQuery(&req); err != nil {
-		_ = ctx.Error(err)
-		return
-	}
-
-	params := utils.ConvertListMenuRequestToParam(&req)
-	menus, total, err := c.service.ListMenus(ctx, params)
+	menus, err := c.service.ListAllMenus(ctx)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
@@ -207,11 +206,6 @@ func (c *MenuController) ListMenus(ctx *gin.Context) {
 	menusInfo := utils.ConvertMenuListToPageResponse(menus)
 	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
-		Data: &common.Page{
-			Current:  req.Current,
-			PageSize: req.PageSize,
-			Total:    total,
-			List:     menusInfo,
-		},
+		Data: menusInfo,
 	})
 }

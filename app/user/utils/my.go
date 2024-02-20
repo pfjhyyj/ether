@@ -24,3 +24,22 @@ func ConvertUpdateMyPasswordRequestToModel(req *define.UpdateMyPasswordRequest) 
 		Password: req.NewPassword,
 	}
 }
+
+func ConvertMyMenuToResponse(menus []*model.Menu) *define.GetMyMenuResponse {
+	var menuInfos []*define.Menu
+	for _, menu := range menus {
+		menuInfos = append(menuInfos, &define.Menu{
+			MenuId:   menu.MenuId,
+			MenuType: menu.MenuType,
+			ParentId: menu.ParentId,
+			Name:     menu.Name,
+			Path:     menu.Path,
+			Locale:   menu.Locale,
+			Icon:     menu.Icon,
+			Weight:   menu.Weight,
+		})
+	}
+	return &define.GetMyMenuResponse{
+		Menus: menuInfos,
+	}
+}

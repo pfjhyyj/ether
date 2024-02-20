@@ -120,7 +120,7 @@ func (c *MyController) GetMyMenu(ctx *gin.Context) {
 		return
 	}
 
-	menusInfo := utils.ConvertMenuToResponse(menus)
+	menusInfo := utils.ConvertMyMenuToResponse(menus)
 	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
 		Data: menusInfo,

@@ -14,7 +14,7 @@ type Menu struct {
 	Path        string `gorm:"column:path"`
 	Locale      string `gorm:"column:locale"`
 	Icon        string `gorm:"column:icon"`
-	Order       int    `gorm:"column:order"`
+	Weight      int    `gorm:"column:weight"`
 	Description string `gorm:"column:description"`
 	common.Model
 }
@@ -37,6 +37,10 @@ func UpdateMenu(tx *gorm.DB, menuId uint, menu *Menu) error {
 
 func DeleteMenu(tx *gorm.DB, menuId uint) error {
 	return tx.Delete("menu_id = ?", menuId).Error
+}
+
+func DeleteMenus(tx *gorm.DB, menuIds []uint) error {
+	return tx.Delete(&Menu{}, "menu_id IN ?", menuIds).Error
 }
 
 func GetMenuByMenuId(tx *gorm.DB, menuId uint) (*Menu, error) {
@@ -86,11 +90,11 @@ func ListMenuTreeByMenuId(tx *gorm.DB, menuId uint) ([]*Menu, error) {
 		WITH RECURSIVE res AS (
 			SELECT m1.menu_id, m1.menu_type, m1.parent_id, m1.name, m1.path, m1.locale, m1.icon, m1.order
 			FROM menu m1
-			WHERE menu_id = ?
+			WHERE menu_id = ? AND m1.deleted_at IS NULL
 			UNION
 			SELECT m2.menu_id, m2.menu_type, m2.parent_id, m2.name, m2.path, m2.locale, m2.icon, m2.order
 			FROM res m
-				INNER JOIN menu m2 ON m2.parent_id = m.menu_id
+				INNER JOIN menu m2 ON m2.parent_id = m.menu_id AND m2.deleted_at IS NULL
 		)
 		SELECT *
 		FROM res
@@ -115,11 +119,11 @@ func ListMenuTreeByMenuIds(tx *gorm.DB, menuIds []uint) ([]*Menu, error) {
 		WITH RECURSIVE res AS (
 			SELECT m1.menu_id, m1.menu_type, m1.parent_id, m1.name, m1.path, m1.locale, m1.icon, m1.order
 			FROM menu m1
-			WHERE menu_id IN ?
+			WHERE menu_id IN ? AND m1.deleted_at IS NULL
 			UNION
 			SELECT m2.menu_id, m2.menu_type, m2.parent_id, m2.name, m2.path, m2.locale, m2.icon, m2.order
 			FROM res m
-				INNER JOIN menu m2 ON m2.parent_id = m.menu_id
+				INNER JOIN menu m2 ON m2.parent_id = m.menu_id AND m2.deleted_at IS NULL
 		)
 		SELECT *
 		FROM res
@@ -157,6 +161,17 @@ func ListMenuTreeFromBottomByMenuIds(tx *gorm.DB, menuIds []uint) ([]*Menu, erro
 	)
 
 	if err := query.Find(&menus).Error; err != nil {
+		return nil, err
+	}
+
+	return menus, nil
+}
+
+func ListAllMenus(tx *gorm.DB) ([]*Menu, error) {
+	var menus []*Menu
+	query := tx.Model(&Menu{})
+
+	if err := query.Order("weight DESC").Find(&menus).Error; err != nil {
 		return nil, err
 	}
 

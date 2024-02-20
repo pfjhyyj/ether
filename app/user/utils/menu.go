@@ -14,7 +14,7 @@ func ConvertCreateMenuRequestToMenu(req *define.CreateMenuRequest) *model.Menu {
 		Path:     req.Path,
 		Locale:   req.Locale,
 		Icon:     req.Icon,
-		Order:    req.Order,
+		Weight:   req.Weight,
 	}
 }
 
@@ -27,7 +27,7 @@ func ConvertUpdateMenuRequestToMenu(req *define.UpdateMenuRequest) *model.Menu {
 		Path:     req.Path,
 		Locale:   req.Locale,
 		Icon:     req.Icon,
-		Order:    req.Order,
+		Weight:   req.Weight,
 	}
 }
 
@@ -41,18 +41,24 @@ func ConvertListMenuRequestToParam(req *define.ListMenusRequest) *model.QueryMen
 
 }
 
-func ConvertMenuListToPageResponse(menu []*model.Menu) []*define.MenuPageResponse {
+func ConvertMenuListToPageResponse(menus []*model.Menu) []*define.MenuPageResponse {
 	var menuInfos []*define.MenuPageResponse
-	for _, m := range menu {
+	for _, menu := range menus {
 		menuInfos = append(menuInfos, &define.MenuPageResponse{
-			MenuId: m.MenuId,
-			Name:   m.Name,
+			MenuId:   menu.MenuId,
+			MenuType: menu.MenuType,
+			ParentId: menu.ParentId,
+			Name:     menu.Name,
+			Path:     menu.Path,
+			Locale:   menu.Locale,
+			Icon:     menu.Icon,
+			Weight:   menu.Weight,
 		})
 	}
 	return menuInfos
 }
 
-func ConvertMenuToResponse(menus []*model.Menu) *define.GetMenuResponse {
+func ConvertMenuToResponse(m *model.Menu, menus []*model.Menu) *define.GetMenuResponse {
 	var menuInfos []*define.Menu
 	for _, menu := range menus {
 		menuInfos = append(menuInfos, &define.Menu{
@@ -63,10 +69,18 @@ func ConvertMenuToResponse(menus []*model.Menu) *define.GetMenuResponse {
 			Path:     menu.Path,
 			Locale:   menu.Locale,
 			Icon:     menu.Icon,
-			Order:    menu.Order,
+			Weight:   menu.Weight,
 		})
 	}
 	return &define.GetMenuResponse{
-		Menus: menuInfos,
+		MenuId:   m.MenuId,
+		MenuType: m.MenuType,
+		ParentId: m.ParentId,
+		Name:     m.Name,
+		Path:     m.Path,
+		Locale:   m.Locale,
+		Icon:     m.Icon,
+		Weight:   m.Weight,
+		Menus:    menuInfos,
 	}
 }
