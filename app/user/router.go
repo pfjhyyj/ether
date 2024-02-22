@@ -63,6 +63,7 @@ func SetRoleRouter(r *gin.RouterGroup) {
 		roleRouter.GET("/:roleId/menus", roleMenuController.ListRoleMenu)
 		roleRouter.POST("/:roleId/menus/add", roleMenuController.AddRoleMenu)
 		roleRouter.POST("/:roleId/menus/delete", roleMenuController.DeleteRoleMenu)
+		roleRouter.POST("/:roleId/menus/set", roleMenuController.SetRoleMenu)
 	}
 }
 

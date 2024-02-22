@@ -113,7 +113,7 @@ func (s *MyService) GetUserMenu(ctx *gin.Context, userId uint) ([]*model.Menu, e
 		}
 	}
 
-	menus, err := model.ListMenuTreeByMenuIds(db, menuIds)
+	menus, err := model.ListMenuTreeFromBottomByMenuIds(db, menuIds)
 	if err != nil {
 		logs.WithError(err).Error("get menus failed")
 		return nil, &common.SystemError{

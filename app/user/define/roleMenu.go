@@ -1,13 +1,18 @@
 package define
 
 type AddRoleMenuRequest struct {
-	RoleId  uint   `uri:"roleId" binding:"required"`
-	MenuIds []uint `json:"menuIds" binding:"required,len>0"`
+	RoleId  uint
+	MenuIds []uint `json:"menuIds" binding:"required,gt=0"`
 }
 
 type DeleteRoleMenuRequest struct {
-	RoleId  uint   `uri:"roleId" binding:"required"`
-	MenuIds []uint `json:"menuIds" binding:"required,len>0"`
+	RoleId  uint
+	MenuIds []uint `json:"menuIds" binding:"required,gt=0"`
+}
+
+type SetRoleMenuRequest struct {
+	RoleId  uint
+	MenuIds []uint `json:"menuIds" binding:"required,gt=0"`
 }
 
 type ListRoleMenuRequest struct {

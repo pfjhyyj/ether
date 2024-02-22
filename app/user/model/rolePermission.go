@@ -4,6 +4,7 @@ import (
 	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/common"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type RolePermission struct {
@@ -19,7 +20,7 @@ func (RolePermission) TableName() string {
 }
 
 func CreateRolePermissionBatch(tx *gorm.DB, rolePermissions []*RolePermission) error {
-	return tx.Create(rolePermissions).Error
+	return tx.Clauses(clause.OnConflict{DoNothing: true}).Create(rolePermissions).Error
 }
 
 func DeleteRolePermissionBatch(tx *gorm.DB, roleId uint, permissionIds []uint) error {

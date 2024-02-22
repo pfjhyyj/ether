@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/pfjhyyj/ether/common"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type RoleMenu struct {
@@ -20,11 +21,15 @@ func CreateRoleMenu(tx *gorm.DB, roleMenu *RoleMenu) error {
 }
 
 func CreateRoleMenuBatch(tx *gorm.DB, roleMenus []*RoleMenu) error {
-	return tx.Create(roleMenus).Error
+	return tx.Clauses(clause.OnConflict{DoNothing: true}).Create(roleMenus).Error
 }
 
 func DeleteRoleMenu(tx *gorm.DB, roleId uint, menuIds []uint) error {
 	return tx.Unscoped().Delete(&RoleMenu{}, "role_id = ? AND menu_id IN ?", roleId, menuIds).Error
+}
+
+func DeleteRoleMenuByRoleId(tx *gorm.DB, roleId uint) error {
+	return tx.Unscoped().Delete(&RoleMenu{}, "role_id = ?", roleId).Error
 }
 
 func ListMenuIdsByRoleId(tx *gorm.DB, roleId uint) ([]uint, error) {

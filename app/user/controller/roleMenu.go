@@ -40,17 +40,18 @@ func (c *RoleMenuController) AddRoleMenu(ctx *gin.Context) {
 		return
 	}
 
-	var req define.AddRoleMenuRequest
-
-	if err := ctx.ShouldBindUri(&req); err != nil {
+	var roleIdReq define.RoleIdUri
+	if err := ctx.ShouldBindUri(&roleIdReq); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
+	var req define.AddRoleMenuRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
+	req.RoleId = roleIdReq.RoleId
 
 	if err := c.service.AddRoleMenu(ctx, &req); err != nil {
 		_ = ctx.Error(err)
@@ -82,19 +83,63 @@ func (c *RoleMenuController) DeleteRoleMenu(ctx *gin.Context) {
 		return
 	}
 
-	var req define.DeleteRoleMenuRequest
-
-	if err := ctx.ShouldBindUri(&req); err != nil {
+	var roleIdReq define.RoleIdUri
+	if err := ctx.ShouldBindUri(&roleIdReq); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
+	var req define.DeleteRoleMenuRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
+	req.RoleId = roleIdReq.RoleId
 
 	if err := c.service.DeleteRoleMenu(ctx, &req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &common.Response{
+		Code: common.Ok,
+	})
+}
+
+// SetRoleMenu godoc
+// @Summary Set role menu
+// @Description Set role menu
+// @Tags role
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param role_id path int true "role_id"
+// @Param request body define.SetRoleMenuRequest true "SetRoleMenuRequest"
+// @Success 200 {object} common.Response
+// @Router /roles/{roleId}/menus/set [post]
+func (c *RoleMenuController) SetRoleMenu(ctx *gin.Context) {
+	if ok := utils2.CheckPermission(ctx, "role_menu", "set"); !ok {
+		ctx.JSON(http.StatusOK, &common.Response{
+			Code: common.NoPermissionError,
+			Msg:  "no permission",
+		})
+		return
+	}
+
+	var roleIdReq define.RoleIdUri
+	if err := ctx.ShouldBindUri(&roleIdReq); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	var req define.SetRoleMenuRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	req.RoleId = roleIdReq.RoleId
+
+	if err := c.service.SetRoleMenu(ctx, &req); err != nil {
 		_ = ctx.Error(err)
 		return
 	}
