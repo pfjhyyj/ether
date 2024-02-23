@@ -21,3 +21,7 @@ type UpdateMyPasswordRequest struct {
 type GetMyMenuResponse struct {
 	Menus []*Menu `json:"menus"`
 }
+
+type GetMyUnreadMessageCountResponse struct {
+	UnreadMessageCount int64 `json:"unreadMessageCount"`
+}

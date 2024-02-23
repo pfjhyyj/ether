@@ -50,3 +50,15 @@ func (r *NoticeRepository) NotifyUsers(ctx context.Context, message *notice.Mess
 
 	return nil
 }
+
+func (r *NoticeRepository) GetUnreadMessageCount(ctx context.Context, userId uint) (int64, error) {
+	logs := logrus.WithContext(ctx)
+	db := gorm.GetDB().WithContext(ctx)
+
+	count, err := model.GetUnreadMessageCount(db, userId)
+	if err != nil {
+		logs.WithError(err).Error("get unread message count failed")
+		return 0, err
+	}
+	return count, nil
+}

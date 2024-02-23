@@ -43,3 +43,9 @@ func ConvertMyMenuToResponse(menus []*model.Menu) *define.GetMyMenuResponse {
 		Menus: menuInfos,
 	}
 }
+
+func ConvertMyUnreadMessageCountToResponse(count int64) *define.GetMyUnreadMessageCountResponse {
+	return &define.GetMyUnreadMessageCountResponse{
+		UnreadMessageCount: count,
+	}
+}

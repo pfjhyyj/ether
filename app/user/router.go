@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pfjhyyj/ether/app/notice/domain"
 	"github.com/pfjhyyj/ether/app/user/controller"
 	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/middleware"
@@ -27,7 +28,8 @@ func SetUserRouter(r *gin.RouterGroup) {
 
 func SetMyRouter(r *gin.RouterGroup) {
 	myService := service.NewMyService()
-	myController := controller.NewMyController(myService)
+	noticeDomain := domain.GetNoticeRepository()
+	myController := controller.NewMyController(myService, noticeDomain)
 
 	router := r.Group("/my")
 	router.Use(middleware.AuthMiddleware())
@@ -36,6 +38,7 @@ func SetMyRouter(r *gin.RouterGroup) {
 		router.PUT("", myController.UpdateMyInfo)
 		router.PUT("/password", myController.UpdateMyPassword)
 		router.GET("/menus", myController.GetMyMenu)
+		router.GET("/messages", myController.GetMyMessage)
 	}
 }
 

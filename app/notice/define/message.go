@@ -21,7 +21,7 @@ type ListMyMessagesResponse struct {
 }
 
 type ReadMessageRequest struct {
-	MessageId uint `uri:"messageId"`
+	MessageId uint `uri:"messageId" binding:"required"`
 }
 
 type BatchReadMessageRequest struct {

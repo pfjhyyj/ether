@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pfjhyyj/ether/app/notice/domain"
 	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/app/user/service"
 	"github.com/pfjhyyj/ether/app/user/utils"
@@ -10,11 +11,12 @@ import (
 )
 
 type MyController struct {
-	service *service.MyService
+	service      *service.MyService
+	noticeDomain *domain.NoticeRepository
 }
 
-func NewMyController(service *service.MyService) *MyController {
-	return &MyController{service: service}
+func NewMyController(service *service.MyService, noticeDomain *domain.NoticeRepository) *MyController {
+	return &MyController{service: service, noticeDomain: noticeDomain}
 }
 
 // MyInfo godoc
@@ -124,5 +126,30 @@ func (c *MyController) GetMyMenu(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &common.Response{
 		Code: common.Ok,
 		Data: menusInfo,
+	})
+}
+
+// GetMyMessage godoc
+// @Summary Get my messages
+// @Description Get my messages
+// @Tags my
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} common.Response{data=define.GetMyUnreadMessageCountResponse}
+// @Router /my/messages [get]
+func (c *MyController) GetMyMessage(ctx *gin.Context) {
+	userId := ctx.GetUint(common.CtxUserIDKey)
+
+	messages, err := c.noticeDomain.GetUnreadMessageCount(ctx, userId)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	messagesInfo := utils.ConvertMyUnreadMessageCountToResponse(messages)
+	ctx.JSON(http.StatusOK, &common.Response{
+		Code: common.Ok,
+		Data: messagesInfo,
 	})
 }

@@ -103,3 +103,11 @@ func SetMessageRead(tx *gorm.DB, messageId uint) error {
 func BatchSetMessageRead(tx *gorm.DB, messageIds []uint) error {
 	return tx.Model(&Message{}).Where("message_id IN ?", messageIds).Update("is_read", constants.MessageRead).Error
 }
+
+func GetUnreadMessageCount(tx *gorm.DB, userId uint) (int64, error) {
+	var count int64
+	if err := tx.Model(&Message{}).Where("user_id = ? AND is_read = ?", userId, constants.MessageUnread).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
