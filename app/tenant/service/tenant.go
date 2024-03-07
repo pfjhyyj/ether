@@ -5,7 +5,7 @@ import (
 	"github.com/pfjhyyj/ether/app/tenant/define"
 	"github.com/pfjhyyj/ether/app/tenant/model"
 	"github.com/pfjhyyj/ether/app/tenant/utils"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/sirupsen/logrus"
 )

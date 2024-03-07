@@ -2,7 +2,7 @@ package tenant
 
 import (
 	"github.com/pfjhyyj/ether/app/tenant/model"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/spf13/viper"
 )
 

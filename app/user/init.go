@@ -2,7 +2,7 @@ package user
 
 import (
 	"github.com/pfjhyyj/ether/app/user/model"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/spf13/viper"
 )
 

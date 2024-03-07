@@ -2,7 +2,7 @@ package notice
 
 import (
 	"github.com/pfjhyyj/ether/app/notice/model"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/spf13/viper"
 )
 

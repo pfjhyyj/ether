@@ -3,7 +3,7 @@ package domain
 import (
 	"context"
 	"github.com/pfjhyyj/ether/app/tenant/model"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/pfjhyyj/ether/domain/tenant"
 	"sync"
 )

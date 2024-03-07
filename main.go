@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app"
-	"github.com/pfjhyyj/ether/clients/casbin"
-	"github.com/pfjhyyj/ether/clients/gorm"
-	"github.com/pfjhyyj/ether/clients/redis"
+	"github.com/pfjhyyj/ether/client/casbin"
+	"github.com/pfjhyyj/ether/client/gorm"
+	"github.com/pfjhyyj/ether/client/redis"
 	"github.com/pfjhyyj/ether/middleware"
 	"github.com/pfjhyyj/ether/utils"
 	"github.com/sirupsen/logrus"

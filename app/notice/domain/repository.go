@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/pfjhyyj/ether/app/notice/constants"
 	"github.com/pfjhyyj/ether/app/notice/model"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/pfjhyyj/ether/domain/notice"
 	"github.com/sirupsen/logrus"
 )

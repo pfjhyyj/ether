@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pfjhyyj/ether/app/auth/utils"
 	"github.com/pfjhyyj/ether/app/user/constants"
-	"github.com/pfjhyyj/ether/clients/redis"
+	"github.com/pfjhyyj/ether/client/redis"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/pfjhyyj/ether/domain/user"
 	utils2 "github.com/pfjhyyj/ether/utils"

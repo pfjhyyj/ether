@@ -6,7 +6,7 @@ import (
 	"github.com/pfjhyyj/ether/app/user/define"
 	"github.com/pfjhyyj/ether/app/user/model"
 	"github.com/pfjhyyj/ether/app/user/utils"
-	"github.com/pfjhyyj/ether/clients/gorm"
+	"github.com/pfjhyyj/ether/client/gorm"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/sirupsen/logrus"
 )
@@ -101,6 +101,10 @@ func (s *MyService) GetUserMenu(ctx *gin.Context, userId uint) ([]*model.Menu, e
 			Msg:  "get user roles failed",
 			Err:  err,
 		}
+	}
+
+	if len(roleIds) == 0 {
+		return nil, nil
 	}
 
 	menuIds, err := model.ListMenuIdsByRoleIds(db, roleIds)

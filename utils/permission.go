@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pfjhyyj/ether/clients/casbin"
+	"github.com/pfjhyyj/ether/client/casbin"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/sirupsen/logrus"
 )

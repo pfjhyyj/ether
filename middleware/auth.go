@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	redisClient "github.com/pfjhyyj/ether/clients/redis"
+	redisClient "github.com/pfjhyyj/ether/client/redis"
 	"github.com/pfjhyyj/ether/common"
 	"github.com/pfjhyyj/ether/utils"
 	"github.com/sirupsen/logrus"
