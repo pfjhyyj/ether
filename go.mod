@@ -6,6 +6,7 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
+	github.com/alibabacloud-go/dysmsapi-20170525/v3 v3.0.6 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/casbin/casbin/v2 v2.81.0 // indirect
 	github.com/casbin/gorm-adapter/v3 v3.20.0 // indirect

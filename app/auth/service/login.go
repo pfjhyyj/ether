@@ -8,7 +8,6 @@ import (
 	"github.com/pfjhyyj/ether/common"
 	"github.com/pfjhyyj/ether/domain/user"
 	utils2 "github.com/pfjhyyj/ether/utils"
-	"strconv"
 	"time"
 )
 
@@ -48,7 +47,7 @@ func (s *LoginService) LoginByUsername(ctx *gin.Context, username string, passwo
 	if err != nil {
 		return nil, &common.SystemError{Code: common.UnknownError, Msg: "generate access authToken fail", Err: err}
 	}
-	key := common.TokenPrefix + strconv.FormatUint(uint64(u.UserId), 10)
+	key := common.GetTokenKey(u.UserId)
 	redisClient.Set(ctx, key, token, common.TokenExpireTime*time.Minute)
 
 	authToken := &LoginToken{

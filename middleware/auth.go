@@ -7,7 +7,6 @@ import (
 	"github.com/pfjhyyj/ether/utils"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -39,7 +38,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// check if token is valid (in redis)
 		redisConn := redisClient.GetRedisClient()
-		key := common.TokenPrefix + strconv.FormatUint(uint64(tokenPayload.UserId), 10)
+		key := common.GetTokenKey(tokenPayload.UserId)
 		_, err = redisConn.Get(c, key).Result()
 		if err != nil {
 			logs.WithError(err).Errorf("fail to check token %s in redis", token)
