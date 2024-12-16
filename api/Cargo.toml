@@ -1,0 +1,16 @@
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = { path = "../utils" }
+entity = { path = "../entity" }
+
+salvo = { workspace = true, features = ["oapi", "cors"] }
+tokio = { version = "1.42.0", features = ["macros"] }
+tracing = { workspace = true }
+validator = { version = "0.19.0", features = ["derive"] }
+serde = { workspace = true, features = ["derive"] }
+redis = { workspace = true }
+sea-orm = { workspace = true }
