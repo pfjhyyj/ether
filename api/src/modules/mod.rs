@@ -18,10 +18,10 @@ pub fn get_router() -> Router {
         // .get(hello)
         .push(auth::get_open_router());
 
-    // let auth = Router::new()
-    //     .hoop(utils::middleware::jwt::JwtMiddleware::new())
-    //     .hoop(utils::middleware::tracing::TracingMiddleware::new())
-    //     .push(auth::get_router());
+    let auth = Router::new()
+        .hoop(utils::middleware::jwt::JwtMiddleware::new())
+        .hoop(utils::middleware::tracing::TracingMiddleware::new())
+        .push(auth::get_router());
         // .push(user::get_router())
         // .push(menu::get_router())
         // .push(permission::get_router())
@@ -37,5 +37,5 @@ pub fn get_router() -> Router {
         .hoop(utils::middleware::log::LogMiddleware::new())
         .path("/api/v1")
         .push(open)
-        // .push(auth)
+        .push(auth)
 }

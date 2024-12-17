@@ -1,13 +1,12 @@
 use entity::user;
+use salvo::prelude::*;
+use salvo::oapi::{endpoint, extract::JsonBody, ToSchema};
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use serde::Deserialize;
-use utils::{
-    rejection::ValidatedJson,
-    response::{ApiError, ApiOk, Result},
-};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct RegisterByUsernameRequest {
     #[validate(length(
         min = 6,
@@ -23,15 +22,18 @@ pub struct RegisterByUsernameRequest {
     pub password: String,
 }
 
+#[endpoint(
+    tags("Auth"),
+)]
 pub async fn register_by_username(
-    ValidatedJson(req): ValidatedJson<RegisterByUsernameRequest>,
-) -> Result<ApiOk<i64>> {
-    let new_user = create_user_by_register_request(req).await?;
+    req: JsonBody<RegisterByUsernameRequest>,
+) -> ApiResult<i64> {
+    let new_user = create_user_by_register_request(req.into_inner()).await?;
 
-    Ok(ApiOk::new(new_user.user_id))
+    Ok(ApiOk(Some(new_user.user_id)))
 }
 
-async fn create_user_by_register_request(req: RegisterByUsernameRequest) -> Result<user::Model> {
+async fn create_user_by_register_request(req: RegisterByUsernameRequest) -> Result<user::Model, ApiError> {
     let db = utils::db::conn();
     let user = user::Entity::find()
         .filter(user::Column::Username.eq(&req.username))
@@ -39,11 +41,11 @@ async fn create_user_by_register_request(req: RegisterByUsernameRequest) -> Resu
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query user by username");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if user.is_some() {
-        return Err(ApiError::err_param("Username already exists".to_string()));
+        return Err(ApiError::RequestError(Some("Username already exists".to_string())));
     }
 
     let password = utils::hash::bcrypt(&req.password);
@@ -56,7 +58,7 @@ async fn create_user_by_register_request(req: RegisterByUsernameRequest) -> Resu
 
     let new_user = new_user.insert(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to insert new user");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     Ok(new_user)

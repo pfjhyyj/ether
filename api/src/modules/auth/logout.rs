@@ -1,28 +1,32 @@
-use axum::Extension;
+use salvo::prelude::*;
 use redis::Commands;
-use utils::{
-    middleware::jwt::Claims,
-    response::{ApiError, ApiOk, Result},
-};
+use salvo::Request;
+use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
 
-pub async fn logout(Extension(token_data): Extension<Claims>) -> Result<ApiOk<()>> {
-    clear_token_cache(token_data.sub)?;
-    Ok(ApiOk::new(()))
+#[endpoint(
+    tags("Auth"),
+)]
+pub async fn logout(
+    req: &mut Request
+) -> ApiResult<()> {
+    let id = req.extensions().get::<Identity>().unwrap();
+    clear_token_cache(id.sub)?;
+    Ok(ApiOk(None))
 }
 
-fn clear_token_cache(user_id: i64) -> Result<()> {
+fn clear_token_cache(user_id: i64) -> Result<(), ApiError> {
     let mut conn = match utils::redis::redis_pool().get() {
         Ok(c) => c,
         Err(e) => {
             tracing::error!(error = ?e, "Failed to get redis connection");
-            return Err(ApiError::err_unknown());
+            return Err(ApiError::UnknownError(None));
         }
     };
 
     let key = format!("token:{}", user_id);
     let _: () = conn.del(key).map_err(|e| {
         tracing::error!(error = ?e, "Failed to clear token cache");
-        ApiError::err_unknown()
+        ApiError::UnknownError(None)
     })?;
 
     Ok(())

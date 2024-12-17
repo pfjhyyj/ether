@@ -31,7 +31,9 @@ pub struct LoginByUserNameResponse {
     pub expire_time: i64,
 }
 
-#[endpoint]
+#[endpoint(
+    tags("Auth"),
+)]
 pub async fn login_by_username(
     req: JsonBody<LoginByUserNameRequest>,
 ) -> ApiResult<LoginByUserNameResponse> {

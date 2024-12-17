@@ -1,13 +1,12 @@
-use axum::Extension;
+use salvo::{oapi::extract::JsonBody, prelude::*};
 use entity::user;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, ActiveModelTrait, Set};
 use serde::{Deserialize, Serialize};
-use utils::{
-    middleware::jwt::Claims, rejection::ValidatedJson, response::{ApiError, ApiOk, Result}
-};
+
+use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
 use validator::Validate;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct GetCurrentUserResponse {
     pub user_id: i64,
@@ -16,10 +15,14 @@ pub struct GetCurrentUserResponse {
     pub avatar: Option<String>,
 }
 
+#[endpoint(
+    tags("Current User"),
+)]
 pub async fn get_current_user(
-    Extension(token_data): Extension<Claims>,
-) -> Result<ApiOk<GetCurrentUserResponse>> {
-    let user = get_user_by_user_id(token_data.sub).await?;
+    req: &mut Request
+) -> ApiResult<GetCurrentUserResponse> {
+    let id = req.extensions().get::<Identity>().unwrap();
+    let user = get_user_by_user_id(id.sub).await?;
 
     let resp = GetCurrentUserResponse {
         user_id: user.user_id,
@@ -28,10 +31,10 @@ pub async fn get_current_user(
         avatar: user.avatar,
     };
 
-    Ok(ApiOk::new(resp))
+    Ok(ApiOk(Some(resp)))
 }
 
-async fn get_user_by_user_id(user_id: i64) -> Result<user::Model> {
+async fn get_user_by_user_id(user_id: i64) -> Result<user::Model, ApiError> {
     let db = utils::db::conn();
     let user = user::Entity::find()
         .filter(user::Column::UserId.eq(user_id))
@@ -39,23 +42,27 @@ async fn get_user_by_user_id(user_id: i64) -> Result<user::Model> {
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query user by user_id");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
-    user.ok_or(ApiError::err_param("User not found".to_string()))
+    user.ok_or(ApiError::RequestError(Some("User not found".to_string())))
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct UpdateCurrentUserRequest {
     pub nickname: Option<String>,
     pub avatar: Option<String>,
 }
 
+#[endpoint(
+    tags("Current User"),
+)]
 pub async fn update_current_user(
-    Extension(token_data): Extension<Claims>,
-    ValidatedJson(req): ValidatedJson<UpdateCurrentUserRequest>,
-) -> Result<ApiOk<GetCurrentUserResponse>> {
-    let user = update_user_by_user_id(token_data.sub, req).await?;
+    req: &mut Request,
+    body: JsonBody<UpdateCurrentUserRequest>,
+) -> ApiResult<GetCurrentUserResponse> {
+    let id = req.extensions().get::<Identity>().unwrap();
+    let user = update_user_by_user_id(id.sub, body.into_inner()).await?;
 
     let resp = GetCurrentUserResponse {
         user_id: user.user_id,
@@ -64,10 +71,10 @@ pub async fn update_current_user(
         avatar: user.avatar,
     };
 
-    Ok(ApiOk::new(resp))
+    Ok(ApiOk(Some(resp)))
 }
 
-async fn update_user_by_user_id(user_id: i64, req: UpdateCurrentUserRequest) -> Result<user::Model> {
+async fn update_user_by_user_id(user_id: i64, req: UpdateCurrentUserRequest) -> Result<user::Model, ApiError> {
     let db = utils::db::conn();
     let user = user::Entity::find()
         .filter(user::Column::UserId.eq(user_id))
@@ -75,10 +82,10 @@ async fn update_user_by_user_id(user_id: i64, req: UpdateCurrentUserRequest) -> 
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query user by user_id");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
-    let user = user.ok_or(ApiError::err_param("User not found".to_string()))?;
+    let user = user.ok_or(ApiError::RequestError(Some("User not found".to_string())))?;
 
     let mut user: user::ActiveModel = user.into();
     if req.nickname.is_some() {
@@ -90,7 +97,7 @@ async fn update_user_by_user_id(user_id: i64, req: UpdateCurrentUserRequest) -> 
 
     let user = user.update(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to update user by user_id");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
     Ok(user)
 }
