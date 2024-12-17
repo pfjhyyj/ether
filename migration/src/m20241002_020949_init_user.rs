@@ -76,7 +76,7 @@ impl MigrationTrait for Migration {
                 User::Status,
             ])
             .values_panic([
-                0.into(),
+                1.into(),
                 "ether_admin".into(),
                 "$2b$12$T43BHiuqzvV8DpN5TClvIeBse2dk0PBO4G9WVnFU/lY7mwcHDmnFy".into(),
                 "ether admin".into(),
