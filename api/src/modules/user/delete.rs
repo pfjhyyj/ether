@@ -1,25 +1,28 @@
-use axum::extract::Path;
+use salvo::prelude::*;
 use entity::user;
+use salvo::oapi::extract::PathParam;
 use sea_orm::{EntityTrait, ModelTrait};
-use utils::response::{ApiError, ApiOk, Result};
+use utils::response::{ApiError, ApiOk, ApiResult};
 
-
+#[endpoint(
+    tags("User"),
+)]
 pub async fn delete_user(
-    Path(user_id): Path<i64>,
-) -> Result<ApiOk<bool>> {
-    let _ = delete_user_by_id(user_id).await?;
+    user_id: PathParam<i64>,
+) -> ApiResult<bool> {
+    let _ = delete_user_by_id(user_id.into_inner()).await?;
 
-    Ok(ApiOk::new(true))
+    Ok(ApiOk(Some(true)))
 }
 
-async fn delete_user_by_id(user_id: i64) -> Result<bool> {
+async fn delete_user_by_id(user_id: i64) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let user = user::Entity::find_by_id(user_id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find user");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if let Some(user) = user {
@@ -27,7 +30,7 @@ async fn delete_user_by_id(user_id: i64) -> Result<bool> {
             .await
             .map_err(|e| {
                 tracing::error!(error = ?e, "Failed to delete user");
-                ApiError::err_db()
+                ApiError::DbError(None)
             })?;
     }
 

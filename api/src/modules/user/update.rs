@@ -1,13 +1,14 @@
-use axum::extract::Path;
 use entity::user;
+use salvo::prelude::*;
+use salvo::oapi::{endpoint, extract::{JsonBody, PathParam}, ToSchema};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct UpdateUserRequest {
     #[validate(length(
         min = 6,
@@ -25,27 +26,30 @@ pub struct UpdateUserRequest {
     pub nickname: Option<String>,
 }
 
+#[endpoint(
+    tags("User"),
+)]
 pub async fn update_user(
-    Path(user_id): Path<i64>,
-    ValidatedJson(req): ValidatedJson<UpdateUserRequest>,
-) -> Result<ApiOk<bool>> {
-    let _ = update_user_by_request(user_id, req).await?;
+    user_id: PathParam<i64>,
+    body: JsonBody<UpdateUserRequest>,
+) -> ApiResult<bool> {
+    let _ = update_user_by_request(user_id.into_inner(), body.into_inner()).await?;
 
-    Ok(ApiOk::new(true))
+    Ok(ApiOk(Some(true)))
 }
 
-async fn update_user_by_request(user_id: i64, req: UpdateUserRequest) -> Result<bool> {
+async fn update_user_by_request(user_id: i64, req: UpdateUserRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let user = user::Entity::find_by_id(user_id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find user");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if user.is_none() {
-        return Err(ApiError::err_param("User not found".to_string()));
+        return Err(ApiError::RequestError(Some("User not found".to_string())));
     }
 
     let mut user: user::ActiveModel = user.unwrap().into();
@@ -58,7 +62,7 @@ async fn update_user_by_request(user_id: i64, req: UpdateUserRequest) -> Result<
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to update user");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     Ok(true)

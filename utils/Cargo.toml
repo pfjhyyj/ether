@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-chrono = "0.4.39"
+chrono = { workspace = true }
 dotenvy = "0.15.7"
 r2d2 = "0.8.10"
 sea-orm = { workspace = true, features = ["sqlx-postgres", "runtime-tokio-rustls", "debug-print"] }

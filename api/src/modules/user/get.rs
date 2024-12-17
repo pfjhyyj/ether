@@ -1,10 +1,11 @@
-use axum::extract::Path;
+use salvo::prelude::*;
 use entity::user;
+use salvo::oapi::extract::PathParam;
 use sea_orm::EntityTrait;
 use serde::Serialize;
-use utils::response::{ApiError, ApiOk, Result};
+use utils::response::{ApiError, ApiOk, ApiResult};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct GetUserDetailResponse {
     pub user_id: i64,
     pub username: String,
@@ -15,10 +16,13 @@ pub struct GetUserDetailResponse {
     pub updated_at: chrono::NaiveDateTime,
 }
 
+#[endpoint(
+    tags("User"),
+)]
 pub async fn get_user(
-    Path(user_id): Path<i64>,
-) -> Result<ApiOk<GetUserDetailResponse>> {
-    let user = get_user_by_id(user_id).await?;
+    user_id: PathParam<i64>,
+) -> ApiResult<GetUserDetailResponse> {
+    let user = get_user_by_id(user_id.into_inner()).await?;
     let user = GetUserDetailResponse {
         user_id: user.user_id,
         username: user.username,
@@ -29,22 +33,22 @@ pub async fn get_user(
         updated_at: user.updated_at.naive_local(),
     };
 
-    Ok(ApiOk::new(user))
+    Ok(ApiOk(Some(user)))
 }
 
-async fn get_user_by_id(id: i64) -> Result<user::Model> {
+async fn get_user_by_id(id: i64) -> Result<user::Model, ApiError> {
     let db = utils::db::conn();
     let user = user::Entity::find_by_id(id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find user");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if let Some(user) = user {
         Ok(user)
     } else {
-        Err(ApiError::err_param("User not found".to_string()))
+        Err(ApiError::RequestError(Some("User not found".to_string())))
     }
 }

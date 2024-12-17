@@ -1,4 +1,4 @@
-use axum::{routing::get, Router};
+use salvo::Router;
 
 pub mod list;
 pub mod create;
@@ -8,6 +8,7 @@ pub mod get;
 
 pub fn get_router() -> Router {
     Router::new()
-        .route("/", get(list::page_user).post(create::create_user))
-        .route("/:user_id", get(get::get_user).put(update::update_user).delete(delete::delete_user))
+        .path("/user")
+        .push(Router::with_path("").get(list::page_user).post(create::create_user))
+        .push(Router::with_path("/<user_id>").get(get::get_user).put(update::update_user).delete(delete::delete_user))
 }
