@@ -31,7 +31,7 @@ pub struct ListMenuResponse {
 pub async fn list_menu(
     req: &mut Request
 ) -> ApiResult<ListMenuResponse> {
-    let id = req.extensions().get::<Identity>().unwrap();
+    let _id = req.extensions().get::<Identity>().unwrap();
     let menus = get_menu_list().await?;
     let menus = build_menu_forest(menus);
     let menus = ListMenuResponse { menus };

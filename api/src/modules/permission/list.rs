@@ -1,9 +1,9 @@
-use axum::extract::Query;
+use salvo::{oapi::extract::QueryParam, prelude::*};
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
-use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, PageResponse, Result}};
+use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, ApiResult, PageResponse}};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct PagePermssionRequest {
     #[serde(flatten)]
     pub page_request: PageRequest,
@@ -11,7 +11,7 @@ pub struct PagePermssionRequest {
     pub action: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct PagePermissionResponse {
     pub permission_id: i64,
     pub object: String,
@@ -20,9 +20,12 @@ pub struct PagePermissionResponse {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Permission"),
+)]
 pub async fn page_permission(
-    Query(req): Query<PagePermssionRequest>
-) -> Result<ApiOk<PageResponse<PagePermissionResponse>>> {
+    req: QueryParam<PagePermssionRequest>
+) -> ApiResult<PageResponse<PagePermissionResponse>> {
     let db = utils::db::conn();
     let mut query = entity::permission::Entity::find();
 
@@ -34,11 +37,11 @@ pub async fn page_permission(
         query = query.filter(entity::permission::Column::Action.contains(action));
     }
 
-    let (offset, limit) = parse_page_request(req.page_request);
+    let (offset, limit) = parse_page_request(req.into_inner().page_request);
 
     let total = query.clone().count(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to count permission");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     let permissions = query
@@ -49,7 +52,7 @@ pub async fn page_permission(
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query permission");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     let resp = PageResponse {
@@ -63,5 +66,5 @@ pub async fn page_permission(
         }).collect(),
     };
 
-    Ok(ApiOk::new(resp))
+    Ok(ApiOk(Some(resp)))
 }

@@ -1,10 +1,11 @@
+use salvo::{oapi::extract::JsonBody, prelude::*};
 use sea_orm::{Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct CreatePermissionRequest {
     pub object: String,
     pub action: String,
@@ -12,15 +13,18 @@ pub struct CreatePermissionRequest {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Permission"),
+)]
 pub async fn create_permission(
-    ValidatedJson(req): ValidatedJson<CreatePermissionRequest>
-) -> Result<ApiOk<(i64)>> {
-    let new_permission = create_permission_by_request(req).await?;
+    body: JsonBody<CreatePermissionRequest>,
+) -> ApiResult<i64> {
+    let new_permission = create_permission_by_request(body.into_inner()).await?;
 
-    Ok(ApiOk::new(new_permission.permission_id))
+    Ok(ApiOk(Some(new_permission.permission_id)))
 }
 
-async fn create_permission_by_request(req: CreatePermissionRequest) -> Result<entity::permission::Model> {
+async fn create_permission_by_request(req: CreatePermissionRequest) -> Result<entity::permission::Model, ApiError> {
     let db = utils::db::conn();
 
     let new_permission = entity::permission::ActiveModel {
@@ -33,7 +37,7 @@ async fn create_permission_by_request(req: CreatePermissionRequest) -> Result<en
 
     let new_permission = new_permission.await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to insert new permission");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     Ok(new_permission)

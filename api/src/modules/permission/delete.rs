@@ -1,24 +1,26 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::{EntityTrait, ModelTrait};
-use utils::response::{ApiError, ApiOk, Result};
+use utils::response::{ApiError, ApiOk, ApiResult};
 
-
+#[endpoint(
+    tags("Permission"),
+)]
 pub async fn delete_permission(
-    Path(permission_id): Path<i64>,
-) -> Result<ApiOk<bool>> {
-    let _ = delete_permission_by_id(permission_id).await?;
+   permission_id: PathParam<i64>,
+) -> ApiResult<bool> {
+    let _ = delete_permission_by_id(permission_id.into_inner()).await?;
 
-    Ok(ApiOk::new(true))
+    Ok(ApiOk(Some(true)))
 }
 
-async fn delete_permission_by_id(permission_id: i64) -> Result<bool> {
+async fn delete_permission_by_id(permission_id: i64) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let permission = entity::permission::Entity::find_by_id(permission_id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find permission");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
     
     if let Some(permission) = permission {
@@ -26,7 +28,7 @@ async fn delete_permission_by_id(permission_id: i64) -> Result<bool> {
             .await
             .map_err(|e| {
                 tracing::error!(error = ?e, "Failed to delete permission");
-                ApiError::err_db()
+                ApiError::DbError(None)
             })?;
     }
     Ok(true)

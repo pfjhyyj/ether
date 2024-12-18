@@ -1,9 +1,9 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::EntityTrait;
 use serde::Serialize;
-use utils::response::{ApiOk, Result};
+use utils::response::{ApiError, ApiOk, ApiResult};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct GetPermssionDetailResponse {
     pub permission_id: i64,
     pub object: String,
@@ -12,10 +12,13 @@ pub struct GetPermssionDetailResponse {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Permission"),
+)]
 pub async fn get_permission(
-    Path(permission_id): Path<i64>,
-) -> Result<ApiOk<GetPermssionDetailResponse>> {
-    let permission = get_permission_by_id(permission_id).await?;
+    permission_id: PathParam<i64>,
+) -> ApiResult<GetPermssionDetailResponse> {
+    let permission = get_permission_by_id(permission_id.into_inner()).await?;
     let permission = GetPermssionDetailResponse {
         permission_id: permission.permission_id,
         object: permission.object,
@@ -23,22 +26,22 @@ pub async fn get_permission(
         name: permission.name,
         description: permission.description,
     };
-    Ok(ApiOk::new(permission))
+    Ok(ApiOk(Some(permission)))
 }
 
-async fn get_permission_by_id(id: i64) -> Result<entity::permission::Model> {
+async fn get_permission_by_id(id: i64) -> Result<entity::permission::Model, ApiError> {
     let db = utils::db::conn();
     let permission = entity::permission::Entity::find_by_id(id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find permission");
-            utils::response::ApiError::err_db()
+            utils::response::ApiError::DbError(None)
         })?;
 
     if let Some(permission) = permission {
         Ok(permission)
     } else {
-        Err(utils::response::ApiError::err_param("Permission not found".to_string()))
+        Err(utils::response::ApiError::RequestError(Some("Permission not found".to_string())))
     }
 }

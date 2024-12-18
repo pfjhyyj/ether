@@ -1,12 +1,12 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct UpdatePermissionRequest {
     pub object: String,
     pub action: String,
@@ -14,27 +14,30 @@ pub struct UpdatePermissionRequest {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Permission"),
+)]
 pub async fn update_permission(
-    Path(permission_id): Path<i64>,
-    ValidatedJson(req): ValidatedJson<UpdatePermissionRequest>,
-) -> Result<ApiOk<bool>> {
-    let _ = update_permission_by_request(permission_id, req).await?;
+    permission_id: PathParam<i64>,
+    body: JsonBody<UpdatePermissionRequest>,
+) -> ApiResult<bool> {
+    let _ = update_permission_by_request(permission_id.into_inner(), body.into_inner()).await?;
 
-    Ok(ApiOk::new(true))
+    Ok(ApiOk(Some(true)))
 }
 
-async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionRequest) -> Result<bool> {
+async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let permission = entity::permission::Entity::find_by_id(permission_id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find permission");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if permission.is_none() {
-        return Err(ApiError::err_param("Permission not found".to_string()));
+        return Err(ApiError::RequestError(Some("Permission not found".to_string())));
     }
 
     let mut permission: entity::permission::ActiveModel = permission.unwrap().into();
@@ -47,7 +50,7 @@ async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionR
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to update permission");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     Ok(true)
