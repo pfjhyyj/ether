@@ -1,5 +1,4 @@
-use axum::{routing::{get, post}, Router};
-
+use salvo::Router;
 
 pub mod create;
 pub mod update;
@@ -9,6 +8,7 @@ pub mod list;
 
 pub fn get_router() -> Router {
     Router::new()
-        .route("/", post(create::create_menu).get(list::list_menu))
-        .route("/:menu_id", get(get::get_menu).put(update::update_menu).delete(delete::delete_menu))
+        .path("/menus")
+        .push(Router::with_path("").post(create::create_menu).get(list::list_menu))
+        .push(Router::with_path("/<menu_id>").get(get::get_menu).put(update::update_menu).delete(delete::delete_menu))
 }

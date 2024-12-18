@@ -1,13 +1,13 @@
+use salvo::prelude::*;
 use std::collections::HashMap;
 
-use axum::Extension;
 use entity::menu;
 use sea_orm::EntityTrait;
 use serde::Serialize;
 use serde_json::Value;
-use utils::{middleware::jwt::Claims, response::{ApiOk, Result}};
+use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct MenuResponse {
     pub menu_id: i64,
     pub parent_id: Option<i64>,
@@ -20,28 +20,32 @@ pub struct MenuResponse {
     pub children: Vec<MenuResponse>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct ListMenuResponse {
     pub menus: Vec<MenuResponse>,
 }
 
+#[endpoint(
+    tags("Menu"),
+)]
 pub async fn list_menu(
-    Extension(token_data): Extension<Claims>
-) -> Result<ApiOk<ListMenuResponse>> {
+    req: &mut Request
+) -> ApiResult<ListMenuResponse> {
+    let id = req.extensions().get::<Identity>().unwrap();
     let menus = get_menu_list().await?;
     let menus = build_menu_forest(menus);
     let menus = ListMenuResponse { menus };
-    Ok(ApiOk::new(menus))
+    Ok(ApiOk(Some(menus)))
 }
 
-async fn get_menu_list() -> Result<Vec<menu::Model>> {
+async fn get_menu_list() -> Result<Vec<menu::Model>, ApiError> {
     let db = utils::db::conn();
     let menus = entity::menu::Entity::find()
         .all(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find menus");
-            utils::response::ApiError::err_db()
+            utils::response::ApiError::DbError(None)
         })?;
     
     Ok(menus)

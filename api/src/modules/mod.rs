@@ -3,7 +3,7 @@ use salvo::prelude::*;
 
 pub mod auth;
 pub mod user;
-// pub mod menu;
+pub mod menu;
 // pub mod permission;
 // pub mod role;
 
@@ -16,8 +16,8 @@ pub fn get_router() -> Router {
         .hoop(utils::middleware::jwt::JwtMiddleware::new())
         .hoop(utils::middleware::tracing::TracingMiddleware::new())
         .push(auth::get_router())
-        .push(user::get_router());
-        // .push(menu::get_router())
+        .push(user::get_router())
+        .push(menu::get_router());
         // .push(permission::get_router())
         // .push(role::get_router());
 

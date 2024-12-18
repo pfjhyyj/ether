@@ -1,12 +1,12 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct UpdateMenuRequest {
     pub name: String,
     pub parent_id: Option<i64>,
@@ -16,27 +16,30 @@ pub struct UpdateMenuRequest {
     pub path: Option<String>,
 }
 
+#[endpoint(
+    tags("Menu"),
+)]
 pub async fn update_menu(
-    Path(menu_id): Path<i64>,
-    ValidatedJson(req): ValidatedJson<UpdateMenuRequest>,
-) -> Result<ApiOk<bool>> {
-    let _ = update_menu_by_request(menu_id, req).await?;
+    menu_id: PathParam<i64>,
+    body: JsonBody<UpdateMenuRequest>,
+) -> ApiResult<bool> {
+    let _ = update_menu_by_request(menu_id.into_inner(), body.into_inner()).await?;
 
-    Ok(ApiOk::new(true))
+    Ok(ApiOk(Some(true)))
 }
 
-async fn update_menu_by_request(menu_id: i64, req: UpdateMenuRequest) -> Result<bool> {
+async fn update_menu_by_request(menu_id: i64, req: UpdateMenuRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let menu = entity::menu::Entity::find_by_id(menu_id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find menu");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if menu.is_none() {
-        return Err(ApiError::err_param("Menu not found".to_string()));
+        return Err(ApiError::RequestError(Some("Menu not found".to_string())));
     }
 
     let mut menu: entity::menu::ActiveModel = menu.unwrap().into();
@@ -52,7 +55,7 @@ async fn update_menu_by_request(menu_id: i64, req: UpdateMenuRequest) -> Result<
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to update menu");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     Ok(true)

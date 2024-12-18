@@ -1,11 +1,13 @@
+use salvo::prelude::*;
 use entity::menu;
+use salvo::oapi::{endpoint, extract::JsonBody, ToSchema};
 use sea_orm::{Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct CreateMenuRequest {
     pub name: String,
     pub parent_id: Option<i64>,
@@ -15,15 +17,18 @@ pub struct CreateMenuRequest {
     pub path: Option<String>,
 }
 
+#[endpoint(
+    tags("Menu"),
+)]
 pub async fn create_menu(
-    ValidatedJson(req): ValidatedJson<CreateMenuRequest>,
-) -> Result<ApiOk<i64>> {
-    let new_menu = create_menu_by_request(req).await?;
+    body: JsonBody<CreateMenuRequest>,
+) -> ApiResult<i64> {
+    let new_menu = create_menu_by_request(body.into_inner()).await?;
 
-    Ok(ApiOk::new(new_menu.menu_id))
+    Ok(ApiOk(Some(new_menu.menu_id)))
 }
 
-async fn create_menu_by_request(req: CreateMenuRequest) -> Result<menu::Model> {
+async fn create_menu_by_request(req: CreateMenuRequest) -> Result<menu::Model, ApiError> {
     let db = utils::db::conn();
 
     let new_menu = menu::ActiveModel {
@@ -38,7 +43,7 @@ async fn create_menu_by_request(req: CreateMenuRequest) -> Result<menu::Model> {
 
     let new_menu = new_menu.await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to insert new menu");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     Ok(new_menu)
