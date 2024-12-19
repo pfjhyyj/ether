@@ -1,9 +1,9 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::EntityTrait;
 use serde::Serialize;
-use utils::response::{ApiOk, Result};
+use utils::response::{ApiError, ApiOk, ApiResult};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct GetRoleDetailResponse {
     pub role_id: i64,
     pub code: String,
@@ -13,10 +13,13 @@ pub struct GetRoleDetailResponse {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Role"),
+)]
 pub async fn get_role(
-    Path(role_id): Path<i64>,
-) -> Result<ApiOk<GetRoleDetailResponse>> {
-    let role = get_role_by_id(role_id).await?;
+    role_id: PathParam<i64>,
+) -> ApiResult<GetRoleDetailResponse> {
+    let role = get_role_by_id(role_id.into_inner()).await?;
     let role = GetRoleDetailResponse {
         role_id: role.role_id,
         code: role.code,
@@ -25,22 +28,22 @@ pub async fn get_role(
         name: role.name,
         description: role.description,
     };
-    Ok(ApiOk::new(role))
+    Ok(ApiOk(Some(role)))
 }
 
-async fn get_role_by_id(id: i64) -> Result<entity::role::Model> {
+async fn get_role_by_id(id: i64) -> Result<entity::role::Model, ApiError> {
     let db = utils::db::conn();
     let role = entity::role::Entity::find_by_id(id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find role");
-            utils::response::ApiError::err_db()
+            utils::response::ApiError::DbError(None)
         })?;
 
     if let Some(role) = role {
         Ok(role)
     } else {
-        Err(utils::response::ApiError::err_param("Role not found".to_string()))
+        Err(utils::response::ApiError::RequestError(Some("Role not found".to_string())))
     }
 }

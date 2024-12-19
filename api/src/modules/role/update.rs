@@ -1,10 +1,10 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct UpdateRoleRequest {
     pub code: String,
     pub reference_type: Option<String>,
@@ -13,27 +13,30 @@ pub struct UpdateRoleRequest {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Role"),
+)]
 pub async fn update_role(
-    Path(role_id): Path<i64>,
-    ValidatedJson(req): ValidatedJson<UpdateRoleRequest>,
-) -> Result<ApiOk<bool>> {
-    let _ = update_role_by_request(role_id, req).await?;
+    role_id: PathParam<i64>,
+    body: JsonBody<UpdateRoleRequest>,
+) -> ApiResult<bool> {
+    let _ = update_role_by_request(role_id.into_inner(), body.into_inner()).await?;
 
-    Ok(ApiOk::new(true))
+    Ok(ApiOk(Some(true)))
 }
 
-async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<bool> {
+async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let role = entity::role::Entity::find_by_id(role_id)
         .one(db)
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to find role");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     if role.is_none() {
-        return Err(ApiError::err_param("Role not found".to_string()));
+        return Err(ApiError::RequestError(Some("Role not found".to_string())));
     }
 
     let mut role: entity::role::ActiveModel = role.unwrap().into();
@@ -47,7 +50,7 @@ async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to update role");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     Ok(true)

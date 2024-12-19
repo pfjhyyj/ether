@@ -1,24 +1,27 @@
-use axum::extract::Path;
+use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use validator::Validate;
 
 
-#[derive(Deserialize, Validate)]
+#[derive(Deserialize, Validate, ToSchema)]
 pub struct RemoveRolePermissionsRequest {
     pub permission_ids: Vec<i64>,
 }
 
+#[endpoint(
+    tags("Role"),
+)]
 pub async fn remove_role_permissions(
-    Path(role_id): Path<i64>,
-    ValidatedJson(req): ValidatedJson<RemoveRolePermissionsRequest>
-) -> Result<ApiOk<bool>> {
-    let _ = remove_role_permissions_by_request(role_id, req).await?;
-    Ok(ApiOk::new(true))
+    role_id: PathParam<i64>,
+    body: JsonBody<RemoveRolePermissionsRequest>
+) -> ApiResult<bool> {
+    let _ = remove_role_permissions_by_request(role_id.into_inner(), body.into_inner()).await?;
+    Ok(ApiOk(Some(true)))
 }
 
-async fn remove_role_permissions_by_request(role_id: i64, req: RemoveRolePermissionsRequest) -> Result<bool> {
+async fn remove_role_permissions_by_request(role_id: i64, req: RemoveRolePermissionsRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
 
     let _ = entity::role_permission::Entity::delete_many()
@@ -28,7 +31,7 @@ async fn remove_role_permissions_by_request(role_id: i64, req: RemoveRolePermiss
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to delete role permissions");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     Ok(true)

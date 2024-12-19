@@ -5,7 +5,7 @@ pub mod auth;
 pub mod user;
 pub mod menu;
 pub mod permission;
-// pub mod role;
+pub mod role;
 
 pub fn get_router() -> Router {
     let open = Router::new()
@@ -18,8 +18,8 @@ pub fn get_router() -> Router {
         .push(auth::get_router())
         .push(user::get_router())
         .push(menu::get_router())
-        .push(permission::get_router());
-        // .push(role::get_router());
+        .push(permission::get_router())
+        .push(role::get_router());
 
     let cors = Cors::very_permissive()
         .expose_headers(vec![utils::middleware::tracing::TRACE_ID])

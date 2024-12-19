@@ -1,18 +1,16 @@
-use axum::extract::{Path, Query};
+use salvo::{oapi::extract::{PathParam, QueryParam}, prelude::*};
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
-use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, PageResponse, Result}};
+use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, ApiResult, PageResponse}};
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct ListRolePermissionsRequest {
     #[serde(flatten)]
     pub page_request: PageRequest,
-    pub object: Option<String>,
-    pub action: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct ListRolePermissionsResponse {
     pub permission_id: i64,
     pub object: String,
@@ -21,32 +19,23 @@ pub struct ListRolePermissionsResponse {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Role"),
+)]
 pub async fn page_role_permissions(
-    Path(role_id): Path<i64>,
-    Query(req): Query<ListRolePermissionsRequest>
-) -> Result<ApiOk<PageResponse<ListRolePermissionsResponse>>> {
+    role_id: PathParam<i64>,
+    req: QueryParam<ListRolePermissionsRequest>
+) -> ApiResult<PageResponse<ListRolePermissionsResponse>> {
     let db = utils::db::conn();
     
-    let mut query = entity::role_permission::Entity::find()
-        .filter(entity::role_permission::Column::RoleId.eq(role_id));
-
-    if let Some(object) = &req.object {
-        query = query.filter(entity::permission::Entity, |permission| {
-            permission.object.contains(object)
-        });
-    }
-
-    if let Some(action) = &req.action {
-        query = query.filter_related(entity::permission::Entity, |permission| {
-            permission.action.contains(action)
-        });
-    }
+    let query = entity::role_permission::Entity::find()
+        .filter(entity::role_permission::Column::RoleId.eq(role_id.into_inner()));
         
-    let (offset, limit) = parse_page_request(req.page_request);
+    let (offset, limit) = parse_page_request(req.page_request.clone());
 
     let total = query.clone().count(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to count role permission");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     let permissions: Vec<(entity::role_permission::Model, Option<entity::permission::Model>)> = query
@@ -58,7 +47,7 @@ pub async fn page_role_permissions(
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query role permission");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     let resp = PageResponse {
@@ -74,5 +63,5 @@ pub async fn page_role_permissions(
         }).collect(),
     };
 
-    Ok(ApiOk::new(resp))
+    Ok(ApiOk(Some(resp)))
 }

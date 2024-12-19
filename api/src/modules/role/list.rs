@@ -1,16 +1,16 @@
-use axum::extract::Query;
+use salvo::{oapi::extract::QueryParam, prelude::*};
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
-use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, PageResponse, Result}};
+use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, ApiResult, PageResponse}};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct PageRoleRequest {
     #[serde(flatten)]
     pub page_request: PageRequest,
     pub name: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct PageRoleResponse {
     pub role_id: i64,
     pub code: String,
@@ -20,9 +20,12 @@ pub struct PageRoleResponse {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Role"),
+)]
 pub async fn page_role(
-    Query(req): Query<PageRoleRequest>
-) -> Result<ApiOk<PageResponse<PageRoleResponse>>> {
+    req: QueryParam<PageRoleRequest>
+) -> ApiResult<PageResponse<PageRoleResponse>> {
     let db = utils::db::conn();
     let mut query = entity::role::Entity::find();
 
@@ -30,11 +33,11 @@ pub async fn page_role(
         query = query.filter(entity::role::Column::Name.contains(name));
     }
 
-    let (offset, limit) = parse_page_request(req.page_request);
+    let (offset, limit) = parse_page_request(req.page_request.clone());
 
     let total = query.clone().count(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to count role");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     let roles = query
@@ -45,7 +48,7 @@ pub async fn page_role(
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query role");
-            ApiError::err_db()
+            ApiError::DbError(None)
         })?;
 
     let resp = PageResponse {
@@ -60,5 +63,5 @@ pub async fn page_role(
         }).collect(),
     };
 
-    Ok(ApiOk::new(resp))
+    Ok(ApiOk(Some(resp)))
 }

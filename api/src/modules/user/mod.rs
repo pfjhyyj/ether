@@ -9,6 +9,6 @@ pub mod get;
 pub fn get_router() -> Router {
     Router::new()
         .path("/users")
-        .push(Router::with_path("").get(list::page_user).post(create::create_user))
+        .push(Router::new().get(list::page_user).post(create::create_user))
         .push(Router::with_path("/<user_id>").get(get::get_user).put(update::update_user).delete(delete::delete_user))
 }

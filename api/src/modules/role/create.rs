@@ -1,11 +1,12 @@
+use salvo::{oapi::extract::JsonBody, prelude::*};
 use sea_orm::{Set, ActiveModelTrait};
 use serde::Deserialize;
-use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
+use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct CreateRoleRequest {
     pub code: String,
     pub reference_type: Option<String>,
@@ -14,15 +15,18 @@ pub struct CreateRoleRequest {
     pub description: Option<String>,
 }
 
+#[endpoint(
+    tags("Role"),
+)]
 pub async fn create_role(
-    ValidatedJson(req): ValidatedJson<CreateRoleRequest>
-) -> Result<ApiOk<i64>> {
-    let new_role = create_role_by_request(req).await?;
+    body: JsonBody<CreateRoleRequest>
+) -> ApiResult<i64> {
+    let new_role = create_role_by_request(body.into_inner()).await?;
 
-    Ok(ApiOk::new(new_role.role_id))
+    Ok(ApiOk(Some(new_role.role_id)))
 }
 
-async fn create_role_by_request(req: CreateRoleRequest) -> Result<entity::role::Model> {
+async fn create_role_by_request(req: CreateRoleRequest) -> Result<entity::role::Model, ApiError> {
     let db = utils::db::conn();
 
     let new_role = entity::role::ActiveModel {
@@ -36,7 +40,7 @@ async fn create_role_by_request(req: CreateRoleRequest) -> Result<entity::role::
 
     let new_role = new_role.await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to insert new role");
-        ApiError::err_db()
+        ApiError::DbError(None)
     })?;
 
     Ok(new_role)
