@@ -55,6 +55,7 @@ pub struct UpdateCurrentUserRequest {
     pub avatar: Option<String>,
 }
 
+/// Update current user
 #[endpoint(
     tags("Current User"),
 )]
