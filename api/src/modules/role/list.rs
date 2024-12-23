@@ -1,16 +1,18 @@
-use salvo::{oapi::extract::QueryParam, prelude::*};
+use salvo::prelude::*;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
-use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
 
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Deserialize, ToParameters)]
+#[salvo(parameters(default_parameter_in = Query))]
 pub struct PageRoleRequest {
-    #[serde(flatten)]
-    pub page_request: PageRequest,
+    pub page: Option<u64>,
+    pub size: Option<u64>,
     pub name: Option<String>,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct PageRoleResponse {
     pub role_id: i64,
     pub code: String,
@@ -20,11 +22,12 @@ pub struct PageRoleResponse {
     pub description: Option<String>,
 }
 
+/// page roles
 #[endpoint(
     tags("Role"),
 )]
 pub async fn page_role(
-    req: QueryParam<PageRoleRequest>
+    req: PageRoleRequest
 ) -> ApiResult<PageResponse<PageRoleResponse>> {
     let db = utils::db::conn();
     let mut query = entity::role::Entity::find();
@@ -33,7 +36,7 @@ pub async fn page_role(
         query = query.filter(entity::role::Column::Name.contains(name));
     }
 
-    let (offset, limit) = parse_page_request(req.page_request.clone());
+    let (offset, limit) = parse_page_and_size(req.page, req.size);
 
     let total = query.clone().count(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to count role");
@@ -53,6 +56,8 @@ pub async fn page_role(
 
     let resp = PageResponse {
         total,
+        page: offset / limit + 1,
+        size: limit,
         data: roles.into_iter().map(|role| PageRoleResponse {
             role_id: role.role_id,
             code: role.code,

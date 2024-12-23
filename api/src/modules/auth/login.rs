@@ -31,6 +31,7 @@ pub struct LoginByUserNameResponse {
     pub expire_time: i64,
 }
 
+/// Login by username and password
 #[endpoint(
     tags("Auth"),
 )]

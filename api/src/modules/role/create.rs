@@ -7,6 +7,7 @@ use validator::Validate;
 
 
 #[derive(Debug, Deserialize, Validate, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateRoleRequest {
     pub code: String,
     pub reference_type: Option<String>,
@@ -15,6 +16,7 @@ pub struct CreateRoleRequest {
     pub description: Option<String>,
 }
 
+/// Create a new role
 #[endpoint(
     tags("Role"),
 )]

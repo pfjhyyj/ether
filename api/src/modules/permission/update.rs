@@ -14,6 +14,7 @@ pub struct UpdatePermissionRequest {
     pub description: Option<String>,
 }
 
+/// Update a permission
 #[endpoint(
     tags("Permission"),
 )]

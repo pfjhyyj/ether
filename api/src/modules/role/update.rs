@@ -5,6 +5,7 @@ use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
 
 #[derive(Debug, Deserialize, Validate, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateRoleRequest {
     pub code: String,
     pub reference_type: Option<String>,
@@ -13,6 +14,7 @@ pub struct UpdateRoleRequest {
     pub description: Option<String>,
 }
 
+/// Update a role
 #[endpoint(
     tags("Role"),
 )]

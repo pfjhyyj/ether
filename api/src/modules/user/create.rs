@@ -26,6 +26,7 @@ pub struct CreateUserRequest {
     pub nickname: Option<String>,
 }
 
+/// Create a new user
 #[endpoint(
     tags("User"),
 )]

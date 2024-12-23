@@ -2,6 +2,7 @@ use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::{EntityTrait, ModelTrait};
 use utils::response::{ApiError, ApiOk, ApiResult};
 
+/// Delete a role
 #[endpoint(
     tags("Role"),
 )]

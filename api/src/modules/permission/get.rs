@@ -4,6 +4,7 @@ use serde::Serialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
 #[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct GetPermssionDetailResponse {
     pub permission_id: i64,
     pub object: String,
@@ -12,6 +13,7 @@ pub struct GetPermssionDetailResponse {
     pub description: Option<String>,
 }
 
+/// Get a permission
 #[endpoint(
     tags("Permission"),
 )]

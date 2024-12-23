@@ -4,6 +4,7 @@ use serde::Serialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
 #[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct GetMenuDetailResponse {
     pub menu_id: i64,
     pub name: String,
@@ -14,6 +15,7 @@ pub struct GetMenuDetailResponse {
     pub path: Option<String>,
 }
 
+/// Get a menu
 #[endpoint(
     tags("Menu"),
 )]

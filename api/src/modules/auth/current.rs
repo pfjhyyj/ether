@@ -15,6 +15,7 @@ pub struct GetCurrentUserResponse {
     pub avatar: Option<String>,
 }
 
+/// Get current user
 #[endpoint(
     tags("Current User"),
 )]

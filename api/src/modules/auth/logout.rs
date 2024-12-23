@@ -3,6 +3,7 @@ use redis::Commands;
 use salvo::Request;
 use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
 
+/// Logout
 #[endpoint(
     tags("Auth"),
 )]

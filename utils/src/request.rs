@@ -1,18 +1,8 @@
-use salvo::oapi::ToSchema;
-use serde::Deserialize;
-
-#[derive(Debug, Deserialize, Clone, ToSchema)]
-pub struct PageRequest {
-    pub page: Option<String>,
-    pub size: Option<String>,
-}
-
-pub fn parse_page_request(req: PageRequest) -> (u64, u64) {
+pub fn parse_page_and_size(page: Option<u64>, size: Option<u64>) -> (u64, u64) {
     let mut offset: u64 = 0;
     let mut limit: u64 = 20;
 
-    if let Some(page) = req.page {
-        let page = page.parse::<u64>().unwrap_or(1);
+    if let Some(page) = page {
         if page < 1 {
             offset = 0;
         } else {
@@ -20,8 +10,7 @@ pub fn parse_page_request(req: PageRequest) -> (u64, u64) {
         }
     }
 
-    if let Some(size) = req.size {
-        let size = size.parse::<u64>().unwrap_or(20);
+    if let Some(size) = size {
         if size < 1 {
             limit = 20;
         } else if size > 100 {

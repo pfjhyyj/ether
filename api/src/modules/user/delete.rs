@@ -4,6 +4,7 @@ use salvo::oapi::extract::PathParam;
 use sea_orm::{EntityTrait, ModelTrait};
 use utils::response::{ApiError, ApiOk, ApiResult};
 
+/// Delete a user
 #[endpoint(
     tags("User"),
 )]

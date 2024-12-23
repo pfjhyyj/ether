@@ -13,6 +13,7 @@ pub struct UpdatePasswordRequest {
     pub confirm_password: String,
 }
 
+/// Update current user password
 #[endpoint(
     tags("Current User"),
 )]

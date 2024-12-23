@@ -6,6 +6,7 @@ use serde::Serialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
 #[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct GetUserDetailResponse {
     pub user_id: i64,
     pub username: String,
@@ -16,6 +17,7 @@ pub struct GetUserDetailResponse {
     pub updated_at: chrono::NaiveDateTime,
 }
 
+/// Get a user
 #[endpoint(
     tags("User"),
 )]

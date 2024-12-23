@@ -22,6 +22,7 @@ pub struct RegisterByUsernameRequest {
     pub password: String,
 }
 
+/// Register by username and password
 #[endpoint(
     tags("Auth"),
 )]

@@ -6,10 +6,12 @@ use validator::Validate;
 
 
 #[derive(Debug, Deserialize, Validate, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct AddRolePermissionsRequest {
     pub permission_ids: Vec<i64>,
 }
 
+/// Add permissions to a role
 #[endpoint(
     tags("Role"),
 )]

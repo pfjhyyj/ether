@@ -1,12 +1,13 @@
-use salvo::{oapi::extract::QueryParam, prelude::*};
+use salvo::prelude::*;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
-use utils::{request::{parse_page_request, PageRequest}, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
 
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Deserialize, ToParameters)]
+#[salvo(parameters(default_parameter_in = Query))]
 pub struct PagePermssionRequest {
-    #[serde(flatten)]
-    pub page_request: PageRequest,
+    pub page: Option<u64>,
+    pub size: Option<u64>,
     pub object: Option<String>,
     pub action: Option<String>,
 }
@@ -20,11 +21,12 @@ pub struct PagePermissionResponse {
     pub description: Option<String>,
 }
 
+/// page permissions
 #[endpoint(
     tags("Permission"),
 )]
 pub async fn page_permission(
-    req: QueryParam<PagePermssionRequest>
+    req: PagePermssionRequest
 ) -> ApiResult<PageResponse<PagePermissionResponse>> {
     let db = utils::db::conn();
     let mut query = entity::permission::Entity::find();
@@ -37,7 +39,7 @@ pub async fn page_permission(
         query = query.filter(entity::permission::Column::Action.contains(action));
     }
 
-    let (offset, limit) = parse_page_request(req.into_inner().page_request);
+    let (offset, limit) = parse_page_and_size(req.page, req.size);
 
     let total = query.clone().count(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to count permission");
@@ -57,6 +59,8 @@ pub async fn page_permission(
 
     let resp = PageResponse {
         total,
+        page: offset / limit + 1,
+        size: limit,
         data: permissions.into_iter().map(|permission| PagePermissionResponse {
             permission_id: permission.permission_id,
             object: permission.object,

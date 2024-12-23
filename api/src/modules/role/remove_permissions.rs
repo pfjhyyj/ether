@@ -6,10 +6,12 @@ use validator::Validate;
 
 
 #[derive(Deserialize, Validate, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct RemoveRolePermissionsRequest {
     pub permission_ids: Vec<i64>,
 }
 
+/// Remove permissions from a role
 #[endpoint(
     tags("Role"),
 )]

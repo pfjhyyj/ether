@@ -4,6 +4,7 @@ use serde::Serialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
 #[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct GetRoleDetailResponse {
     pub role_id: i64,
     pub code: String,
@@ -13,6 +14,7 @@ pub struct GetRoleDetailResponse {
     pub description: Option<String>,
 }
 
+/// Get a role
 #[endpoint(
     tags("Role"),
 )]

@@ -13,6 +13,7 @@ pub struct CreatePermissionRequest {
     pub description: Option<String>,
 }
 
+/// Create a new permission
 #[endpoint(
     tags("Permission"),
 )]

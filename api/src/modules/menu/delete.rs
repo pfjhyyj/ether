@@ -3,7 +3,7 @@ use entity::menu;
 use sea_orm::{EntityTrait, ModelTrait};
 use utils::response::{ApiError, ApiOk, ApiResult};
 
-
+/// Delete a menu
 #[endpoint(
     tags("Menu"),
 )]

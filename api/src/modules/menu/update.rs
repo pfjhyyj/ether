@@ -7,6 +7,7 @@ use validator::Validate;
 
 
 #[derive(Debug, Deserialize, Validate, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateMenuRequest {
     pub name: String,
     pub parent_id: Option<i64>,
@@ -16,6 +17,7 @@ pub struct UpdateMenuRequest {
     pub path: Option<String>,
 }
 
+/// Update a menu
 #[endpoint(
     tags("Menu"),
 )]

@@ -26,6 +26,7 @@ pub struct UpdateUserRequest {
     pub nickname: Option<String>,
 }
 
+/// Update a user
 #[endpoint(
     tags("User"),
 )]

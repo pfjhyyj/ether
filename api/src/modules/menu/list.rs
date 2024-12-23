@@ -8,6 +8,7 @@ use serde_json::Value;
 use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
 
 #[derive(Debug, Serialize, Clone, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct MenuResponse {
     pub menu_id: i64,
     pub parent_id: Option<i64>,
@@ -25,6 +26,7 @@ pub struct ListMenuResponse {
     pub menus: Vec<MenuResponse>,
 }
 
+/// List all menus
 #[endpoint(
     tags("Menu"),
 )]

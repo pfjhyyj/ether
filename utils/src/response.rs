@@ -152,5 +152,7 @@ pub type ApiResult<T> = Result<ApiOk<T>, ApiError>;
 #[derive(Debug, Serialize, ToSchema)]
 pub struct PageResponse<T> {
     pub total: u64,
+    pub page: u64,
+    pub size: u64,
     pub data: Vec<T>,
 }
