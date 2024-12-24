@@ -8,11 +8,12 @@ utils = { path = "../utils" }
 entity = { path = "../entity" }
 
 salvo = { workspace = true, features = ["oapi", "cors"] }
-tokio = { version = "1.42.0", features = ["macros"] }
+tokio = { workspace = true, features = ["macros"] }
 tracing = { workspace = true }
 validator = { version = "0.19.0", features = ["derive"] }
 serde = { workspace = true, features = ["derive"] }
 redis = { workspace = true }
 sea-orm = { workspace = true }
 chrono = { workspace = true }
+casbin = { workspace = true, default-features = false, features = ["runtime-async-std", "logging", "incremental"] }
 serde_json = "1.0.133"
