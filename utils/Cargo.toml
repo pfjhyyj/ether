@@ -32,3 +32,5 @@ http-body-util = "0.1.2"
 hyper = "1.5.1"
 time = "0.3.37"
 anyhow = "1.0.94"
+casbin = { workspace = true, default-features = false, features = ["runtime-async-std", "logging", "incremental"] }
+async-trait = "0.1.83"

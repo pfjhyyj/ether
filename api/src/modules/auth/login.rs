@@ -4,6 +4,7 @@ use salvo::prelude::*;
 use salvo::oapi::{endpoint, extract::JsonBody, ToSchema};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
+use utils::cache::login::get_user_login_token_key;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use utils::xtime;
 use validator::Validate;
@@ -44,9 +45,9 @@ pub async fn login_by_username(
     if !is_valid {
         return Err(ApiError::RequestError(Some("Invalid username or password".to_string())));
     }
-
+    let valid_time_seconds: u64 = 60 * 60 * 24 * 7;
     //  7 days to expire
-    let expire_time = xtime::now(None).unix_timestamp() + 60 * 60 * 24 * 7;
+    let expire_time = xtime::now(None).unix_timestamp() + valid_time_seconds as i64;
     let identity = utils::identity::Identity {
         sub: user.user_id,
         exp: expire_time,
@@ -56,7 +57,7 @@ pub async fn login_by_username(
         ApiError::UnknownError(None)
     })?;
 
-    set_token_cache(&token, user.user_id)?;
+    set_token_cache(&token, user.user_id, valid_time_seconds)?;
 
     let resp = LoginByUserNameResponse {
         access_token: token,
@@ -80,7 +81,7 @@ async fn get_by_username(username: &str) -> Result<user::Model, ApiError> {
     Ok(user)
 }
 
-fn set_token_cache(token: &str, user_id: i64) -> Result<(), ApiError> {
+fn set_token_cache(token: &str, user_id: i64, valid_time_seconds: u64) -> Result<(), ApiError> {
     let mut conn = match utils::redis::redis_pool().get() {
         Ok(c) => c,
         Err(e) => {
@@ -89,8 +90,8 @@ fn set_token_cache(token: &str, user_id: i64) -> Result<(), ApiError> {
         }
     };
 
-    let key = format!("token:{}", user_id);
-    let _: () = conn.set(key, token).map_err(|e| {
+    let key = get_user_login_token_key(user_id);
+    let _: () = conn.set_ex(key, token, valid_time_seconds).map_err(|e| {
         tracing::error!(error = ?e, "Failed to set token cache");
         ApiError::UnknownError(None)
     })?;

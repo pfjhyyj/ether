@@ -1,7 +1,7 @@
 use salvo::prelude::*;
 use redis::Commands;
 use salvo::Request;
-use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
+use utils::{cache::login::get_user_login_token_key, identity::Identity, response::{ApiError, ApiOk, ApiResult}};
 
 /// Logout
 #[endpoint(
@@ -24,7 +24,7 @@ fn clear_token_cache(user_id: i64) -> Result<(), ApiError> {
         }
     };
 
-    let key = format!("token:{}", user_id);
+    let key = get_user_login_token_key(user_id);
     let _: () = conn.del(key).map_err(|e| {
         tracing::error!(error = ?e, "Failed to clear token cache");
         ApiError::UnknownError(None)
