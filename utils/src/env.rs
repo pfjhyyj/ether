@@ -27,3 +27,16 @@ where
     var.parse::<T>()
         .expect(&format!("{} can not be parse to correct type!", key))
 }
+
+pub fn get_env_with_default<T>(key: &str, default: T) -> T
+where
+    T: FromStr + Clone,
+    T::Err: Debug,
+{
+    match env::var(key) {
+        Ok(var) => var.parse::<T>().unwrap_or_else(|_| {
+            panic!("{} can not be parsed to the correct type!", key)
+        }),
+        Err(_) => default,
+    }
+}

@@ -9,12 +9,12 @@ pub async fn start() -> std::io::Result<()> {
     utils::db::init_db().await;
     utils::redis::init_redis();
 
-    let port = utils::env::get_env::<String>("API_PORT");
+    let port = utils::env::get_env_with_default::<String>("API_PORT", "80".to_string());
     let address = format!("0.0.0.0:{}", port);
 
     let mut router = Router::new().push(modules::get_router());
 
-    let show_openapi = utils::env::get_env::<bool>("SHOW_OPENAPI");
+    let show_openapi = utils::env::get_env_with_default::<bool>("SHOW_OPENAPI", false);
     if show_openapi {
         let doc = OpenApi::new("Ether api", "0.0.1").merge_router(&router);
         router = router
