@@ -1,38 +1,17 @@
-use salvo::{oapi::extract::{PathParam, QueryParam}, prelude::*};
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
-use serde::{Deserialize, Serialize};
-use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use utils::{request::parse_page_and_size, response::{ApiError, PageResponse}};
 use domain::entity::{permission, role_permission};
 
+use crate::modules::role::controller::list_permissions::{ListRolePermissionsRequest, ListRolePermissionsResponse};
 
-#[derive(Debug, Deserialize, ToSchema)]
-pub struct ListRolePermissionsRequest {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
-}
-
-#[derive(Debug, Serialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct ListRolePermissionsResponse {
-    pub permission_id: i64,
-    pub object: String,
-    pub action: String,
-    pub name: Option<String>,
-    pub description: Option<String>,
-}
-
-/// page role permissions
-#[endpoint(
-    tags("Role"),
-)]
-pub async fn page_role_permissions(
-    role_id: PathParam<i64>,
-    req: QueryParam<ListRolePermissionsRequest>
-) -> ApiResult<PageResponse<ListRolePermissionsResponse>> {
+pub async fn get_page_role_permissions(
+    role_id: i64,
+    req: ListRolePermissionsRequest
+) -> Result<PageResponse<ListRolePermissionsResponse>, ApiError> {
     let db = utils::db::conn();
     
     let query = role_permission::Entity::find()
-        .filter(role_permission::Column::RoleId.eq(role_id.into_inner()));
+        .filter(role_permission::Column::RoleId.eq(role_id));
         
     let (offset, limit) = parse_page_and_size(req.page, req.size);
 
@@ -68,5 +47,5 @@ pub async fn page_role_permissions(
         }).collect(),
     };
 
-    Ok(ApiOk(Some(resp)))
+    Ok(resp)
 }

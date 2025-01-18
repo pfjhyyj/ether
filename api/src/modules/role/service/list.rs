@@ -1,35 +1,12 @@
-use salvo::prelude::*;
 use domain::entity::role;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
-use serde::{Deserialize, Serialize};
-use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use utils::{request::parse_page_and_size, response::{ApiError, PageResponse}};
 
-#[derive(Debug, Deserialize, ToParameters)]
-#[salvo(parameters(default_parameter_in = Query))]
-pub struct PageRoleRequest {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
-    pub name: Option<String>,
-}
+use crate::modules::role::controller::list::{PageRoleRequest, PageRoleResponse};
 
-#[derive(Debug, Serialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct PageRoleResponse {
-    pub role_id: i64,
-    pub code: String,
-    pub reference_type: Option<String>,
-    pub reference_id: Option<i64>,
-    pub name: String,
-    pub description: Option<String>,
-}
-
-/// page roles
-#[endpoint(
-    tags("Role"),
-)]
-pub async fn page_role(
+pub async fn get_page_role(
     req: PageRoleRequest
-) -> ApiResult<PageResponse<PageRoleResponse>> {
+) -> Result<PageResponse<PageRoleResponse>, ApiError> {
     let db = utils::db::conn();
     let mut query = role::Entity::find();
 
@@ -69,5 +46,5 @@ pub async fn page_role(
         }).collect(),
     };
 
-    Ok(ApiOk(Some(resp)))
+    Ok(resp)
 }

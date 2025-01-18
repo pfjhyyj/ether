@@ -1,31 +1,11 @@
-use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
-use serde::Deserialize;
-use utils::response::{ApiError, ApiOk, ApiResult};
+use utils::response::ApiError;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, Set};
-use validator::Validate;
 use domain::entity::{role, permission, role_permission};
 
+use crate::modules::role::controller::add_permissions::AddRolePermissionsRequest;
 
-#[derive(Debug, Deserialize, Validate, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct AddRolePermissionsRequest {
-    pub permission_ids: Vec<i64>,
-}
 
-/// Add permissions to a role
-#[endpoint(
-    tags("Role"),
-)]
-pub async fn add_role_permissions(
-    role_id: PathParam<i64>,
-    body: JsonBody<AddRolePermissionsRequest>
-) -> ApiResult<bool> {
-    let _ = add_role_permissions_by_request(role_id.into_inner(), body.into_inner()).await?;
-    
-    Ok(ApiOk(Some(true)))
-}
-
-async fn add_role_permissions_by_request(role_id: i64, req: AddRolePermissionsRequest) -> Result<bool, ApiError> {
+pub async fn add_role_permissions_by_request(role_id: i64, req: AddRolePermissionsRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
 
     let role = role::Entity::find_by_id(role_id)

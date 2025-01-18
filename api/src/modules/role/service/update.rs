@@ -1,34 +1,10 @@
-use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
 use domain::entity::role;
-use serde::Deserialize;
-use utils::response::{ApiError, ApiOk, ApiResult};
-use validator::Validate;
+use utils::response::ApiError;
 
-#[derive(Debug, Deserialize, Validate, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct UpdateRoleRequest {
-    pub code: String,
-    pub reference_type: Option<String>,
-    pub reference_id: Option<i64>,
-    pub name: String,
-    pub description: Option<String>,
-}
+use crate::modules::role::controller::update::UpdateRoleRequest;
 
-/// Update a role
-#[endpoint(
-    tags("Role"),
-)]
-pub async fn update_role(
-    role_id: PathParam<i64>,
-    body: JsonBody<UpdateRoleRequest>,
-) -> ApiResult<bool> {
-    let _ = update_role_by_request(role_id.into_inner(), body.into_inner()).await?;
-
-    Ok(ApiOk(Some(true)))
-}
-
-async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<bool, ApiError> {
+pub async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let role = role::Entity::find_by_id(role_id)
         .one(db)
