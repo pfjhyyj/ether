@@ -1,22 +1,9 @@
-use salvo::{oapi::extract::PathParam, prelude::*};
 use domain::entity::menu;
 use sea_orm::{EntityTrait, ModelTrait};
-use utils::response::{ApiError, ApiOk, ApiResult};
-
-/// Delete a menu
-#[endpoint(
-    tags("Menu"),
-)]
-pub async fn delete_menu(
-    menu_id: PathParam<i64>,
-) -> ApiResult<bool> {
-    let _ = delete_menu_by_id(menu_id.into_inner()).await?;
-
-    Ok(ApiOk(Some(true)))
-}
+use utils::response::ApiError;
 
 
-async fn delete_menu_by_id(menu_id: i64) -> Result<bool, ApiError> {
+pub async fn delete_menu_by_id(menu_id: i64) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let menu = menu::Entity::find_by_id(menu_id)
         .one(db)

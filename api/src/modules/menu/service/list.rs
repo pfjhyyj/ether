@@ -1,43 +1,17 @@
-use salvo::prelude::*;
 use std::collections::HashMap;
 
 use domain::entity::menu;
 use sea_orm::EntityTrait;
-use serde::Serialize;
-use serde_json::Value;
-use utils::{identity::Identity, response::{ApiError, ApiOk, ApiResult}};
+use utils::response::ApiError;
 
-#[derive(Debug, Serialize, Clone, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct MenuResponse {
-    pub menu_id: i64,
-    pub parent_id: Option<i64>,
-    pub name: String,
-    pub menu_type: i32,
-    pub icon: Option<String>,
-    pub path: Option<String>,
-    pub sort: i32,
-    pub extra: Option<Value>,
-    pub children: Vec<MenuResponse>,
-}
+use crate::modules::menu::controller::list::{ListMenuResponse, MenuResponse};
 
-#[derive(Debug, Serialize, ToSchema)]
-pub struct ListMenuResponse {
-    pub menus: Vec<MenuResponse>,
-}
 
-/// List all menus
-#[endpoint(
-    tags("Menu"),
-)]
-pub async fn list_menu(
-    req: &mut Request
-) -> ApiResult<ListMenuResponse> {
-    let _id = req.extensions().get::<Identity>().unwrap();
+pub async fn get_menu_forest() -> Result<ListMenuResponse, ApiError> {
     let menus = get_menu_list().await?;
     let menus = build_menu_forest(menus);
     let menus = ListMenuResponse { menus };
-    Ok(ApiOk(Some(menus)))
+    Ok(menus)
 }
 
 async fn get_menu_list() -> Result<Vec<menu::Model>, ApiError> {

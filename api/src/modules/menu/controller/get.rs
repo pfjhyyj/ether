@@ -1,8 +1,8 @@
 use salvo::{oapi::extract::PathParam, prelude::*};
-use sea_orm::EntityTrait;
-use domain::entity::menu;
 use serde::Serialize;
-use utils::response::{ApiError, ApiOk, ApiResult};
+use utils::response::{ApiOk, ApiResult};
+
+use crate::modules::menu::service;
 
 #[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -23,7 +23,7 @@ pub struct GetMenuDetailResponse {
 pub async fn get_menu(
     menu_id: PathParam<i64>,
 ) -> ApiResult<GetMenuDetailResponse> {
-    let menu = get_menu_by_id(menu_id.into_inner()).await?;
+    let menu = service::get::get_menu_by_id(menu_id.into_inner()).await?;
     let menu = GetMenuDetailResponse {
         menu_id: menu.menu_id,
         name: menu.name,
@@ -36,19 +36,3 @@ pub async fn get_menu(
     Ok(ApiOk(Some(menu)))
 }
 
-async fn get_menu_by_id(id: i64) -> Result<menu::Model, ApiError> {
-    let db = utils::db::conn();
-    let menu = menu::Entity::find_by_id(id)
-        .one(db)
-        .await
-        .map_err(|e| {
-            tracing::error!(error = ?e, "Failed to find menu");
-            utils::response::ApiError::DbError(None)
-        })?;
-
-    if let Some(menu) = menu {
-        Ok(menu)
-    } else {
-        Err(utils::response::ApiError::RequestError(Some("Menu not found".to_string())))
-    }
-}
