@@ -1,6 +1,7 @@
 use salvo::prelude::*;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
+use domain::entity::permission;
 use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
 
 #[derive(Debug, Deserialize, ToParameters)]
@@ -29,14 +30,14 @@ pub async fn page_permission(
     req: PagePermssionRequest
 ) -> ApiResult<PageResponse<PagePermissionResponse>> {
     let db = utils::db::conn();
-    let mut query = entity::permission::Entity::find();
+    let mut query = permission::Entity::find();
 
     if let Some(object) = &req.object {
-        query = query.filter(entity::permission::Column::Object.contains(object));
+        query = query.filter(permission::Column::Object.contains(object));
     }
 
     if let Some(action) = &req.action {
-        query = query.filter(entity::permission::Column::Action.contains(action));
+        query = query.filter(permission::Column::Action.contains(action));
     }
 
     let (offset, limit) = parse_page_and_size(req.page, req.size);
@@ -47,7 +48,7 @@ pub async fn page_permission(
     })?;
 
     let permissions = query
-        .order_by_asc(entity::permission::Column::PermissionId)
+        .order_by_asc(permission::Column::PermissionId)
         .limit(limit)
         .offset(offset)
         .all(db)

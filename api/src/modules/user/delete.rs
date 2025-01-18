@@ -1,5 +1,5 @@
 use salvo::prelude::*;
-use entity::user;
+use domain::entity::user;
 use salvo::oapi::extract::PathParam;
 use sea_orm::{EntityTrait, ModelTrait};
 use utils::response::{ApiError, ApiOk, ApiResult};

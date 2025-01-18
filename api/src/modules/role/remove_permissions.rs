@@ -3,6 +3,7 @@ use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use validator::Validate;
+use domain::entity::role_permission;
 
 
 #[derive(Deserialize, Validate, ToSchema)]
@@ -26,9 +27,9 @@ pub async fn remove_role_permissions(
 async fn remove_role_permissions_by_request(role_id: i64, req: RemoveRolePermissionsRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
 
-    let _ = entity::role_permission::Entity::delete_many()
-        .filter(entity::role_permission::Column::RoleId.eq(role_id))
-        .filter(entity::role_permission::Column::PermissionId.is_in(req.permission_ids.clone()))
+    let _ = role_permission::Entity::delete_many()
+        .filter(role_permission::Column::RoleId.eq(role_id))
+        .filter(role_permission::Column::PermissionId.is_in(req.permission_ids.clone()))
         .exec(db)
         .await
         .map_err(|e| {

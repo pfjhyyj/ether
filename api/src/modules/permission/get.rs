@@ -1,6 +1,7 @@
 use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::EntityTrait;
 use serde::Serialize;
+use domain::entity::permission;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
 #[derive(Debug, Serialize, ToSchema)]
@@ -31,9 +32,9 @@ pub async fn get_permission(
     Ok(ApiOk(Some(permission)))
 }
 
-async fn get_permission_by_id(id: i64) -> Result<entity::permission::Model, ApiError> {
+async fn get_permission_by_id(id: i64) -> Result<permission::Model, ApiError> {
     let db = utils::db::conn();
-    let permission = entity::permission::Entity::find_by_id(id)
+    let permission = permission::Entity::find_by_id(id)
         .one(db)
         .await
         .map_err(|e| {

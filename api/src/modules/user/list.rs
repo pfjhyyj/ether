@@ -1,5 +1,5 @@
 use salvo::prelude::*;
-use entity::user;
+use domain::entity::user;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
 use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};

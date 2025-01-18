@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::JsonBody, prelude::*};
 use sea_orm::{Set, ActiveModelTrait};
+use domain::entity::permission;
 use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
@@ -25,10 +26,10 @@ pub async fn create_permission(
     Ok(ApiOk(Some(new_permission.permission_id)))
 }
 
-async fn create_permission_by_request(req: CreatePermissionRequest) -> Result<entity::permission::Model, ApiError> {
+async fn create_permission_by_request(req: CreatePermissionRequest) -> Result<permission::Model, ApiError> {
     let db = utils::db::conn();
 
-    let new_permission = entity::permission::ActiveModel {
+    let new_permission = permission::ActiveModel {
         object: Set(req.object),
         action: Set(req.action),
         name: Set(req.name),

@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
+use domain::entity::menu;
 use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
@@ -32,7 +33,7 @@ pub async fn update_menu(
 
 async fn update_menu_by_request(menu_id: i64, req: UpdateMenuRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
-    let menu = entity::menu::Entity::find_by_id(menu_id)
+    let menu = menu::Entity::find_by_id(menu_id)
         .one(db)
         .await
         .map_err(|e| {
@@ -44,7 +45,7 @@ async fn update_menu_by_request(menu_id: i64, req: UpdateMenuRequest) -> Result<
         return Err(ApiError::RequestError(Some("Menu not found".to_string())));
     }
 
-    let mut menu: entity::menu::ActiveModel = menu.unwrap().into();
+    let mut menu: menu::ActiveModel = menu.unwrap().into();
     menu.name = Set(req.name);
     menu.parent_id = Set(req.parent_id);
     menu.icon = Set(req.icon);

@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::EntityTrait;
+use domain::entity::menu;
 use serde::Serialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
@@ -35,9 +36,9 @@ pub async fn get_menu(
     Ok(ApiOk(Some(menu)))
 }
 
-async fn get_menu_by_id(id: i64) -> Result<entity::menu::Model, ApiError> {
+async fn get_menu_by_id(id: i64) -> Result<menu::Model, ApiError> {
     let db = utils::db::conn();
-    let menu = entity::menu::Entity::find_by_id(id)
+    let menu = menu::Entity::find_by_id(id)
         .one(db)
         .await
         .map_err(|e| {

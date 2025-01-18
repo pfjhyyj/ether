@@ -1,7 +1,7 @@
 use salvo::prelude::*;
 use std::collections::HashMap;
 
-use entity::menu;
+use domain::entity::menu;
 use sea_orm::EntityTrait;
 use serde::Serialize;
 use serde_json::Value;
@@ -42,7 +42,7 @@ pub async fn list_menu(
 
 async fn get_menu_list() -> Result<Vec<menu::Model>, ApiError> {
     let db = utils::db::conn();
-    let menus = entity::menu::Entity::find()
+    let menus = menu::Entity::find()
         .all(db)
         .await
         .map_err(|e| {

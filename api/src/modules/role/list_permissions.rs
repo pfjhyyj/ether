@@ -2,6 +2,7 @@ use salvo::{oapi::extract::{PathParam, QueryParam}, prelude::*};
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
 use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use domain::entity::{permission, role_permission};
 
 
 #[derive(Debug, Deserialize, ToSchema)]
@@ -30,8 +31,8 @@ pub async fn page_role_permissions(
 ) -> ApiResult<PageResponse<ListRolePermissionsResponse>> {
     let db = utils::db::conn();
     
-    let query = entity::role_permission::Entity::find()
-        .filter(entity::role_permission::Column::RoleId.eq(role_id.into_inner()));
+    let query = role_permission::Entity::find()
+        .filter(role_permission::Column::RoleId.eq(role_id.into_inner()));
         
     let (offset, limit) = parse_page_and_size(req.page, req.size);
 
@@ -40,11 +41,11 @@ pub async fn page_role_permissions(
         ApiError::DbError(None)
     })?;
 
-    let permissions: Vec<(entity::role_permission::Model, Option<entity::permission::Model>)> = query
-        .order_by_asc(entity::permission::Column::PermissionId)
+    let permissions: Vec<(role_permission::Model, Option<permission::Model>)> = query
+        .order_by_asc(permission::Column::PermissionId)
         .limit(limit)
         .offset(offset)
-        .find_also_related(entity::permission::Entity)
+        .find_also_related(permission::Entity)
         .all(db)
         .await
         .map_err(|e| {

@@ -10,5 +10,5 @@ pub fn get_router() -> Router {
     Router::new()
         .path("/permissions")
         .push(Router::new().post(create::create_permission).get(list::page_permission))
-        .push(Router::with_path("/<permission_id>").get(get::get_permission).put(update::update_permission).delete(delete::delete_permission))
+        .push(Router::with_path("/{permission_id}").get(get::get_permission).put(update::update_permission).delete(delete::delete_permission))
 }

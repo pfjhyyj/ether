@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::{EntityTrait, ModelTrait};
+use domain::entity::permission;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
 /// Delete a permission
@@ -16,7 +17,7 @@ pub async fn delete_permission(
 
 async fn delete_permission_by_id(permission_id: i64) -> Result<bool, ApiError> {
     let db = utils::db::conn();
-    let permission = entity::permission::Entity::find_by_id(permission_id)
+    let permission = permission::Entity::find_by_id(permission_id)
         .one(db)
         .await
         .map_err(|e| {

@@ -1,5 +1,5 @@
 use salvo::{oapi::extract::PathParam, prelude::*};
-use entity::menu;
+use domain::entity::menu;
 use sea_orm::{EntityTrait, ModelTrait};
 use utils::response::{ApiError, ApiOk, ApiResult};
 

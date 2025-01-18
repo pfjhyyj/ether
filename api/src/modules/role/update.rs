@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
+use domain::entity::role;
 use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
@@ -29,7 +30,7 @@ pub async fn update_role(
 
 async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
-    let role = entity::role::Entity::find_by_id(role_id)
+    let role = role::Entity::find_by_id(role_id)
         .one(db)
         .await
         .map_err(|e| {
@@ -41,7 +42,7 @@ async fn update_role_by_request(role_id: i64, req: UpdateRoleRequest) -> Result<
         return Err(ApiError::RequestError(Some("Role not found".to_string())));
     }
 
-    let mut role: entity::role::ActiveModel = role.unwrap().into();
+    let mut role: role::ActiveModel = role.unwrap().into();
     role.code = Set(req.code);
     role.reference_type = Set(req.reference_type);
     role.reference_id = Set(req.reference_id);

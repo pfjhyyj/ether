@@ -1,4 +1,4 @@
-use entity::user;
+use domain::entity::user;
 use redis::Commands;
 use salvo::prelude::*;
 use salvo::oapi::{endpoint, extract::JsonBody, ToSchema};

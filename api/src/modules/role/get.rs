@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::PathParam, prelude::*};
 use sea_orm::EntityTrait;
+use domain::entity::role;
 use serde::Serialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 
@@ -33,9 +34,9 @@ pub async fn get_role(
     Ok(ApiOk(Some(role)))
 }
 
-async fn get_role_by_id(id: i64) -> Result<entity::role::Model, ApiError> {
+async fn get_role_by_id(id: i64) -> Result<role::Model, ApiError> {
     let db = utils::db::conn();
-    let role = entity::role::Entity::find_by_id(id)
+    let role = role::Entity::find_by_id(id)
         .one(db)
         .await
         .map_err(|e| {

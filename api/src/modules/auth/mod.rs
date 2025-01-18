@@ -12,7 +12,7 @@ pub fn get_open_router() -> Router {
     Router::new()
         .path("/auth")
         .push(Router::with_path("/login").post(login::login_by_username))
-        .push(Router::with_path("/register").post(register::register_by_username))
+        // .push(Router::with_path("/register").post(register::register_by_username))
 }
 
 pub fn get_router() -> Router {

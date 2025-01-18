@@ -1,5 +1,5 @@
 use salvo::{oapi::extract::JsonBody, prelude::*};
-use entity::user;
+use domain::entity::user;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, ActiveModelTrait, Set};
 use serde::{Deserialize, Serialize};
 

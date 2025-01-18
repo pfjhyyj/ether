@@ -3,6 +3,7 @@ use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, Set};
 use validator::Validate;
+use domain::entity::{role, permission, role_permission};
 
 
 #[derive(Debug, Deserialize, Validate, ToSchema)]
@@ -27,7 +28,7 @@ pub async fn add_role_permissions(
 async fn add_role_permissions_by_request(role_id: i64, req: AddRolePermissionsRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
 
-    let role = entity::role::Entity::find_by_id(role_id)
+    let role = role::Entity::find_by_id(role_id)
         .one(db)
         .await
         .map_err(|e| {
@@ -40,8 +41,8 @@ async fn add_role_permissions_by_request(role_id: i64, req: AddRolePermissionsRe
     }
 
     // check if permissions exist
-    let permissions = entity::permission::Entity::find()
-        .filter(entity::permission::Column::PermissionId.is_in(req.permission_ids.clone()))
+    let permissions = permission::Entity::find()
+        .filter(permission::Column::PermissionId.is_in(req.permission_ids.clone()))
         .all(db)
         .await
         .map_err(|e| {
@@ -53,8 +54,8 @@ async fn add_role_permissions_by_request(role_id: i64, req: AddRolePermissionsRe
         return Err(ApiError::RequestError(Some("Permission not found".to_string())));
     }
 
-    let role_permissions = entity::role_permission::Entity::find()
-        .filter(entity::role_permission::Column::RoleId.eq(role_id))
+    let role_permissions = role_permission::Entity::find()
+        .filter(role_permission::Column::RoleId.eq(role_id))
         .all(db)
         .await
         .map_err(|e| {
@@ -73,14 +74,14 @@ async fn add_role_permissions_by_request(role_id: i64, req: AddRolePermissionsRe
 
     // insert new permissions
     let new_role_permissions = new_permissions.iter().map(|p| {
-        entity::role_permission::ActiveModel {
+        role_permission::ActiveModel {
             role_id: Set(role_id),
             permission_id: Set(*p),
             ..Default::default()
         }
     }).collect::<Vec<_>>();
 
-    let _ = entity::role_permission::Entity::insert_many(new_role_permissions)
+    let _ = role_permission::Entity::insert_many(new_role_permissions)
         .exec(db)
         .await
         .map_err(|e| {

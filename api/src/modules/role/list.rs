@@ -1,4 +1,5 @@
 use salvo::prelude::*;
+use domain::entity::role;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
 use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
@@ -30,10 +31,10 @@ pub async fn page_role(
     req: PageRoleRequest
 ) -> ApiResult<PageResponse<PageRoleResponse>> {
     let db = utils::db::conn();
-    let mut query = entity::role::Entity::find();
+    let mut query = role::Entity::find();
 
     if let Some(name) = &req.name {
-        query = query.filter(entity::role::Column::Name.contains(name));
+        query = query.filter(role::Column::Name.contains(name));
     }
 
     let (offset, limit) = parse_page_and_size(req.page, req.size);
@@ -44,7 +45,7 @@ pub async fn page_role(
     })?;
 
     let roles = query
-        .order_by_asc(entity::role::Column::RoleId)
+        .order_by_asc(role::Column::RoleId)
         .limit(limit)
         .offset(offset)
         .all(db)

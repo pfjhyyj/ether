@@ -1,5 +1,5 @@
 use salvo::prelude::*;
-use entity::menu;
+use domain::entity::menu;
 use salvo::oapi::{endpoint, extract::JsonBody, ToSchema};
 use sea_orm::{Set, ActiveModelTrait};
 use serde::Deserialize;

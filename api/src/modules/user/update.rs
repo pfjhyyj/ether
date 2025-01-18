@@ -1,4 +1,4 @@
-use entity::user;
+use domain::entity::user;
 use salvo::prelude::*;
 use salvo::oapi::{endpoint, extract::{JsonBody, PathParam}, ToSchema};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};

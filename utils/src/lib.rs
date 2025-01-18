@@ -11,3 +11,5 @@ pub mod xtime;
 pub mod request;
 pub mod casbin;
 pub mod cache;
+pub mod s3;
+pub mod config;

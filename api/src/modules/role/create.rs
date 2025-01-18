@@ -1,5 +1,6 @@
 use salvo::{oapi::extract::JsonBody, prelude::*};
 use sea_orm::{Set, ActiveModelTrait};
+use domain::entity::role;
 use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
@@ -28,10 +29,10 @@ pub async fn create_role(
     Ok(ApiOk(Some(new_role.role_id)))
 }
 
-async fn create_role_by_request(req: CreateRoleRequest) -> Result<entity::role::Model, ApiError> {
+async fn create_role_by_request(req: CreateRoleRequest) -> Result<role::Model, ApiError> {
     let db = utils::db::conn();
 
-    let new_role = entity::role::ActiveModel {
+    let new_role = role::ActiveModel {
         code: Set(req.code),
         reference_type: Set(req.reference_type),
         reference_id: Set(req.reference_id),

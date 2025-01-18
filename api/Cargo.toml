@@ -5,15 +5,16 @@ edition = "2021"
 
 [dependencies]
 utils = { path = "../utils" }
-entity = { path = "../entity" }
+domain = { path = "../domain" }
 
 salvo = { workspace = true, features = ["oapi", "cors"] }
 tokio = { workspace = true, features = ["macros"] }
 tracing = { workspace = true }
 validator = { version = "0.19.0", features = ["derive"] }
 serde = { workspace = true, features = ["derive"] }
-redis = { workspace = true }
+redis = { workspace = true, features = ["r2d2", "cluster", "cluster-async", "tokio-comp"] }
 sea-orm = { workspace = true }
 chrono = { workspace = true }
 casbin = { workspace = true, default-features = false, features = ["runtime-async-std", "logging", "incremental"] }
 serde_json = "1.0.133"
+uuid = { version = "1.11.0", features = ["v4"] }

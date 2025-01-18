@@ -3,6 +3,7 @@ use sea_orm::{EntityTrait, Set, ActiveModelTrait};
 use serde::Deserialize;
 use utils::response::{ApiError, ApiOk, ApiResult};
 use validator::Validate;
+use domain::entity::permission;
 
 
 
@@ -29,7 +30,7 @@ pub async fn update_permission(
 
 async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
-    let permission = entity::permission::Entity::find_by_id(permission_id)
+    let permission = permission::Entity::find_by_id(permission_id)
         .one(db)
         .await
         .map_err(|e| {
@@ -41,7 +42,7 @@ async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionR
         return Err(ApiError::RequestError(Some("Permission not found".to_string())));
     }
 
-    let mut permission: entity::permission::ActiveModel = permission.unwrap().into();
+    let mut permission: permission::ActiveModel = permission.unwrap().into();
     permission.object = Set(req.object);
     permission.action = Set(req.action);
     permission.name = Set(req.name);
