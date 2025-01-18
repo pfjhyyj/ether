@@ -1,44 +1,16 @@
 use domain::entity::user;
 use redis::Commands;
-use salvo::prelude::*;
-use salvo::oapi::{endpoint, extract::JsonBody, ToSchema};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
-use serde::{Deserialize, Serialize};
 use utils::cache::login::get_user_login_token_key;
-use utils::response::{ApiError, ApiOk, ApiResult};
+use utils::response::ApiError;
 use utils::xtime;
-use validator::Validate;
 
-#[derive(Debug, Deserialize, ToSchema, Validate)]
-pub struct LoginByUserNameRequest {
-    #[validate(length(
-        min = 6,
-        max = 50,
-        message = "Username must be between 6 and 50 characters"
-    ))]
-    pub username: String,
-    #[validate(length(
-        min = 6,
-        max = 50,
-        message = "Password must be between 6 and 50 characters"
-    ))]
-    pub password: String,
-}
+use crate::modules::auth::controller::login::{LoginByUserNameRequest, LoginByUserNameResponse};
 
-#[derive(Debug, Serialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct LoginByUserNameResponse {
-    pub access_token: String,
-    pub expire_time: i64,
-}
 
-/// Login by username and password
-#[endpoint(
-    tags("Auth"),
-)]
 pub async fn login_by_username(
-    req: JsonBody<LoginByUserNameRequest>,
-) -> ApiResult<LoginByUserNameResponse> {
+    req: LoginByUserNameRequest,
+) -> Result<LoginByUserNameResponse, ApiError> {
     let user = get_by_username(&req.username).await?;
 
     let is_valid = utils::hash::bcrypt_verify(&req.password, &user.password);
@@ -63,7 +35,7 @@ pub async fn login_by_username(
         access_token: token,
         expire_time: expire_time,
     };
-    Ok(ApiOk(Some(resp)))
+    Ok(resp)
 }
 
 async fn get_by_username(username: &str) -> Result<user::Model, ApiError> {
