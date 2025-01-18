@@ -1,9 +1,9 @@
 use salvo::prelude::*;
-use domain::entity::user;
 use salvo::oapi::extract::PathParam;
-use sea_orm::EntityTrait;
 use serde::Serialize;
-use utils::response::{ApiError, ApiOk, ApiResult};
+use utils::response::{ApiOk, ApiResult};
+
+use crate::modules::user::service;
 
 #[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -24,7 +24,7 @@ pub struct GetUserDetailResponse {
 pub async fn get_user(
     user_id: PathParam<i64>,
 ) -> ApiResult<GetUserDetailResponse> {
-    let user = get_user_by_id(user_id.into_inner()).await?;
+    let user = service::get::get_user_by_id(user_id.into_inner()).await?;
     let user = GetUserDetailResponse {
         user_id: user.user_id,
         username: user.username,
@@ -36,21 +36,4 @@ pub async fn get_user(
     };
 
     Ok(ApiOk(Some(user)))
-}
-
-async fn get_user_by_id(id: i64) -> Result<user::Model, ApiError> {
-    let db = utils::db::conn();
-    let user = user::Entity::find_by_id(id)
-        .one(db)
-        .await
-        .map_err(|e| {
-            tracing::error!(error = ?e, "Failed to find user");
-            ApiError::DbError(None)
-        })?;
-
-    if let Some(user) = user {
-        Ok(user)
-    } else {
-        Err(ApiError::RequestError(Some("User not found".to_string())))
-    }
 }

@@ -1,34 +1,12 @@
-use salvo::prelude::*;
 use domain::entity::user;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
-use serde::{Deserialize, Serialize};
-use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use utils::{request::parse_page_and_size, response::{ApiError, PageResponse}};
 
-#[derive(Debug, Deserialize, ToParameters)]
-#[salvo(parameters(default_parameter_in = Query))]
-pub struct PageUserRequest {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
-    pub username: Option<String>,
-    pub nickname: Option<String>,
-}
+use crate::modules::user::controller::list::{PageUserRequest, PageUserResponse};
 
-#[derive(Debug, Serialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct PageUserResponse {
-    pub user_id: i64,
-    pub username: String,
-    pub nickname: Option<String>,
-    pub avatar: Option<String>,
-}
-
-/// page users
-#[endpoint(
-    tags("User"),
-)]
-pub async fn page_user(
+pub async fn get_page_user(
     req: PageUserRequest
-) -> ApiResult<PageResponse<PageUserResponse>> {
+) -> Result<PageResponse<PageUserResponse>, ApiError> {
     let db = utils::db::conn();
     let mut query = user::Entity::find();
 
@@ -70,5 +48,5 @@ pub async fn page_user(
         }).collect(),
     };
 
-    Ok(ApiOk(Some(resp)))
+    Ok(resp)
 }

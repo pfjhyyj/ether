@@ -1,14 +1,11 @@
 use salvo::Router;
 
-pub mod list;
-pub mod create;
-pub mod update;
-pub mod delete;
-pub mod get;
+pub mod controller;
+pub mod service;
 
 pub fn get_router() -> Router {
     Router::new()
         .path("/users")
-        .push(Router::new().get(list::page_user).post(create::create_user))
-        .push(Router::with_path("/{user_id}").get(get::get_user).put(update::update_user).delete(delete::delete_user))
+        .push(Router::new().get(controller::list::page_user).post(controller::create::create_user))
+        .push(Router::with_path("/{user_id}").get(controller::get::get_user).put(controller::update::update_user).delete(controller::delete::delete_user))
 }
