@@ -1,34 +1,10 @@
-use salvo::prelude::*;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect};
-use serde::{Deserialize, Serialize};
 use domain::entity::permission;
-use utils::{request::parse_page_and_size, response::{ApiError, ApiOk, ApiResult, PageResponse}};
+use utils::{request::parse_page_and_size, response::{ApiError, PageResponse}};
 
-#[derive(Debug, Deserialize, ToParameters)]
-#[salvo(parameters(default_parameter_in = Query))]
-pub struct PagePermssionRequest {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
-    pub object: Option<String>,
-    pub action: Option<String>,
-}
+use crate::modules::permission::controller::list::{PagePermissionResponse, PagePermssionRequest};
 
-#[derive(Debug, Serialize, ToSchema)]
-pub struct PagePermissionResponse {
-    pub permission_id: i64,
-    pub object: String,
-    pub action: String,
-    pub name: Option<String>,
-    pub description: Option<String>,
-}
-
-/// page permissions
-#[endpoint(
-    tags("Permission"),
-)]
-pub async fn page_permission(
-    req: PagePermssionRequest
-) -> ApiResult<PageResponse<PagePermissionResponse>> {
+pub async fn get_page_permission(req: PagePermssionRequest) -> Result<PageResponse<PagePermissionResponse>, ApiError> {
     let db = utils::db::conn();
     let mut query = permission::Entity::find();
 
@@ -71,5 +47,5 @@ pub async fn page_permission(
         }).collect(),
     };
 
-    Ok(ApiOk(Some(resp)))
+    Ok(resp)
 }

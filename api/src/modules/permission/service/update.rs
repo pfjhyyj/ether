@@ -1,34 +1,10 @@
-use salvo::{oapi::extract::{JsonBody, PathParam}, prelude::*};
 use sea_orm::{EntityTrait, Set, ActiveModelTrait};
-use serde::Deserialize;
-use utils::response::{ApiError, ApiOk, ApiResult};
-use validator::Validate;
+use utils::response::ApiError;
 use domain::entity::permission;
 
+use crate::modules::permission::controller::update::UpdatePermissionRequest;
 
-
-#[derive(Debug, Deserialize, Validate, ToSchema)]
-pub struct UpdatePermissionRequest {
-    pub object: String,
-    pub action: String,
-    pub name: Option<String>,
-    pub description: Option<String>,
-}
-
-/// Update a permission
-#[endpoint(
-    tags("Permission"),
-)]
-pub async fn update_permission(
-    permission_id: PathParam<i64>,
-    body: JsonBody<UpdatePermissionRequest>,
-) -> ApiResult<bool> {
-    let _ = update_permission_by_request(permission_id.into_inner(), body.into_inner()).await?;
-
-    Ok(ApiOk(Some(true)))
-}
-
-async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionRequest) -> Result<bool, ApiError> {
+pub async fn update_permission_by_request(permission_id: i64, req: UpdatePermissionRequest) -> Result<bool, ApiError> {
     let db = utils::db::conn();
     let permission = permission::Entity::find_by_id(permission_id)
         .one(db)
