@@ -11,8 +11,6 @@ pub enum User {
     Mobile,
     Email,
     Status,
-    CreatedAt,
-    UpdatedAt,
 }
 
 #[derive(DeriveMigrationName)]
@@ -49,18 +47,6 @@ impl MigrationTrait for Migration {
                             .small_integer()
                             .not_null()
                             .default(0),
-                    )
-                    .col(
-                        ColumnDef::new(User::CreatedAt)
-                            .timestamp_with_time_zone()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(User::UpdatedAt)
-                            .timestamp_with_time_zone()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
                     )
                     .to_owned(),
             )

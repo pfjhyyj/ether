@@ -11,8 +11,6 @@ pub enum Menu {
     Path,
     Sort,
     Extra,
-    CreatedAt,
-    UpdatedAt,
 }
 
 #[derive(DeriveMigrationName)]
@@ -69,18 +67,6 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Menu::Extra)
                             .json()
                             .null()
-                    )
-                    .col(
-                        ColumnDef::new(Menu::CreatedAt)
-                            .timestamp_with_time_zone()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(Menu::UpdatedAt)
-                            .timestamp_with_time_zone()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
                     )
                     .to_owned(),
             )

@@ -8,10 +8,10 @@ members = [".", "api", "domain", "migration", "utils"]
 
 [workspace.dependencies]
 sea-orm = { version = "1.1.4", features = ["sqlx-postgres", "runtime-tokio-rustls", "debug-print"] }
-salvo = { version = "0.76.0", features = ["oapi", "cors"] }
+salvo = { version = "0.76.1", features = ["oapi", "cors"] }
 serde = { version = "1.0.217", features = ["derive"] }
 tracing = "0.1.41"
-redis = { version = "0.28.1", features = ["r2d2", "cluster", "cluster-async", "tokio-comp"]}
+redis = { version = "0.28.2", features = ["r2d2", "cluster", "cluster-async", "tokio-comp"]}
 chrono = "0.4.39"
 casbin = { version = "2.7.0", default-features = false, features = ["runtime-async-std", "logging", "incremental"] }
 tokio = { version = "1.43.0", features = ["full", "fs", "io-util", "macros"] }
@@ -23,4 +23,4 @@ migration = { path = "migration" }
 utils = { path = "utils" }
 tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
-clap = "4.5.26"
+clap = "4.5.27"
