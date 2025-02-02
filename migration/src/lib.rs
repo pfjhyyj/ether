@@ -7,6 +7,7 @@ mod m20241020_021519_init_permission;
 mod m20241020_024905_init_role_permission;
 mod m20241020_024913_init_role_menu;
 mod m20241020_025112_init_user_role;
+mod m20250202_010302_init_article;
 
 pub struct Migrator;
 
@@ -21,6 +22,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20241020_024905_init_role_permission::Migration),
             Box::new(m20241020_024913_init_role_menu::Migration),
             Box::new(m20241020_025112_init_user_role::Migration),
+            Box::new(m20250202_010302_init_article::Migration),
         ]
     }
 }

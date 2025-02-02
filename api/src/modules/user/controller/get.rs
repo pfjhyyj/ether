@@ -13,8 +13,6 @@ pub struct GetUserDetailResponse {
     pub email: Option<String>,
     pub nickname: Option<String>,
     pub avatar: Option<String>,
-    pub created_at: chrono::NaiveDateTime,
-    pub updated_at: chrono::NaiveDateTime,
 }
 
 /// Get a user
@@ -31,8 +29,6 @@ pub async fn get_user(
         email: user.email,
         nickname: user.nickname,
         avatar: user.avatar,
-        created_at: user.created_at.naive_local(),
-        updated_at: user.updated_at.naive_local(),
     };
 
     Ok(ApiOk(Some(user)))

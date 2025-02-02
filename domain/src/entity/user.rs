@@ -17,8 +17,6 @@ pub struct Model {
     #[sea_orm(unique)]
     pub email: Option<String>,
     pub status: i16,
-    pub created_at: DateTimeWithTimeZone,
-    pub updated_at: DateTimeWithTimeZone,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -14,8 +14,6 @@ pub struct Model {
     pub path: Option<String>,
     pub sort: i32,
     pub extra: Option<Json>,
-    pub created_at: DateTimeWithTimeZone,
-    pub updated_at: DateTimeWithTimeZone,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
