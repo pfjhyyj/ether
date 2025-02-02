@@ -1,7 +1,7 @@
 use digest::{crypto_common::BlockSizeUser, Digest, Mac};
 use hmac::{Hmac, SimpleHmac};
 use md5::Md5;
-use rand::distributions::{Alphanumeric, DistString};
+use rand::distr::{Alphanumeric, SampleString};
 use sha1::Sha1;
 use sha2::Sha256;
 
@@ -48,7 +48,7 @@ pub fn hmac<D: Digest + BlockSizeUser>(key: &[u8], b: &[u8]) -> String {
 }
 
 pub fn nonce(size: usize) -> String {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     Alphanumeric.sample_string(&mut rng, size)
 }
 
