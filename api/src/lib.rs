@@ -1,6 +1,28 @@
-use salvo::prelude::*;
+use salvo::{catcher::Catcher, prelude::*};
+use utils::response::ApiError;
 
 mod modules;
+
+#[handler]
+async fn handle_error(res: &mut Response, ctrl: &mut FlowCtrl) {
+    let status_code = res.status_code.unwrap_or(StatusCode::NOT_FOUND);
+    if StatusCode::NOT_FOUND == status_code {
+        res.render(Json(ApiError::RequestError(Some("Request not found".to_string())).to_response()));
+        ctrl.skip_rest();
+        return;
+    }
+
+    if StatusCode::METHOD_NOT_ALLOWED == status_code {
+        res.render(Json(ApiError::RequestError(Some("Method not allowed".to_string())).to_response()));
+        ctrl.skip_rest();
+        return;
+    }
+    if StatusCode::OK != status_code {
+        res.render(Json(ApiError::RequestError(None).to_response()));
+        ctrl.skip_rest();
+    }
+}
+
 
 #[tokio::main]
 pub async fn start(config_file_path: &str) -> std::io::Result<()> {
@@ -23,7 +45,8 @@ pub async fn start(config_file_path: &str) -> std::io::Result<()> {
     }
 
     let acceptor = TcpListener::new(address).bind().await;
-    Server::new(acceptor).serve(router).await;
+    let service = Service::new(router).catcher(Catcher::default().hoop(handle_error));
+    Server::new(acceptor).serve(service).await;
     Ok(())
 }
 
