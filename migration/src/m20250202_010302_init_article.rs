@@ -28,6 +28,9 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(0),
                     )
+                    .col(ColumnDef::new(Article::CreatedAt).timestamp().not_null().default(Expr::current_timestamp()))
+                    .col(ColumnDef::new(Article::UpdatedAt).timestamp().not_null().default(Expr::current_timestamp()))
+                    .col(ColumnDef::new(Article::DeletedAt).timestamp().null())
                     .to_owned(),
             )
             .await
@@ -49,4 +52,7 @@ enum Article {
     Category,
     Tag,
     Status,
+    CreatedAt,
+    UpdatedAt,
+    DeletedAt,
 }

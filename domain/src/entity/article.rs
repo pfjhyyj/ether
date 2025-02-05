@@ -13,6 +13,9 @@ pub struct Model {
     pub category: Option<String>,
     pub tag: Option<String>,
     pub status: i32,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
+    pub deleted_at: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
