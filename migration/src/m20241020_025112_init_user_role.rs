@@ -59,7 +59,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum UserRole {
+pub enum UserRole {
     Table,
     Id,
     UserId,

@@ -30,6 +30,7 @@ pub async fn start(config_file_path: &str) -> std::io::Result<()> {
     let _guard = utils::logger::init();
     utils::db::init_db().await;
     utils::redis::init_redis();
+    utils::casbin::init_casbin().await;
 
     let port = utils::config::global().get_int("app.port").unwrap_or(3456);
     let address = format!("0.0.0.0:{}", port);
