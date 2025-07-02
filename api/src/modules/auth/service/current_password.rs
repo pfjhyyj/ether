@@ -21,7 +21,7 @@ pub async fn update_password(
     user_id: i64,
     old_password: &str,
     new_password: &str,
-) -> ApiResult<()> {
+) -> ApiResult<bool> {
     let user = get_user_by_user_id(user_id).await?;
 
     let is_valid = utils::hash::bcrypt_verify(old_password, &user.password);
@@ -39,5 +39,5 @@ pub async fn update_password(
         ApiError::DbError(None)
     })?;
 
-    Ok(ApiOk(None))
+    Ok(ApiOk(Some(true)))
 }

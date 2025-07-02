@@ -10,8 +10,8 @@ use crate::modules::auth::service;
 )]
 pub async fn logout(
     req: &mut Request
-) -> ApiResult<()> {
+) -> ApiResult<bool> {
     let id = req.extensions().get::<Identity>().unwrap();
     service::logout::clear_token_cache(id.sub)?;
-    Ok(ApiOk(None))
+    Ok(ApiOk(Some(true)))
 }

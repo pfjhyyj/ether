@@ -20,7 +20,7 @@ pub struct UpdatePasswordRequest {
 pub async fn update_password(
     req: &mut Request,
     body: JsonBody<UpdatePasswordRequest>,
-) -> ApiResult<()> {
+) -> ApiResult<bool> {
     let id = req.extensions().get::<Identity>().unwrap();
     if body.new_password != body.confirm_password {
         return Err(ApiError::RequestError(Some("New password and confirm password do not match".to_string())));
@@ -28,5 +28,5 @@ pub async fn update_password(
 
     service::current_password::update_password(id.sub, &body.old_password, &body.new_password).await?;
 
-    Ok(ApiOk(None))
+    Ok(ApiOk(Some(true)))
 }
